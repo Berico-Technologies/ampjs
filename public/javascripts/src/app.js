@@ -4,7 +4,7 @@ define([], function() {
   return App = (function() {
     function App() {}
 
-    App.prototype.hello = console.log("hello there, world");
+    App.prototype.hello = console.log("hello there, planet earth");
 
     return App;
 
