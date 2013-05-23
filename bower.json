@@ -1,0 +1,23 @@
+{
+  "name": "AMPJS",
+  "version": "0.0.1",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components"
+  ],
+  "main":"public/javascripts/src/app.js",
+  "dependencies":{
+    "modernizr": "2.6.2",
+    "underscore-amd": "1.4.4"
+  },
+  "ignore":[
+    "assets/",
+    "test/",
+    "views/",
+    "karma.conf.js",
+    "mimosa-config.coffee",
+    ".bowerrc",
+    "public/javascripts/vendor"
+  ]
+}
