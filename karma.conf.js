@@ -1,4 +1,3 @@
-
 // list of files / patterns to load in the browser
 files = [
   MOCHA,
@@ -8,7 +7,8 @@ files = [
   'test/vendor/assert.js',
   'test/test-main.js',
   {pattern: 'public/javascripts/**/*.js', included: false},
-  {pattern: 'test/**/*Spec.js', included: false}
+  {pattern: 'test/**/*Spec.js', included: false},
+  {pattern: 'test/mock/*.js', included: false}
 ];
 
 

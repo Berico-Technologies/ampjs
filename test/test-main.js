@@ -9,8 +9,14 @@ requirejs.config({
         'i18n': 'vendor/managed/requirejs-i18n/i18n',
         'domReady': 'vendor/managed/requirejs-domready/domReady',
         'underscore': 'vendor/managed/underscore-amd/underscore',
-        'jquery': 'vendor/managed/jquery/jquery'
+        'stomp': 'vendor/managed/stomp-websocket/dist/stomp',
+        'test':'../../test'
+    },
 
+    shim: {
+        'stomp': {
+            exports: 'Stomp'
+        }
     },
 
     // ask Require.js to load these files (all our tests)

@@ -12,3 +12,7 @@ define([], function() {
 });
 
 App;
+
+/*
+//@ sourceMappingURL=app.map
+*/

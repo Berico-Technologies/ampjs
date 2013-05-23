@@ -3,13 +3,26 @@ requirejs.config({
   paths: {
     i18n: 'vendor/managed/requirejs-i18n/i18n',
     domReady: 'vendor/managed/requirejs-domready/domReady',
-    modernizr: 'vendor/managed/modernizr/modernizr'
+    modernizr: 'vendor/managed/modernizr/modernizr',
+    stomp: 'vendor/managed/stomp-websocket/dist/stomp',
+    underscore: 'vendor/managed/underscore-amd/underscore',
+    sockjs: 'vendor/managed/sockjs/sockjs'
   },
   shim: {
     'modernizr': {
       exports: 'Modernizr'
+    },
+    'stomp': {
+      exports: 'Stomp'
+    },
+    'sockjs': {
+      exports: 'SockJS'
     }
   }
 });
 
-requirejs([], function() {});
+requirejs(['underscore', 'stomp', 'sockjs'], function(_, Stop, SockJS) {});
+
+/*
+//@ sourceMappingURL=main.map
+*/
