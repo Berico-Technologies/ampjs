@@ -2,6 +2,7 @@ var tests = Object.keys(window.__karma__.files).filter(function(file){
   return /Spec\.coffee-compiled\.js$/.test(file);
 });
 
+
 requirejs.config({
   baseUrl: '/base/public/javascripts',
   paths:{
@@ -9,11 +10,16 @@ requirejs.config({
     'domReady': 'vendor/managed/requirejs-domready/domReady',
     'underscore': 'vendor/managed/underscore-amd/underscore',
     'stomp': 'vendor/managed/stomp-websocket/dist/stomp',
-    'test':'../../test'
+    'flog': 'vendor/managed/flog/flog',
+    'uuid': 'vendor/managed/node-uuid/uuid',
+    'test': '../../test'
   },
   shim:{
     'stomp':{
       exports: 'Stomp'
+    },
+    'uuid':{
+      exports: 'uuid'
     }
   },
   deps: tests,

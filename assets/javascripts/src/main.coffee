@@ -4,9 +4,11 @@ requirejs.config
     i18n: 'vendor/managed/requirejs-i18n/i18n'
     domReady: 'vendor/managed/requirejs-domready/domReady'
     modernizr: 'vendor/managed/modernizr/modernizr'
-    stomp: 'vendor/managed/stomp-websocket/dist/stomp',
-    underscore: 'vendor/managed/underscore-amd/underscore',
+    stomp: 'vendor/managed/stomp-websocket/dist/stomp'
+    underscore: 'vendor/managed/underscore-amd/underscore'
     sockjs: 'vendor/managed/sockjs/sockjs'
+    flog: 'vendor/managed/flog/flog',
+    uuid: 'vendor/managed/node-uuid/uuid'
   shim:
     'modernizr':
       exports: 'Modernizr'
@@ -14,6 +16,9 @@ requirejs.config
       exports: 'Stomp'
     'sockjs':
       exports: 'SockJS'
+    'uuid':
+      exports: 'uuid'
+
 
 requirejs [
   'underscore'

@@ -6,7 +6,9 @@ requirejs.config({
     modernizr: 'vendor/managed/modernizr/modernizr',
     stomp: 'vendor/managed/stomp-websocket/dist/stomp',
     underscore: 'vendor/managed/underscore-amd/underscore',
-    sockjs: 'vendor/managed/sockjs/sockjs'
+    sockjs: 'vendor/managed/sockjs/sockjs',
+    flog: 'vendor/managed/flog/flog',
+    uuid: 'vendor/managed/node-uuid/uuid'
   },
   shim: {
     'modernizr': {
@@ -17,6 +19,9 @@ requirejs.config({
     },
     'sockjs': {
       exports: 'SockJS'
+    },
+    'uuid': {
+      exports: 'uuid'
     }
   }
 });
