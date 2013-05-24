@@ -1,4 +1,3 @@
-
 // list of files / patterns to load in the browser
 files = [
   MOCHA,
@@ -7,10 +6,14 @@ files = [
   REQUIRE_ADAPTER,
   'test/vendor/assert.js',
   'test/test-main.js',
+  {pattern: 'test/*Spec.coffee', included: false},
   {pattern: 'public/javascripts/**/*.js', included: false},
-  {pattern: 'test/**/*Spec.js', included: false}
+  {pattern: 'test/mock/*.coffee', included: false}
 ];
 
+preprocessors = {
+  '**/*.coffee' : 'coffee'
+};
 
 // list of files to exclude
 exclude = [
