@@ -1,5 +1,5 @@
-var tests = Object.keys(window.__karma__.files).filter(function (file) {
-      return /Spec\.js$/.test(file);
+var tests = Object.keys(window.__karma__.files).filter(function (file) {            
+      return /Spec\.coffee-compiled\.js$/.test(file);
 });
 requirejs.config({
     // Karma serves files from '/base'
