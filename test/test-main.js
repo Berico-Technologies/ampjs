@@ -2,6 +2,7 @@ var tests = Object.keys(window.__karma__.files).filter(function(file){
   return /Spec\.coffee-compiled\.js$/.test(file);
 });
 
+window.loggingLevel = 'all';
 
 requirejs.config({
   baseUrl: '/base/public/javascripts',
@@ -12,7 +13,9 @@ requirejs.config({
     'stomp': 'vendor/managed/stomp-websocket/dist/stomp',
     'flog': 'vendor/managed/flog/flog',
     'uuid': 'vendor/managed/node-uuid/uuid',
-    'test': '../../test'
+    'test': '../../test',
+    'sockjs': 'vendor/managed/sockjs/sockjs'
+
   },
   shim:{
     'stomp':{
@@ -20,6 +23,9 @@ requirejs.config({
     },
     'uuid':{
       exports: 'uuid'
+    },
+    'sockjs':{
+      exports: 'SockJS'
     }
   },
   deps: tests,

@@ -1,7 +1,8 @@
 define [
   'uuid'
+  '../../Logger'
 ],
-(uuid)->
+(uuid, Logger)->
   class SimpleTopologyService
     constructor: (config) ->
       config = config ? {}
@@ -13,7 +14,7 @@ define [
         port: topologyInfo.port ? 5672
         vhost: topologyInfo.vhost ? "/"
     getRoutingInfo: (context) =>
-      logger.debug "SimpleTopologyService.getRoutingInfo >> getting routing info"
+      Logger.log.debug "SimpleTopologyService.getRoutingInfo >> getting routing info"
       route = _.clone @routePrototype
       route.routingKey = context[HeaderConstants.MESSAGE_TOPIC.key] ? context.topic
       route.queue = "#{@routePrototype.clientProfile}##{route.routingKey}"

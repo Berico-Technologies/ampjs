@@ -3,7 +3,7 @@ define [
 ],
 (flog)->
   class Logger
-    @loggingLevel = 'debug'
+    @loggingLevel = window.loggingLevel ? 'silent'
     @log =  (->
       temp = flog.create()
       temp.setLevel(Logger.loggingLevel)

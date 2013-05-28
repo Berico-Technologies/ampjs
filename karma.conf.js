@@ -8,7 +8,8 @@ files = [
   'test/test-main.js',
   {pattern: 'test/*Spec.coffee', included: false},
   {pattern: 'public/javascripts/**/*.js', included: false},
-  {pattern: 'test/mock/*.coffee', included: false}
+  {pattern: 'test/websocket/*.coffee', included: false},
+  {pattern: 'test/stomp/*.coffee', included: false}
 ];
 
 preprocessors = {
@@ -55,7 +56,7 @@ autoWatch = true;
 // - Safari (only Mac)
 // - PhantomJS
 // - IE (only Windows)
-browsers = ['PhantomJS'];
+browsers = ['Chrome'];
 
 
 // If browser does not capture in given timeout [ms], kill it

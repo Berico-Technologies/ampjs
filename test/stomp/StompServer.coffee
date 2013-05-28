@@ -1,5 +1,8 @@
-define ['./websocket.mock.coffee-compiled'], (WebSocketMock) ->
-  class StompServerMock extends WebSocketMock
+define [
+  "../websocket/Client.coffee-compiled"
+],
+(WebSocket)->
+  class StompServer extends WebSocket
     # WebSocketMock handlers
 
     handle_send: (msg) =>
@@ -84,5 +87,5 @@ define ['./websocket.mock.coffee-compiled'], (WebSocketMock) ->
     test_send: (sub_id, message) ->
       msgid = 'msg-' + Math.random()
       @subscriptions[sub_id][1](msgid, message)
+  return StompServer
 
-  return StompServerMock
