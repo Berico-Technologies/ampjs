@@ -2,8 +2,9 @@ define [
   'stomp'
   '../../Logger'
   'sockjs'
+  'underscore'
 ],
-(Stomp, Logger, SockJS)->
+(Stomp, Logger, SockJS, _)->
   class ChannelProvider
     @DefaultConnectionStrategy = (route) ->
       return "http://#{route.host}:#{route.port}#{route.vhost}#{route.exchange}"
@@ -28,7 +29,18 @@ define [
       else
         Logger.log.info "ChannelProvider.getConnection >> returning existing connection"
         callback(connection, true)
-    removeConnection: () ->
+    removeConnection: (route, callback) ->
+      Logger.log.info "ConnectionFactory.removeConnection >> Removing connection"
+      connectionName = @connectionStrategy(route)
+      connection = @connectionPool[connectionName]
+      if connection?
+        connection.disconnect(_.bind ->
+            delete @connectionPool[connectionName]
+            callback(true)
+          ,this
+        )
+      else
+        callback(false)
     getChannelFor: () ->
     _createConnection: (route, callback) ->
       Logger.log.info "ChannelProvider._createConnection >> creating new connection"

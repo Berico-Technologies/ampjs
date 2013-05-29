@@ -1,7 +1,7 @@
 define [
   './webstomp/TransportProvider'
   './webstomp/ChannelProvider'
-  './topology/SimpleTopologyService'
+  './webstomp/topology/SimpleTopologyService'
   'underscore'
 ],
 (WebStompTransportProvider, WebStompChannelProvider, SimpleTopologyService, _) ->

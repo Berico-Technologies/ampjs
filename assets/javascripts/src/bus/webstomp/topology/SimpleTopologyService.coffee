@@ -1,8 +1,11 @@
 define [
   'uuid'
-  '../../Logger'
+  '../../../Logger'
+  './RoutingInfo'
+  './RouteInfo'
+  './Exchange'
 ],
-(uuid, Logger)->
+(uuid, Logger, RoutingInfo, RouteInfo, Exchange)->
   class SimpleTopologyService
     constructor: (config) ->
       config = config ? {}

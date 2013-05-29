@@ -9,6 +9,7 @@ requirejs.config
     sockjs: 'vendor/managed/sockjs/sockjs'
     flog: 'vendor/managed/flog/flog',
     uuid: 'vendor/managed/node-uuid/uuid'
+    jshashes: 'vendor/managed/jsHashes/hashes'
   shim:
     'modernizr':
       exports: 'Modernizr'
@@ -18,6 +19,7 @@ requirejs.config
       exports: 'SockJS'
     'uuid':
       exports: 'uuid'
+
 
 
 requirejs [

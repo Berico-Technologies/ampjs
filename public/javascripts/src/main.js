@@ -8,7 +8,8 @@ requirejs.config({
     underscore: 'vendor/managed/underscore-amd/underscore',
     sockjs: 'vendor/managed/sockjs/sockjs',
     flog: 'vendor/managed/flog/flog',
-    uuid: 'vendor/managed/node-uuid/uuid'
+    uuid: 'vendor/managed/node-uuid/uuid',
+    jshashes: 'vendor/managed/jsHashes/hashes'
   },
   shim: {
     'modernizr': {

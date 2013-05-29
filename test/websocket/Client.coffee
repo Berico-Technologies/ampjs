@@ -23,7 +23,7 @@ define [
     close: ->
       @readyState = 2
       request = new Request @,'close'
-      @__server.request request, @dispatch
+      @__server.request request, _.bind(@dispatch,@)
 
     send: (message)->
       return false if @readyState != 1
@@ -35,7 +35,7 @@ define [
       switch response.type
         when 'open' then @readyState=1
         when 'close' then @readyState=3
-      @['on'+response.type] response
+      @['on'+response.type](response) if _.isFunction @['on'+response.type]
 
     connect: (url)->
       @__server = Server.find(url)
