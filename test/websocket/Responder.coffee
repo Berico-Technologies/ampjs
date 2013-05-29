@@ -9,19 +9,14 @@ define [
       @response_type = null
       @response_message = null
 
-    @checkResponseNotSet: (responder)->
-      if responder.response_type
-        throw('Response for ' + responder.message + ' has already been set to ' +
-          responder.response_type + ' with ' +  responder.response_message)
+    respond: (message, type)->
 
-    respond: (message)->
-      Responder.checkResponseNotSet(@)
-      @response_type = 'message'
+      @response_type = type ? 'message'
       @response_message = message
       return @
-    fail: (message) ->
+    fail: (message, type) ->
       Responder.checkResponseNotSet(@)
-      @response_type = 'close'
+      @response_type = type ? 'close'
       @response_message = message
       return @
     match: (request) ->

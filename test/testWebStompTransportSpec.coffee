@@ -6,44 +6,56 @@ define [
   'test/websocket/Server.coffee-compiled'
   'src/bus/webstomp/ChannelProvider'
   'src/bus/webstomp/TransportProvider'
+  'sockjs'
 
 ],
-(TransportProviderFactory, _, Stomp, StompServerMock, Server, ChannelProvider, TransportProvider) ->
+(TransportProviderFactory, _, Stomp, StompServerMock, Server, ChannelProvider, TransportProvider, SockJS) ->
 
-  describe 'MockWebsocket', ->
+  useEmulatedWebSocket = true
+  rabbitmqAddress = 'http://127.0.0.1:15674/stomp'
+  route =
+    host: "127.0.0.1"
+    port: 15674
+    vhost: '/stomp'
+    exchange: ''
+  Server.configure rabbitmqAddress, ->
+    @addResponder('message', "CONNECT\naccept-version:1.1,1.0\nheart-beat:10000,10000\nlogin:guest\npasscode:guest\n\n\u0000")
+      .respond("CONNECTED\nsession:session-8N75XCn8cB8VBQxD1gh9fg\nheart-beat:10000,10000\nserver:RabbitMQ/3.0.4\nversion:1.1\n\n")
+    @addResponder('message', "SUBSCRIBE\nid:sub-0\ndestination:/queue/test\n\n\u0000")
+      .respond("")
+    @addResponder('message', "SEND\ndestination:/queue/test\ncontent-length:22\n\nAre you the Keymaster?\u0000")
+      .respond("MESSAGE\nsubscription:sub-0\ndestination:/queue/test\nmessage-id:T_sub-0@@session-8Oa_pQMYogjsdRUwW2jHdw@@1\ncontent-length:22\n\nAre you the Keymaster?")
+
+  describe 'The transport provider', ->
     it 'needs to be able to create a client', (done) ->
-      Server.configure 'ws://fake.host', ->
-        @addResponder('open', undefined).respond("CONNECTED\nsession:session-8N75XCn8cB8VBQxD1gh9fg\nheart-beat:10000,10000\nserver:RabbitMQ/3.0.4\nversion:1.1\n\n")
-
-      ws = new StompServerMock("ws://fake.host")
+      ws = if useEmulatedWebSocket then new StompServerMock(rabbitmqAddress) else new SockJS(rabbitmqAddress)
       client = Stomp.over(ws)
       client.connect("guest", "guest", ->
         done()
       )
 
   describe 'The transport provider', (done)->
-    transportProvider = null
-    beforeEach ->
-      transportProvider = TransportProviderFactory.getTransportProvider(TransportProviderFactory.TransportProviders.WebStomp)
+
+
+    transportProvider = TransportProviderFactory
+      .getTransportProvider(TransportProviderFactory.TransportProviders.WebStomp)
 
     it 'should not be null', ->
       assert.notEqual(transportProvider, null)
 
     it 'needs to return in web stomp provider', ->
 
-      config =
+      provider = TransportProviderFactory.getTransportProvider({
         transportProvider: TransportProviderFactory.TransportProviders.WebStomp
-
-      provider = TransportProviderFactory.getTransportProvider(config)
+      })
       assert provider instanceof TransportProvider
 
-  describe 'The inmemory channel provider', (done)->
+  describe 'The channel provider', (done)->
     channelProvider = null
     beforeEach ->
-      Server.configure 'http://127.0.0.1:15674/stomp', ->
-        @addResponder('open', undefined).respond("CONNECTED\nsession:session-8N75XCn8cB8VBQxD1gh9fg\nheart-beat:10000,10000\nserver:RabbitMQ/3.0.4\nversion:1.1\n\n")
-
-      channelProvider = new ChannelProvider({connectionFactory: StompServerMock})
+      channelProvider = new ChannelProvider({
+        connectionFactory: if useEmulatedWebSocket then StompServerMock else SockJS
+      })
 
     it 'should not be null', ->
       assert.notEqual channelProvider, null
@@ -53,27 +65,21 @@ define [
         assert.notEqual client, null
         assert.ok !existing
         done()
-      route =
-          host: "127.0.0.1"
-          port: 15674
-          vhost: '/stomp'
-          exchange: ''
 
       channelProvider.getConnection(route, false, callback)
 
-    # it 'lets you subscribe and publish', (done) ->
+    it 'lets you subscribe and publish', (done) ->
 
+      callback = (client, existing) ->
+        message = "Are you the Keymaster?"
+        client.subscribe("/queue/test", (output) ->
+          assert.equal (_.isEmpty output.body), false
+          assert.equal message, output.body
+          done()
+          )
+        client.send("/queue/test", {}, message)
 
-    #   callback = (client, existing) ->
-    #     message = "Are you the Keymaster?"
-    #     client.subscribe("/queue/test", (output) ->
-    #       assert.Equal message, output
-    #       done()
-    #       )
-    #     client.send("/queue/test", {}, message)
-
-    #   route = "test"
-    #   channelProvider.getConnection("test", false, callback)
+      channelProvider.getConnection(route, false, callback)
 
 
 
