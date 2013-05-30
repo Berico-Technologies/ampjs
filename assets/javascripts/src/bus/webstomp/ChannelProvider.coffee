@@ -6,8 +6,8 @@ define [
 ],
 (Stomp, Logger, SockJS, _)->
   class ChannelProvider
-    @DefaultConnectionStrategy = (route) ->
-      return "http://#{route.host}:#{route.port}#{route.vhost}#{route.exchange}"
+    @DefaultConnectionStrategy = (exchange) ->
+      return "http://#{exchange.hostName}:#{exchange.port}#{exchange.vHost}"
 
     constructor: (config) ->
       config = config ? {}
@@ -18,20 +18,20 @@ define [
       Logger.log.info "ChannelProvider.ctor >> instantiated."
       @connectionFactory = config.connectionFactory ? SockJS
 
-    getConnection: (route, dedicated, callback) ->
-      Logger.log.info "ChannelProvider.getConnection >> Getting route"
-      connectionName = @connectionStrategy(route)
+    getConnection: (exchange, callback) ->
+      Logger.log.info "ChannelProvider.getConnection >> Getting exchange"
+      connectionName = @connectionStrategy(exchange)
       connection = @connectionPool[connectionName]
-      if dedicated or not connection?
+      if not connection?
         Logger.log.info "ChannelProvider.getConnection >> creating new connection"
-        connection = @_createConnection route, callback
-        @connectionPool[connectionName] = connection unless dedicated
+        connection = @_createConnection exchange, callback
+        @connectionPool[connectionName] = connection
       else
         Logger.log.info "ChannelProvider.getConnection >> returning existing connection"
         callback(connection, true)
-    removeConnection: (route, callback) ->
+    removeConnection: (exchange, callback) ->
       Logger.log.info "ConnectionFactory.removeConnection >> Removing connection"
-      connectionName = @connectionStrategy(route)
+      connectionName = @connectionStrategy(exchange)
       connection = @connectionPool[connectionName]
       if connection?
         connection.disconnect(_.bind ->
@@ -41,10 +41,9 @@ define [
         )
       else
         callback(false)
-    getChannelFor: () ->
-    _createConnection: (route, callback) ->
+    _createConnection: (exchange, callback) ->
       Logger.log.info "ChannelProvider._createConnection >> creating new connection"
-      ws = new @connectionFactory(@connectionStrategy(route))
+      ws = new @connectionFactory(@connectionStrategy(exchange))
       client = Stomp.over(ws)
       client.connect(@username, @password, () -> callback(client, false))
       return client

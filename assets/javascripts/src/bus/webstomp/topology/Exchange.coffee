@@ -6,7 +6,7 @@ define [
     constructor: (@name, @hostName, @vHost, @port, @routingKey, @queueName, @exchangeType, @isDurable, @autoDelete, @arguments)->
 
     toString: ->
-      "{Name: #{@name}, HostName: #{@hostName}, VirtualHost: #{@virtualHost}, Port: #{@port}, RoutingKey: #{@routingKey}, Queue Name: #{@queueName}, ExchangeType: #{@exchangeType}, IsDurable: #{@isDurable}, IsAutoDelete: #{@autoDelete}}"
+      "{Name: #{@name}, HostName: #{@hostName}, VirtualHost: #{@vHost}, Port: #{@port}, RoutingKey: #{@routingKey}, Queue Name: #{@queueName}, ExchangeType: #{@exchangeType}, IsDurable: #{@isDurable}, IsAutoDelete: #{@autoDelete}}"
 
     hashCode: ->
       new Hashes.MD5(@toString).hex()

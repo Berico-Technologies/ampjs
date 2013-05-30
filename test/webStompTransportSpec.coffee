@@ -7,21 +7,19 @@ define [
   'src/bus/webstomp/ChannelProvider'
   'src/bus/webstomp/TransportProvider'
   'sockjs'
+  'src/bus/webstomp/topology/Exchange'
 
 ],
-(TransportProviderFactory, _, Stomp, MockAMQPServer, MockWebSocket, ChannelProvider, TransportProvider, SockJS) ->
+(TransportProviderFactory, _, Stomp, MockAMQPServer, MockWebSocket, ChannelProvider, TransportProvider, SockJS, Exchange) ->
 
   ###
     TEST SETUP
   ###
   window.loggingLevel = 'all';
-  useEmulatedWebSocket = false
+  useEmulatedWebSocket = true
   rabbitmqAddress = 'http://127.0.0.1:15674/stomp'
-  route =
-    host: "127.0.0.1"
-    port: 15674
-    vhost: '/stomp'
-    exchange: ''
+  exchange = new Exchange('test','127.0.0.1','/stomp',15674)
+
   MockAMQPServer.configure rabbitmqAddress, ->
     @addResponder('message', "CONNECT\naccept-version:1.1,1.0\nheart-beat:10000,10000\nlogin:guest\npasscode:guest\n\n\u0000")
       .respond("CONNECTED\nsession:session-8N75XCn8cB8VBQxD1gh9fg\nheart-beat:10000,10000\nserver:RabbitMQ/3.0.4\nversion:1.1\n\n")
@@ -40,7 +38,7 @@ define [
       ws = if useEmulatedWebSocket then new MockWebSocket(rabbitmqAddress) else new SockJS(rabbitmqAddress)
       client = Stomp.over(ws)
       client.connect("guest", "guest", ->
-        # done()
+        done()
       )
 
   describe 'The transport provider', (done)->
@@ -72,7 +70,7 @@ define [
         assert.ok !existing
         done()
 
-      channelProvider.getConnection(route, false, callback)
+      channelProvider.getConnection(exchange, callback)
 
     it 'lets you subscribe and publish', (done) ->
       callback = (client, existing) ->
@@ -84,11 +82,12 @@ define [
           )
         client.send("/queue/test", {}, message)
 
-      channelProvider.getConnection(route, false, callback)
+      channelProvider.getConnection(exchange, callback)
 
     it 'should let you remove a connection', (done) ->
-      channelProvider.getConnection(route, false, ->
-        channelProvider.removeConnection(route, (removed)->
+      channelProvider.getConnection(exchange, ->
+        assert.equal _.keys(channelProvider.connectionPool).length, 1
+        channelProvider.removeConnection(exchange, (removed)->
           assert.ok removed
           assert.equal _.keys(channelProvider.connectionPool).length, 0
           done()
