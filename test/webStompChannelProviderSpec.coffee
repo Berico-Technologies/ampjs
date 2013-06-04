@@ -1,22 +1,20 @@
 define [
-  'src/bus/TransportProviderFactory'
   'underscore'
   'stomp'
   'test/websocket/Server.coffee-compiled'
   'test/websocket/Client.coffee-compiled'
   'src/bus/webstomp/ChannelProvider'
-  'src/bus/webstomp/TransportProvider'
   'sockjs'
   'src/bus/webstomp/topology/Exchange'
 
 ],
-(TransportProviderFactory, _, Stomp, MockAMQPServer, MockWebSocket, ChannelProvider, TransportProvider, SockJS, Exchange) ->
+(_, Stomp, MockAMQPServer, MockWebSocket, ChannelProvider, SockJS, Exchange) ->
 
   ###
     TEST SETUP
   ###
   window.loggingLevel = 'all';
-  useEmulatedWebSocket = true
+  useEmulatedWebSocket = false
   rabbitmqAddress = 'http://127.0.0.1:15674/stomp'
   exchange = new Exchange('test','127.0.0.1','/stomp',15674)
 
@@ -40,19 +38,6 @@ define [
       client.connect("guest", "guest", ->
         done()
       )
-
-  describe 'The transport provider', (done)->
-    transportProvider = TransportProviderFactory
-      .getTransportProvider(TransportProviderFactory.TransportProviders.WebStomp)
-
-    it 'should not be null', ->
-      assert.notEqual(transportProvider, null)
-
-    it 'needs to return a web stomp provider', ->
-      provider = TransportProviderFactory.getTransportProvider({
-        transportProvider: TransportProviderFactory.TransportProviders.WebStomp
-      })
-      assert provider instanceof TransportProvider
 
   describe 'The channel provider', (done)->
     channelProvider = null

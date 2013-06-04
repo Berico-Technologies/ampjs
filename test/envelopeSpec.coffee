@@ -2,8 +2,9 @@ define [
   'underscore'
   'src/bus/Envelope'
   'src/bus/EnvelopeHeaderConstants'
+  'src/bus/EnvelopeHelper'
 ],
-(_,Envelope, EnvelopeHeaderConstants) ->
+(_,Envelope, EnvelopeHeaderConstants, EnvelopeHelper) ->
   describe 'The Envelope', ->
     it 'should not be null', ->
       envelope = new Envelope()
@@ -34,3 +35,31 @@ define [
       envelope.payload = 'payload'
 
       assert.equal '{"payload":"payload"}', envelope.toString()
+
+    it 'should allow you to set the payload', ->
+      envelope = new Envelope()
+      payload = "i am a payload"
+      envelope.setPayload payload
+      assert.equal payload, envelope.getPayload()
+
+  describe 'The EnvelopeHelper',->
+    it 'should accept an envelope and let you set properties',->
+      payload = "i'm a payload, isn't that nice?"
+      messageId = uuid.v1()
+      messageType = "messageType"
+      messageTopic = "messageTopic"
+      senderIdentity = "dtayman"
+
+      envelope = new Envelope()
+      envelope.setPayload(payload)
+      env = new EnvelopeHelper(envelope)
+      env.setMessageId(messageId);
+      env.setMessageType(messageType);
+      env.setMessageTopic(messageTopic);
+      env.setSenderIdentity(senderIdentity);
+
+      assert.equal payload, env.getPayload()
+      assert.equal messageId, env.getMessageId()
+      assert.equal messageType, env.getMessageType()
+      assert.equal messageTopic, env.getMessageTopic()
+      assert.equal senderIdentity, env.getSenderIdentity()

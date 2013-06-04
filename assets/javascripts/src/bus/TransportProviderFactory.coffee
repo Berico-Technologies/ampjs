@@ -33,8 +33,8 @@ define [
       #throw back the correct instance. default the service and factory if they weren't provided
       switch config.transportProvider
         when TransportFactory.TransportProviders.WebStomp
-          topologyService = new SimpleTopologyService() if _.isEmpty topologyService
-          channelProvider = new WebStompChannelProvider() if _.isEmpty channelProvider
+          topologyService = new SimpleTopologyService() unless _.isObject topologyService
+          channelProvider = new WebStompChannelProvider() unless _.isObject channelProvider
           config =
             topologyService: topologyService
             channelProvider: channelProvider

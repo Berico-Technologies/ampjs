@@ -12,7 +12,7 @@ define [
     constructor: (clientProfile, name, hostname, vhost, port) ->
       @clientProfile = if _.isString clientProfile then clientProfile else uuid.v1()
       @name = if _.isString name then name else "cmf.simple.exchange"
-      @hostname = if _.isString hostname then hostname else "localhost"
+      @hostname = if _.isString hostname then hostname else "127.0.0.1"
       @virtualHost = if _.isString vhost then vhost else "/stomp"
       @port = if _.isNumber port then port else 15674
       @QUEUE_NUMBER = 0
@@ -41,6 +41,8 @@ define [
       z = z || '0';
       n = n + '';
       if n.length >= width then n else new Array(width - n.length + 1).join(z) + n;
+    dispose: ->
+      #currently empty
 
 
 

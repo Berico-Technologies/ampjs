@@ -5,10 +5,13 @@ define [
 (Listener, _)->
   class TransportProvider
     listeners:{}
+    envCallbacks: []
     constructor: (config) ->
       config = config ? {}
-      topologyService = config.topologyService ? {}
-      channelProvider = config.channelProvider ? {}
+      @topologyService = config.topologyService ? {}
+      @channelProvider = config.channelProvider ? {}
+
+
     register: (registration)->
       routing = @topologyService.getRoutingInfo(registration.registrationInfo)
       exchanges = []
@@ -34,10 +37,31 @@ define [
       return listener
     _getListener: (registration, exchange)->
       new Listener(registration, exchange)
-    send: ->
-    unregister: ->
-    onEnvelopeRecieved: ->
+    send: (envelope)->
+      routing = @topologyService.getRoutingInfo(envelope.getHeaders())
+      exchanges = _.pluck routing.routes, 'producerExchange'
+
+      for exchange in exchanges
+        @channelProvider.getConnection(exchange,(connection, existing)->
+          newHeaders = {}
+          headers = envelope.getHeaders
+          for entry of headers
+            newHeaders[entry] = headers[entry]
+          connection.send(exchange.name,newHeaders,envelope.getPayload)
+        )
+
+    unregister: (registration)->
+      delete listeners[registration]
+    onEnvelopeRecieved: (callback)->
+      envCallbacks.push(callback)
+    raise_onEnvelopeRecievedEvent: (dispatcher)->
+      for callback in envCallbacks
+        callback.handleRecieve(dispatcher)
     dispose: ->
-    _finalize: ->
+      channelFactory.dispose
+      topologyService.dispose
+      for listener of listeners
+        listener.dispose
+
 
   return TransportProvider

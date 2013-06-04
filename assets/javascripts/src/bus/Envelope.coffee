@@ -14,12 +14,12 @@ define [
       return false unless _.isObject obj.headers
       return false unless _.isEqual obj.headers, @headers
       return true
-    toString: ->
-      JSON.stringify(this)
-    getHeader:(key)->
-      headers.key
-    setHeader:(key,value)->
-      headers[key] = value
-    getPayload: ->
-      payload
+    toString: -> JSON.stringify(@)
+    getHeader:(key)-> @headers[key]
+    setHeader:(key,value)-> @headers[key] = value
+    getHeaders: -> @headers
+    getPayload: -> @payload
+    setPayload:(@payload)->
+
+
   return Envelope

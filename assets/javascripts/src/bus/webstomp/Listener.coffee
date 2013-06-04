@@ -50,6 +50,7 @@ define [
         envelopeHelper.setHeader(prop,result.headers[prop])
 
       return envelopeHelper
-
+    dispose:->
+      #unneeded here
 
   return Listener

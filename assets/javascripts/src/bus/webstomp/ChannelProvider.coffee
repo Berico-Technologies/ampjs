@@ -11,12 +11,12 @@ define [
 
     constructor: (config) ->
       config = config ? {}
-      @username = config.username ? "guest"
-      @password = config.password ? "guest"
+      @username = if _.isString config.username then config.username else "guest"
+      @password = if _.isString config.password then config.password else "guest"
       @connectionPool = {}
       @connectionStrategy = config.connectionStrategy ? ChannelProvider.DefaultConnectionStrategy
       Logger.log.info "ChannelProvider.ctor >> instantiated."
-      @connectionFactory = config.connectionFactory ? SockJS
+      @connectionFactory = if _.isFunction config.connectionFactory then config.connectionFactory else SockJS
 
     getConnection: (exchange, callback) ->
       Logger.log.info "ChannelProvider.getConnection >> Getting exchange"
@@ -47,5 +47,8 @@ define [
       client = Stomp.over(ws)
       client.connect(@username, @password, () -> callback(client, false))
       return client
+    dispose: (callback)->
+      for connection in @connectionPool
+        connection.disconnect(callback)
 
   return ChannelProvider
