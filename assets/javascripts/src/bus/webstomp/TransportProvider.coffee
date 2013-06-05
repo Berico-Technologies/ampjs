@@ -47,7 +47,7 @@ define [
           headers = envelope.getHeaders
           for entry of headers
             newHeaders[entry] = headers[entry]
-          connection.send(exchange.name,newHeaders,envelope.getPayload)
+          connection.send("/exchange/#{exchange.name}/#{exchange.routingKey}",newHeaders,envelope.getPayload)
         )
 
     unregister: (registration)->

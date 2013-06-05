@@ -9,7 +9,8 @@ requirejs.config({
     sockjs: 'vendor/managed/sockjs/sockjs',
     flog: 'vendor/managed/flog/flog',
     uuid: 'vendor/managed/node-uuid/uuid',
-    jshashes: 'vendor/managed/jsHashes/hashes'
+    jshashes: 'vendor/managed/jsHashes/hashes',
+    jquery: 'vendor/managed/jquery/jquery'
   },
   shim: {
     'modernizr': {
@@ -23,6 +24,9 @@ requirejs.config({
     },
     'uuid': {
       exports: 'uuid'
+    },
+    'jquery': {
+      exports: 'jquery'
     }
   }
 });

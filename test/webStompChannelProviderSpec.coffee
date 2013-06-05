@@ -6,9 +6,12 @@ define [
   'src/bus/webstomp/ChannelProvider'
   'sockjs'
   'src/bus/webstomp/topology/Exchange'
+  'src/bus/Envelope'
+  'src/bus/EnvelopeHelper'
+  'src/bus/webstomp/topology/SimpleTopologyService'
 
 ],
-(_, Stomp, MockAMQPServer, MockWebSocket, ChannelProvider, SockJS, Exchange) ->
+(_, Stomp, MockAMQPServer, MockWebSocket, ChannelProvider, SockJS, Exchange, Envelope, EnvelopeHelper, SimpleTopologyService) ->
 
   ###
     TEST SETUP

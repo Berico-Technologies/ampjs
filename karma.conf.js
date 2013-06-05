@@ -8,8 +8,7 @@ files = [
   'test/test-main.js',
   {pattern: 'test/*Spec.coffee', included: false},
   {pattern: 'public/javascripts/**/*.js', included: false},
-  {pattern: 'test/websocket/*.coffee', included: false},
-  {pattern: 'test/stomp/*.coffee', included: false}
+  {pattern: 'test/websocket/*.coffee', included: false}
 ];
 
 preprocessors = {

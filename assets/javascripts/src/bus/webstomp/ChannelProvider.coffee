@@ -29,6 +29,7 @@ define [
       else
         Logger.log.info "ChannelProvider.getConnection >> returning existing connection"
         callback(connection, true)
+
     removeConnection: (exchange, callback) ->
       Logger.log.info "ConnectionFactory.removeConnection >> Removing connection"
       connectionName = @connectionStrategy(exchange)
@@ -41,12 +42,19 @@ define [
         )
       else
         callback(false)
+
     _createConnection: (exchange, callback) ->
       Logger.log.info "ChannelProvider._createConnection >> creating new connection"
       ws = new @connectionFactory(@connectionStrategy(exchange))
       client = Stomp.over(ws)
-      client.connect(@username, @password, () -> callback(client, false))
+      client.connect(@username, @password,
+        ->
+          callback(client, false)
+        ,(err)->
+          Logger.log.error("ChannelProvider._createConnection >> #{err}")
+        )
       return client
+
     dispose: (callback)->
       for connection in @connectionPool
         connection.disconnect(callback)

@@ -10,6 +10,7 @@ requirejs.config
     flog: 'vendor/managed/flog/flog',
     uuid: 'vendor/managed/node-uuid/uuid'
     jshashes: 'vendor/managed/jsHashes/hashes'
+    jquery: 'vendor/managed/jquery/jquery'
   shim:
     'modernizr':
       exports: 'Modernizr'
@@ -19,7 +20,8 @@ requirejs.config
       exports: 'SockJS'
     'uuid':
       exports: 'uuid'
-
+    'jquery':
+      exports: 'jquery'
 
 
 requirejs [

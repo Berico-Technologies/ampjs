@@ -13,8 +13,8 @@ requirejs.config({
     'uuid': 'vendor/managed/node-uuid/uuid',
     'test': '../../test',
     'sockjs': 'vendor/managed/sockjs/sockjs',
-    'jshashes': 'vendor/managed/jsHashes/hashes'
-
+    'jshashes': 'vendor/managed/jsHashes/hashes',
+    'jquery': 'vendor/managed/jquery/jquery'
   },
   shim:{
     'stomp':{
@@ -25,6 +25,9 @@ requirejs.config({
     },
     'sockjs':{
       exports: 'SockJS'
+    },
+    'jquery':{
+      exports: 'jquery'
     }
   },
   deps: tests,

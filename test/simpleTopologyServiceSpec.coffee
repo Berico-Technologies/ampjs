@@ -27,7 +27,7 @@ define [
 
     it 'should be able to be called with no constructor arguments', ->
       simpleTopologyService = new SimpleTopologyService()
-      assert.equal simpleTopologyService.hostname, 'localhost'
+      assert.equal simpleTopologyService.hostname, '127.0.0.1'
       assert.equal simpleTopologyService.name, 'cmf.simple.exchange'
       assert.equal simpleTopologyService.port, 15674
       assert.equal simpleTopologyService.virtualHost, '/stomp'
@@ -53,7 +53,7 @@ define [
       exchange = routingInfo.routes[0].consumerExchange
       assert.notEqual null, exchange
       assert.equal exchange.name, 'cmf.simple.exchange'
-      assert.equal exchange.hostName, 'localhost'
+      assert.equal exchange.hostName, '127.0.0.1'
       assert.equal exchange.vHost, '/stomp'
       assert.equal exchange.port, 15674
       assert.equal exchange.routingKey, 'mytopic'

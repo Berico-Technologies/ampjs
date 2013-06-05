@@ -13,7 +13,6 @@ define [
     @ChannelFactories:
       WebStomp: 'webstomp'
 
-
     @getTransportProvider: (config) ->
       #if you'd like just send the provider and accept defaults that's cool with me
       if (!_.isObject(config) && _.isString(config))

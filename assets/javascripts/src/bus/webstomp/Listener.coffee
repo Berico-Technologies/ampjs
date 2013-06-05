@@ -3,8 +3,9 @@ define [
   '../Envelope'
   '../EnvelopeHelper'
   '../EnvelopeDispatcher'
+  'jquery'
 ],
-(_, Envelope, EnvelopeHelper, EnvelopeDispatcher)->
+(_, Envelope, EnvelopeHelper, EnvelopeDispatcher, $)->
   class Listener
     envCallbacks: []
     closeCallbacks: []
@@ -23,7 +24,12 @@ define [
 
     start: (@channel)->
       channel.subscribe(@exchange.routingKey, _.bind(@handleNextDelivery, @))
+      @createBinding @exchange.routingKey
 
+    createBinding: (routingKey)->
+      #create the exchage
+      #create the queue
+      #bind the queue to the exchange
     handleNextDelivery: (result)->
       envelopeHelper = @createEnvelopeFromDeliveryResult(result)
       if @shouldRaiseEvent registration.filterPredicate, envelopeHelper.getEnvelope

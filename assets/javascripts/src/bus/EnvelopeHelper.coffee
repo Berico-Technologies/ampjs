@@ -24,7 +24,6 @@ define [
     isRequest: -> !(_.isString @getCorrelationId && @getCorrelationId.length > 0) && @isRpc
     isRpc: -> EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC == @getMessagePattern
 
-
     setCorrelationId:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.MESSAGE_CORRELATION_ID, input)
     setCreationTime:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.ENVELOPE_CREATION_TIME, input)
     setDigitalSignature:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_SIGNATURE, input)
