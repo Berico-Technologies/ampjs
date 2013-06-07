@@ -52,16 +52,15 @@ define [
     it 'should not be null', ->
       assert.notEqual channelProvider, null
 
-    it 'should execute the getConnection callback', (done) ->
-      callback = (client, existing) ->
+    it 'should execute the getConnection deferred', (done) ->
+
+      channelProvider.getConnection(exchange).then (client, existing)->
         assert.notEqual client, null
         assert.ok !existing
         done()
 
-      channelProvider.getConnection(exchange, callback)
-
     it 'lets you subscribe and publish', (done) ->
-      callback = (client, existing) ->
+      channelProvider.getConnection(exchange).then (client, existing)->
         message = "Are you the Keymaster?"
         client.subscribe("/queue/test", (output) ->
           assert.equal (_.isEmpty output.body), false
@@ -69,15 +68,10 @@ define [
           done()
           )
         client.send("/queue/test", {}, message)
-
-      channelProvider.getConnection(exchange, callback)
-
     it 'should let you remove a connection', (done) ->
-      channelProvider.getConnection(exchange, ->
+      channelProvider.getConnection(exchange).then ->
         assert.equal _.keys(channelProvider.connectionPool).length, 1
-        channelProvider.removeConnection(exchange, (removed)->
+        channelProvider.removeConnection(exchange).then (removed)->
           assert.ok removed
           assert.equal _.keys(channelProvider.connectionPool).length, 0
           done()
-        )
-      )

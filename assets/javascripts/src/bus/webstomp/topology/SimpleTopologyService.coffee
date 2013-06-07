@@ -10,7 +10,7 @@ define [
 (uuid, Logger, RoutingInfo, RouteInfo, Exchange, _,EnvelopeHeaderConstants)->
   class SimpleTopologyService
     constructor: (clientProfile, name, hostname, vhost, port) ->
-      @clientProfile = if _.isString clientProfile then clientProfile else uuid.v1()
+      @clientProfile = if _.isString clientProfile then clientProfile else uuid.v4()
       @name = if _.isString name then name else "cmf.simple.exchange"
       @hostname = if _.isString hostname then hostname else "127.0.0.1"
       @virtualHost = if _.isString vhost then vhost else "/stomp"
@@ -28,7 +28,7 @@ define [
         @buildIdentifiableQueueName(topic), #topic
         "direct", #exchange type
         false, #is durable
-        true, #is auto-delete
+        false, #is auto-delete
         null) #arguments
 
       theOneRoute = new RouteInfo(theOneExchange, theOneExchange)

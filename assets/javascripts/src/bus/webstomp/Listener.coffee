@@ -4,8 +4,9 @@ define [
   '../EnvelopeHelper'
   '../EnvelopeDispatcher'
   'jquery'
+  '../../Logger'
 ],
-(_, Envelope, EnvelopeHelper, EnvelopeDispatcher, $)->
+(_, Envelope, EnvelopeHelper, EnvelopeDispatcher, $, Logger)->
   class Listener
     envCallbacks: []
     closeCallbacks: []
@@ -14,42 +15,66 @@ define [
     constructor: (@registration, @exchange)->
 
     onEnvelopeReceived: (callback)->
-      envCallbacks.push(callback)
+      @envCallbacks.push(callback)
 
     onClose: (callback)->
-      closeCallbacks.push(callback)
+      @closeCallbacks.push(callback)
 
     onConnectionError: (callback)->
-      connectionErrorCallbacks.push(callback)
+      @connectionErrorCallbacks.push(callback)
 
     start: (@channel)->
-      channel.subscribe(@exchange.routingKey, _.bind(@handleNextDelivery, @))
-      @createBinding @exchange.routingKey
+      Logger.log.info "Listener.start >> subscribing to /queue/#{@exchange.queueName}"
+      channel.subscribe("/queue/#{@exchange.queueName}", _.bind(@handleNextDelivery, @))
+      @createBinding()
 
-    createBinding: (routingKey)->
-      #create the exchage
-      #create the queue
-      #bind the queue to the exchange
+    createBinding: ()->
+      deferred = $.Deferred()
+      req = $.ajax
+        url: 'http://localhost:8080/rabbit/createBinding'
+        dataType: 'jsonp'
+        data: data: JSON.stringify
+          exchangeName: @exchange.name
+          exchangeType: @exchange.exchangeType
+          exchangeIsDurable: @exchange.isDurable
+          exchangeIsAutoDelete: @exchange.autoDelete
+          exchangeArguments: @exchange.arguments
+
+          queueName: @exchange.queueName
+          queueIsDurable: @exchange.isDurable
+          queueIsExclusive: false
+          queueIsAutoDelete: @exchange.autoDelete
+          queueArguments: @exchange.arguments
+
+          routingKey: @exchange.routingKey
+      req.done (data, textStatus, jqXHR)->
+          deferred.resolve()
+      req.fail (jqXHR, textStatus, errorThrown)->
+          deferred.reject()
+      return deferred
+
     handleNextDelivery: (result)->
+      Logger.log.info "Listener.handleNextDelivery >> received a message"
       envelopeHelper = @createEnvelopeFromDeliveryResult(result)
-      if @shouldRaiseEvent registration.filterPredicate, envelopeHelper.getEnvelope
-        @dispatchEnvelope envelopeHelper.getEnvelope
+      if @shouldRaiseEvent @registration.filterPredicate, envelopeHelper.getEnvelope
+        Logger.log.info "Listener.handleNextDelivery >> raising event from received message"
+        @dispatchEnvelope envelopeHelper.getEnvelope()
 
     dispatchEnvelope: (envelope)->
       dispatcher = new EnvelopeDispatcher(@registration, envelope, @channel)
-      raise_onEnvelopeRecievedEvent dispatcher
+      @raise_onEnvelopeRecievedEvent dispatcher
 
     raise_onEnvelopeRecievedEvent: (dispatcher) ->
-      callback.handleRecieve dispatcher for callback in envCallbacks
+      callback.handleRecieve dispatcher for callback in @envCallbacks
 
     shouldRaiseEvent: (filter, envelope)->
-      if (_.isNull filter || !(_.isObject filter))
+      if (_.isNull(filter) || !(_.isObject filter))
         return true
       else filter.filter envelope
 
     createEnvelopeFromDeliveryResult: (result)->
       envelopeHelper = new EnvelopeHelper(new Envelope())
-      envelopeHelper.setReceiptTime(new Date().getMilliseconds)
+      envelopeHelper.setReciptTime(new Date().getMilliseconds)
       envelopeHelper.setPayload result.body
 
       for prop in _.keys(result.headers)

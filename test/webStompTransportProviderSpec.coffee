@@ -12,8 +12,11 @@ define [
   'src/bus/Envelope'
   'src/bus/EnvelopeHelper'
   'uuid'
+  'src/eventing/EventRegistration'
+  'src/eventing/EventHandler'
+  'src/bus/EnvelopeBus'
 ],
-(TransportProviderFactory, _, Stomp, MockAMQPServer, MockWebSocket, ChannelProvider, SimpleTopologyService, TransportProvider, SockJS, Exchange, Envelope, EnvelopeHelper, uuid) ->
+(TransportProviderFactory, _, Stomp, MockAMQPServer, MockWebSocket, ChannelProvider, SimpleTopologyService, TransportProvider, SockJS, Exchange, Envelope, EnvelopeHelper, uuid, EventRegistration, EventHandler, EnvelopeBus) ->
 
   useEmulatedWebSocket = false
   rabbitmqAddress = 'http://127.0.0.1:15674/stomp'
@@ -22,22 +25,22 @@ define [
     transportProvider = TransportProviderFactory
       .getTransportProvider(TransportProviderFactory.TransportProviders.WebStomp)
 
-    it 'should not be null', ->
-      assert.notEqual(transportProvider, null)
+    # it 'should not be null', ->
+    #   assert.notEqual(transportProvider, null)
 
-    it 'needs to return a web stomp provider', ->
-      provider = TransportProviderFactory.getTransportProvider({
-        transportProvider: TransportProviderFactory.TransportProviders.WebStomp
-      })
-      assert.ok(provider instanceof TransportProvider)
+    # it 'needs to return a web stomp provider', ->
+    #   provider = TransportProviderFactory.getTransportProvider({
+    #     transportProvider: TransportProviderFactory.TransportProviders.WebStomp
+    #   })
+    #   assert.ok(provider instanceof TransportProvider)
 
-    it 'needs to use appropriate defaults for topo service and channel provider', ->
-      transportProvider = TransportProviderFactory.getTransportProvider({
-        transportProvider: TransportProviderFactory.TransportProviders.WebStomp
-      })
+    # it 'needs to use appropriate defaults for topo service and channel provider', ->
+    #   transportProvider = TransportProviderFactory.getTransportProvider({
+    #     transportProvider: TransportProviderFactory.TransportProviders.WebStomp
+    #   })
 
-      assert.ok(transportProvider.topologyService instanceof SimpleTopologyService)
-      assert.ok(transportProvider.channelProvider instanceof ChannelProvider)
+    #   assert.ok(transportProvider.topologyService instanceof SimpleTopologyService)
+    #   assert.ok(transportProvider.channelProvider instanceof ChannelProvider)
 
 
     it 'should be able to send an envelope', (done)->
@@ -71,15 +74,21 @@ define [
       envelope.setPayload(payload)
       env = new EnvelopeHelper(envelope)
       env.setMessageId(uuid.v1());
-      env.setMessageType("messageType");
-      env.setMessageTopic("messageType");
+      env.setMessageType("EventHandler");
+      env.setMessageTopic("EventHandler");
       env.setSenderIdentity("dtayman");
 
-      transportProvider.send(envelope)
+      envelopeBus = new EnvelopeBus(transportProvider)
+      envelopeBus.register(new EventRegistration(new EventHandler(), [])).then ->
+        envelopeBus.send(envelope)
 
-      setTimeout(->
-        done()
-      ,1000)
+      # transportProvider.register(new EventRegistration(new EventHandler(), [])).then ->
+      #     setTimeout(->
+      #       transportProvider.send(envelope)
+      #       setTimeout(->
+      #         done()
+      #       ,50)
+      #     ,100)
 
       # routing = transportProvider.topologyService.getRoutingInfo(envelope.getHeaders());
       # transportProvider.channelProvider.getConnection(routing.routes[0].producerExchange, (connection, existing)->
