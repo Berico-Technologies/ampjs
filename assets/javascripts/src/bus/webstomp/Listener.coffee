@@ -56,7 +56,7 @@ define [
     handleNextDelivery: (result)->
       Logger.log.info "Listener.handleNextDelivery >> received a message"
       envelopeHelper = @createEnvelopeFromDeliveryResult(result)
-      if @shouldRaiseEvent @registration.filterPredicate, envelopeHelper.getEnvelope
+      if @shouldRaiseEvent @registration.filterPredicate, envelopeHelper.getEnvelope()
         Logger.log.info "Listener.handleNextDelivery >> raising event from received message"
         @dispatchEnvelope envelopeHelper.getEnvelope()
 

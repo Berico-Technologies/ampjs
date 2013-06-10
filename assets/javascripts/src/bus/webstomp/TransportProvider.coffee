@@ -43,9 +43,9 @@ define [
           onClose: (registration)=> delete @listeners[registration]
           })
 
-        deferred.resolve(listener)
-
-        listener.start(connection)
+        listener.start(connection).then ->
+          deferred.resolve(listener)
+      return deferred
 
     _getListener: (registration, exchange)->
       new Listener(registration, exchange)
@@ -81,7 +81,7 @@ define [
           req.done (data, textStatus, jqXHR)->
               Logger.log.info "TransportProvider.send >> sending message to /exchange/#{exchange.name}/#{exchange.routingKey}"
               exchangeDeferred.resolve()
-              connection.send("/exchange/#{exchange.name}/#{exchange.routingKey}",newHeaders,envelope.getPayload)
+              connection.send("/exchange/#{exchange.name}/#{exchange.routingKey}",newHeaders,envelope.getPayload())
           req.fail (jqXHR, textStatus, errorThrown)->
               exchangeDeferred.reject()
 
@@ -98,10 +98,16 @@ define [
       for callback in @envCallbacks
         callback.handleRecieve(dispatcher)
     dispose: ->
-      channelFactory.dispose
-      topologyService.dispose
-      for listener of listeners
-        listener.dispose
+      deferred = $.Deferred()
+      pendingCleanups = []
+      pendingCleanups.push @channelProvider.dispose()
+      pendingCleanups.push @topologyService.dispose()
+      pendingCleanups.push listener.dispose() for registration, listener of @listeners
+
+      $.when(pendingCleanups).done ->
+        deferred.resolve()
+
+      return deferred
 
 
   return TransportProvider

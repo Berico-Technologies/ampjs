@@ -1,6 +1,5 @@
 var tests = Object.keys(window.__karma__.files).filter(function(file){
-  // return /Spec\.coffee-compiled\.js$/.test(file);
-  return /webStompTransportProviderSpec\.coffee-compiled\.js/.test(file);
+  return /Spec\.coffee-compiled\.js$/.test(file);
 });
 
 requirejs.config({

@@ -34,7 +34,7 @@ define [
       envelope.headers[EnvelopeHeaderConstants.MESSAGE_TOPIC] = "mytopic"
       envelope.payload = 'payload'
 
-      assert.equal '{"payload":"payload"}', envelope.toString()
+      assert.equal '{"headers":{"cmf.bus.message.topic":"mytopic"},"payload":"payload"}', envelope.toString()
 
     it 'should allow you to set the payload', ->
       envelope = new Envelope()
