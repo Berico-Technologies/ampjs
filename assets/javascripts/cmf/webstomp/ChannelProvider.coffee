@@ -65,6 +65,7 @@ define [
 
 
     dispose: ()->
+      Logger.log.info "ChannelProvider.dispose >> clearing connections"
       disposeDeferred = $.Deferred()
       disposeDeferredCollection = []
 

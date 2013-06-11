@@ -19,10 +19,12 @@ define [
       @transportProvider.onEnvelopeRecieved new InboundEnvelopeProcessorCallback(this)
 
     processInbound: (envelope)->
+      Logger.log.info "EnvelopeBus.processInbound >> executing processors"
       context = {}
       inboundProcessor.processInbound(envelope, context) for inboundProcessor in @inboundProcessors
 
     processOutbound: (envelope)->
+      Logger.log.info "EnvelopeBus.processOutbound >> executing processors"
       context = {}
       outboundProcessor.processOutbound(envelope, context) for outboundProcessor in @outboundProcessors
 

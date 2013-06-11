@@ -2,8 +2,9 @@ define [
   './ProcessingContext'
   '../../bus/Envelope'
   './EventRegistration'
+  '../../util/Logger'
 ],
-(ProcessingContext, Envelope, EventRegistration)->
+(ProcessingContext, Envelope, EventRegistration, Logger)->
   class EventBus
     constructor: (@envelopeBus, inboundProcessors, outboundProcessors)->
       @inboundProcessors = if _.isArray inboundProcessors then inboundProcessors else @inboundProcessors
@@ -13,6 +14,7 @@ define [
     finalize: ->
       @dispose()
     processOutbound: (event, envelope)->
+      Logger.log.info "EventBus.processOutbound >> executing processors"
       context = new ProcessingContext(envelope, event)
       outboundProcessor.processOutbound(context) for outboundProcessor in @outboundProcessors
     publish: (event)->

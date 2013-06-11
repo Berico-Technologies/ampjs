@@ -8,12 +8,14 @@ define [
   class TransportProvider
     listeners:{}
     envCallbacks: []
+    managementUrl: 'http://localhost:8080/rabbit/declareExchange'
     constructor: (config) ->
       config = config ? {}
       @topologyService = config.topologyService ? {}
       @channelProvider = config.channelProvider ? {}
 
     register: (registration)->
+      Logger.log.info  "TransportProvider.register >> registering new connection"
       deferred = $.Deferred()
       pendingListeners = []
       routing = @topologyService.getRoutingInfo(registration.registrationInfo)
@@ -59,7 +61,7 @@ define [
         exchangeDeferred = $.Deferred()
         pendingExchanges.push(exchangeDeferred)
 
-        @channelProvider.getConnection(exchange).then (connection, existing)->
+        @channelProvider.getConnection(exchange).then (connection, existing)=>
           newHeaders = {}
           headers = envelope.getHeaders
           for entry of headers
@@ -68,7 +70,7 @@ define [
           Logger.log.info "TransportProvider.send >> declaring exchange #{exchange.name}"
 
           req = $.ajax
-            url: 'http://localhost:8080/rabbit/declareExchange'
+            url: @managementUrl
             type: "GET"
             dataType: 'jsonp'
             data: data: JSON.stringify

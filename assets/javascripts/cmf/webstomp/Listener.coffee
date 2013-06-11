@@ -11,6 +11,7 @@ define [
     envCallbacks: []
     closeCallbacks: []
     connectionErrorCallbacks: []
+    serviceUrl: 'http://localhost:8080/rabbit/createBinding'
 
     constructor: (@registration, @exchange)->
 
@@ -29,9 +30,10 @@ define [
       @createBinding()
 
     createBinding: ()->
+      Logger.log.info "Listener.createBinding >> binding queue to exchange"
       deferred = $.Deferred()
       req = $.ajax
-        url: 'http://localhost:8080/rabbit/createBinding'
+        url: @serviceUrl
         dataType: 'jsonp'
         data: data: JSON.stringify
           exchangeName: @exchange.name
