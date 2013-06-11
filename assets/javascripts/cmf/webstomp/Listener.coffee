@@ -50,10 +50,12 @@ define [
 
           routingKey: @exchange.routingKey
       req.done (data, textStatus, jqXHR)->
+          Logger.log.info "Listener.createBinding >> created binding"
           deferred.resolve()
       req.fail (jqXHR, textStatus, errorThrown)->
+          Logger.log.error "Listener.createBinding >> failed to create binding"
           deferred.reject()
-      return deferred
+      return deferred.promise()
 
     handleNextDelivery: (result)->
       Logger.log.info "Listener.handleNextDelivery >> received a message"

@@ -26,6 +26,7 @@ define [
       @__server.request request, _.bind(@dispatch,@)
 
     send: (message)->
+      Logger.log.info "Client.send >> sending message"
       return false if @readyState != 1
       request = new Request @, 'message', message
       @__server.request request, _.bind(@dispatch,@)

@@ -37,6 +37,6 @@ define [
       return type
     getMessageTopic: (event)->
       type = event.__proto__.constructor.name
-      Logger.log.info "OutboundHeadersProcessor.getMessageTopic >> inferring type as #{type}"
+      Logger.log.info "OutboundHeadersProcessor.getMessageTopic >> inferring topic as #{type}"
       return type
   return OutboundHeadersProcessor

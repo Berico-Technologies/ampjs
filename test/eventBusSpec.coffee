@@ -4,29 +4,44 @@ define [
   'cmf/eventing/berico/EventBus'
   'cmf/bus/berico/EnvelopeBus'
   'cmf/eventing/berico/OutboundHeadersProcessor'
+  'test/websocket/Server.coffee-compiled'
+  'test/websocket/Client.coffee-compiled'
+  'cmf/webstomp/ChannelProvider'
 ],
-(TransportProviderFactory, JsonEventSerializer, EventBus, EnvelopeBus, OutboundHeadersProcessor) ->
+(TransportProviderFactory, JsonEventSerializer, EventBus, EnvelopeBus, OutboundHeadersProcessor, MockAMQPServer, MockWebSocket, ChannelProvider) ->
 
-  #configure mocha to ignore the global variable jquery throws jsonp responses into
-  mocha.setup
-    globals: [ 'jQuery*' ]
+  MockAMQPServer.configure testConfig.rabbitmqAddress, ->
+    @addResponder('message',"CONNECT\naccept-version:1.1,1.0\nheart-beat:10000,10000\nlogin:guest\npasscode:guest\n\n\u0000")
+      .respond("CONNECTED\nsession:session-0A2vqAej3d9BG-AommYNUA\nheart-beat:10000,10000\nserver:RabbitMQ/3.0.4\nversion:1.1\n\n\u0000")
+
+    @addResponder('message',"SUBSCRIBE\nid:sub-0\ndestination:/queue/7bbf51b5-abfe-41c8-94b7-6b30349c4245#001#GenericMessage\n\n\u0000")
+      .respond("CONNECTED\nsession:session-0A2vqAej3d9BG-AommYNUA\nheart-beat:10000,10000\nserver:RabbitMQ/3.0.4\nversion:1.1\n\n\u0000")
+
+    @addResponder('message', "SEND\ndestination:/exchange/cmf.simple.exchange/GenericMessage\ncontent-length:1086\n\n{\"name\":\"Slimer\",\"type\":\"ascii\",\"visualization\":\"                             __---__                            -       _--______                       __--( /      )XXXXXXXXXXXXX_                     --XXX(   O   O  )XXXXXXXXXXXXXXX-                    /XXX(       U     )        XXXXXXX                  /XXXXX(              )--_  XXXXXXXXXXX                 /XXXXX/ (      O     )   XXXXXX   XXXXX                 XXXXX/   /            XXXXXX   __ XXXXX----                 XXXXXX__/          XXXXXX         __----  -         ---___  XXX__/          XXXXXX      __         ---           --  --__/   ___/  XXXXXX            /  ___---=             -_    ___/    XXXXXX              '--- XXXXXX               --/XXX XXXXXX                      /XXXXX                 XXXXXXXXX                        /XXXXX/                  XXXXXX                        _/XXXXX/                    XXXXX--__/              __-- XXXX/                     --XXXXXXX---------------  XXXXX--                        XXXXXXXXXXXXXXXXXXXXXXXX-                          --XXXXXXXXXXXXXXXXXX-                \"}\u0000")
+      .respond("MESSAGE\nsubscription:sub-0\ndestination:/exchange/cmf.simple.exchange/GenericMessage\nmessage-id:T_sub-0@@session-Nag03lcQwoZVnD7mnZfJ7A@@1\ncontent-length:1086\n\n{\"name\":\"Slimer\",\"type\":\"ascii\",\"visualization\":\"                             __---__                            -       _--______                       __--( /      )XXXXXXXXXXXXX_                     --XXX(   O   O  )XXXXXXXXXXXXXXX-                    /XXX(       U     )        XXXXXXX                  /XXXXX(              )--_  XXXXXXXXXXX                 /XXXXX/ (      O     )   XXXXXX   XXXXX                 XXXXX/   /            XXXXXX   __ XXXXX----                 XXXXXX__/          XXXXXX         __----  -         ---___  XXX__/          XXXXXX      __         ---           --  --__/   ___/  XXXXXX            /  ___---=             -_    ___/    XXXXXX              '--- XXXXXX               --/XXX XXXXXX                      /XXXXX                 XXXXXXXXX                        /XXXXX/                  XXXXXX                        _/XXXXX/                    XXXXX--__/              __-- XXXX/                     --XXXXXXX---------------  XXXXX--                        XXXXXXXXXXXXXXXXXXXXXXXX-                          --XXXXXXXXXXXXXXXXXX-                \"}\u0000")
+
 
   class GenericMessage
     constructor: (@name, @type, @visualization)->
 
-  describe 'The transport provider', (done)->
+  describe 'The event bus', (done)->
 
     transportProvider = null
 
     beforeEach ->
-      transportProvider = TransportProviderFactory
-        .getTransportProvider(TransportProviderFactory.TransportProviders.WebStomp)
+
+      transportProvider = TransportProviderFactory.getTransportProvider({
+        transportProvider: TransportProviderFactory.TransportProviders.WebStomp
+        channelProvider: new ChannelProvider({
+          connectionFactory: if testConfig.useEmulatedWebSocket then MockWebSocket else SockJS
+        })
+      })
 
     afterEach (done)->
       transportProvider.dispose().then ->
         done()
 
-    it 'should be able to send an envelope', (done)->
+    it 'should be able to send an object', (done)->
 
       payload = new GenericMessage("Slimer", "ascii", "
                              __---__

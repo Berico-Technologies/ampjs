@@ -25,8 +25,8 @@ exclude = [
 // possible values: 'dots', 'progress', 'junit'
 reporters = ['progress'];
 
-// preprocessors['public/javascripts/src/**/*.js'] = 'coverage';
-// reporters.push('coverage');
+preprocessors['public/javascripts/src/**/*.js'] = 'coverage';
+reporters.push('coverage');
 
 
 // web server port

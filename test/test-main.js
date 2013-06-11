@@ -1,5 +1,19 @@
 var tests = Object.keys(window.__karma__.files).filter(function(file){
   return /Spec\.coffee-compiled\.js$/.test(file);
+  // return /webStompChannel/.test(file);
+});
+
+testConfig = {
+  useEmulatedWebSocket: true,
+  configureLoggingLevel: function(){
+    window.loggingLevel = 'all';
+  }(),
+  rabbitmqAddress: 'http://127.0.0.1:15674/stomp'
+};
+
+//configure mocha to ignore the global variable jquery throws jsonp responses into
+mocha.setup({
+  globals: [ 'jQuery*' ]
 });
 
 requirejs.config({

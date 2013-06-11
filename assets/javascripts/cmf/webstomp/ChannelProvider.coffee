@@ -18,6 +18,7 @@ define [
       @connectionStrategy = config.connectionStrategy ? ChannelProvider.DefaultConnectionStrategy
       Logger.log.info "ChannelProvider.ctor >> instantiated."
       @connectionFactory = if _.isFunction config.connectionFactory then config.connectionFactory else SockJS
+      Logger.log.info "ChannelProvider.ctor >> using default connection factory" unless _.isFunction config.connectionFactory
 
     getConnection: (exchange) ->
       deferred = $.Deferred()
@@ -76,9 +77,9 @@ define [
           connectionDeferred.resolve()
         )
 
-      $.when(disposeDeferredCollection).done ->
+      $.when.apply($,disposeDeferredCollection).done ->
         disposeDeferred.resolve()
 
-      return disposeDeferred
+      return disposeDeferred.promise()
 
   return ChannelProvider

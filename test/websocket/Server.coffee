@@ -26,15 +26,16 @@ define [
     request: (request, callback) ->
       response = null
       if responder = @findResponder(request)
+        Logger.log.info 'Server.request >> found responder for request'
         response = responder.response request.client
 
       else
+        Logger.log.info 'Server.request >> could not find responder - using builtin'
         switch request.request_type
           when 'open' then response = new Response request.client, 'open'
           when 'close' then response = new Response request.client, 'close'
           else response = new Response request.client, '[Server] No response configured for '+request.request_type
 
-      Logger.log.info '[InMemory Server] '+request.toString()+' => '+response.toString()
       callback response
 
     match: (url) ->
@@ -45,9 +46,13 @@ define [
 
     @servers = []
     @configure: (url, config) ->
-      server = new Server(url)
+      server = @find(url)
+      unless _.isObject server
+        server = new Server(url)
+        Server.servers.push server
+
       config.apply(server,[])
-      Server.servers.push server
+
       return server
     @find: (url) ->
       _.find Server.servers, (server)-> server.match(url)

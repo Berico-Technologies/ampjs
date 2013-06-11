@@ -27,9 +27,11 @@ define [
         @_createListener(registration, exchange).then (listener)=>
           listenerDeferred.resolve()
           @listeners[registration] = listener
-      $.when(pendingListeners).done ->
+      $.when.apply($,pendingListeners).done ->
+        Logger.log.info  "TransportProvider.register >> all listeners have been created"
         deferred.resolve()
-      return deferred
+      return deferred.promise()
+
     _createListener:(registration, exchange) ->
       deferred = $.Deferred()
       @channelProvider.getConnection(exchange).then (connection)=>
@@ -46,8 +48,9 @@ define [
           })
 
         listener.start(connection).then ->
+          Logger.log.info  "TransportProvider._createListener >> listener started"
           deferred.resolve(listener)
-      return deferred
+      return deferred.promise()
 
     _getListener: (registration, exchange)->
       new Listener(registration, exchange)
@@ -85,12 +88,13 @@ define [
               exchangeDeferred.resolve()
               connection.send("/exchange/#{exchange.name}/#{exchange.routingKey}",newHeaders,envelope.getPayload())
           req.fail (jqXHR, textStatus, errorThrown)->
-              exchangeDeferred.reject()
+            Logger.log.error "TransportProvider.send >> failed to create exchange"
+            exchangeDeferred.reject()
 
-      $.when(pendingExchanges).done ->
+      $.when.apply($,pendingExchanges).done ->
         deferred.resolve()
 
-      return deferred
+      return deferred.promise()
 
     unregister: (registration)->
       delete listeners[registration]
@@ -106,9 +110,9 @@ define [
       pendingCleanups.push @topologyService.dispose()
       pendingCleanups.push listener.dispose() for registration, listener of @listeners
 
-      $.when(pendingCleanups).done ->
+      $.when.apply($,pendingCleanups).done ->
         deferred.resolve()
 
-      return deferred
+      return deferred.promise()
 
   return TransportProvider
