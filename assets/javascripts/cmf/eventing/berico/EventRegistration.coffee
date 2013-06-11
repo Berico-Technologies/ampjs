@@ -1,5 +1,5 @@
 define [
-  '../bus/EnvelopeHeaderConstants'
+  '../../bus/berico/EnvelopeHeaderConstants'
   './ProcessingContext'
 ],
 (EnvelopeHeaderConstants, ProcessingContext) ->

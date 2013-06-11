@@ -1,7 +1,7 @@
 define [
-  '../eventing/ProcessingContext'
-  './Envelope'
-  '../eventing/EventRegistration'
+  './ProcessingContext'
+  '../../bus/Envelope'
+  './EventRegistration'
 ],
 (ProcessingContext, Envelope, EventRegistration)->
   class EventBus

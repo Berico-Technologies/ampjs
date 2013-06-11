@@ -2,7 +2,7 @@ define [
   './Listener'
   'underscore'
   'jquery'
-  '../../Logger'
+  '../util/Logger'
 ],
 (Listener, _, $, Logger)->
   class TransportProvider
@@ -108,6 +108,5 @@ define [
         deferred.resolve()
 
       return deferred
-
 
   return TransportProvider

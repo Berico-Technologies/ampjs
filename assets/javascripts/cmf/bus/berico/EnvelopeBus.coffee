@@ -1,9 +1,9 @@
 define [
   'underscore'
-  './InboundEnvelopeRecievedCallback'
-  '../Logger'
+  '../berico/InboundEnvelopeProcessorCallback'
+  '../../util/Logger'
 ],
-(_, InboundEnvelopeRecievedCallback, Logger)->
+(_, InboundEnvelopeProcessorCallback, Logger)->
   class EnvelopeBus
     constructor: (@transportProvider, inboundProcessors, outboundProcessors)->
       @inboundProcessors = if _.isArray inboundProcessors then inboundProcessors else []
@@ -16,7 +16,7 @@ define [
 
     initialize: ->
       Logger.log.info "EnvelopeBus.initialize >> initialized"
-      @transportProvider.onEnvelopeRecieved new InboundEnvelopeRecievedCallback(this)
+      @transportProvider.onEnvelopeRecieved new InboundEnvelopeProcessorCallback(this)
 
     processInbound: (envelope)->
       context = {}

@@ -1,7 +1,7 @@
 define [
   './Request.coffee-compiled'
   './Responder.coffee-compiled'
-  'src/Logger'
+  'cmf/util/Logger'
   'underscore'
   './Response.coffee-compiled'
 ],

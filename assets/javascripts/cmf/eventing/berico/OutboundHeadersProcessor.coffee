@@ -1,8 +1,8 @@
 define [
-  '../bus/EnvelopeHelper'
+  '../../bus/berico/EnvelopeHelper'
   'uuid'
   'underscore'
-  '../Logger'
+  '../../util/Logger'
 ],
 (EnvelopeHelper, uuid, _, Logger)->
   class OutboundHeadersProcessor

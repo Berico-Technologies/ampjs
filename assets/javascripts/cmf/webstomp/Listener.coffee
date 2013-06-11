@@ -1,10 +1,10 @@
 define [
   'underscore'
-  '../Envelope'
-  '../EnvelopeHelper'
-  '../EnvelopeDispatcher'
+  '../bus/Envelope'
+  '../bus/berico/EnvelopeHelper'
+  './EnvelopeDispatcher'
   'jquery'
-  '../../Logger'
+  '../util/Logger'
 ],
 (_, Envelope, EnvelopeHelper, EnvelopeDispatcher, $, Logger)->
   class Listener

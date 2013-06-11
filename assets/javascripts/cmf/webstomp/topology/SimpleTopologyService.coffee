@@ -1,11 +1,11 @@
 define [
   'uuid'
-  '../../../Logger'
+  '../../util/Logger'
   './RoutingInfo'
   './RouteInfo'
   './Exchange'
   'underscore'
-  '../../EnvelopeHeaderConstants'
+  '../../bus/berico/EnvelopeHeaderConstants'
 ],
 (uuid, Logger, RoutingInfo, RouteInfo, Exchange, _,EnvelopeHeaderConstants)->
   class SimpleTopologyService

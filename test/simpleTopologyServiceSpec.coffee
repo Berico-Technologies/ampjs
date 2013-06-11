@@ -1,8 +1,8 @@
 define [
   'underscore'
-  'src/bus/webstomp/topology/Exchange'
-  'src/bus/webstomp/topology/SimpleTopologyService'
-  'src/bus/EnvelopeHeaderConstants'
+  'cmf/webstomp/topology/Exchange'
+  'cmf/webstomp/topology/SimpleTopologyService'
+  'cmf/bus/berico/EnvelopeHeaderConstants'
 ],
 (_,Exchange, SimpleTopologyService, EnvelopeHeaderConstants) ->
   describe 'The Topology Exchange', ->

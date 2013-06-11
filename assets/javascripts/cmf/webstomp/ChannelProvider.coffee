@@ -1,6 +1,6 @@
 define [
   'stomp'
-  '../../Logger'
+  '../util/Logger'
   'sockjs'
   'underscore'
   'jquery'

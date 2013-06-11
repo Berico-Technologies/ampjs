@@ -3,12 +3,12 @@ define [
   'stomp'
   'test/websocket/Server.coffee-compiled'
   'test/websocket/Client.coffee-compiled'
-  'src/bus/webstomp/ChannelProvider'
+  'cmf/webstomp/ChannelProvider'
   'sockjs'
-  'src/bus/webstomp/topology/Exchange'
-  'src/bus/Envelope'
-  'src/bus/EnvelopeHelper'
-  'src/bus/webstomp/topology/SimpleTopologyService'
+  'cmf/webstomp/topology/Exchange'
+  'cmf/bus/Envelope'
+  'cmf/bus/berico/EnvelopeHelper'
+  'cmf/webstomp/topology/SimpleTopologyService'
 
 ],
 (_, Stomp, MockAMQPServer, MockWebSocket, ChannelProvider, SockJS, Exchange, Envelope, EnvelopeHelper, SimpleTopologyService) ->

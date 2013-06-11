@@ -17,7 +17,7 @@ preprocessors = {
 
 // list of files to exclude
 exclude = [
-  'public/javascripts/src/main.js'
+  'public/javascripts/main.js'
 ];
 
 

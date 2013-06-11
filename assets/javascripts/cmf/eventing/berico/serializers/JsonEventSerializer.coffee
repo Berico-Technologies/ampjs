@@ -1,6 +1,6 @@
 define [
-  '../../bus/EnvelopeHelper'
-  '../../Logger'
+  '../../../bus/berico/EnvelopeHelper'
+  '../../../util/Logger'
 ],
 (EnvelopeHelper, Logger)->
   class JsonEventSerializer

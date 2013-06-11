@@ -1,6 +1,6 @@
 define [
   'underscore'
-  '../Logger'
+  '../util/Logger'
 ],
 (_, Logger)->
   class EnvelopeDispatcher
