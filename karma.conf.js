@@ -24,10 +24,14 @@ exclude = [
 
 // test results reporter to use
 // possible values: 'dots', 'progress', 'junit'
-reporters = ['progress'];
+reporters = ['dots', 'progress'];
 
-preprocessors['public/javascripts/src/**/*.js'] = 'coverage';
-reporters.push('coverage');
+junitReporter = {
+  outputFile: 'test-results.xml'
+};
+
+// preprocessors['public/javascripts/src/**/*.js'] = 'coverage';
+// reporters.push('coverage');
 
 
 // web server port
@@ -44,11 +48,11 @@ colors = true;
 
 // level of logging
 // possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
-logLevel = LOG_INFO;
+logLevel = LOG_DEBUG;
 
 
 // enable / disable watching file and executing tests whenever any file changes
-autoWatch = true;
+autoWatch = false;
 
 
 // Start these browsers, currently available:
@@ -59,7 +63,7 @@ autoWatch = true;
 // - Safari (only Mac)
 // - PhantomJS
 // - IE (only Windows)
-browsers = ['Chrome'];
+browsers = ['PhantomJS'];
 
 
 // If browser does not capture in given timeout [ms], kill it
@@ -68,4 +72,4 @@ captureTimeout = 60000;
 
 // Continuous Integration mode
 // if true, it capture browsers, run tests and exit
-singleRun = false;
+singleRun = true;
