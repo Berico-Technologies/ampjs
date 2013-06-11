@@ -5,6 +5,7 @@ files = [
   REQUIRE,
   REQUIRE_ADAPTER,
   'test/vendor/assert.js',
+  'test/vendor/sinon-1.7.1.js',
   'test/test-main.js',
   {pattern: 'test/*Spec.coffee', included: false},
   {pattern: 'public/javascripts/**/*.js', included: false},
@@ -58,7 +59,7 @@ autoWatch = true;
 // - Safari (only Mac)
 // - PhantomJS
 // - IE (only Windows)
-browsers = ['PhantomJS'];
+browsers = ['Chrome'];
 
 
 // If browser does not capture in given timeout [ms], kill it
@@ -67,4 +68,4 @@ captureTimeout = 60000;
 
 // Continuous Integration mode
 // if true, it capture browsers, run tests and exit
-singleRun = true;
+singleRun = false;

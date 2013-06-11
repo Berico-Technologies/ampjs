@@ -5,6 +5,7 @@ var tests = Object.keys(window.__karma__.files).filter(function(file){
 
 testConfig = {
   useEmulatedWebSocket: true,
+  useSimulatedManager: true,
   configureLoggingLevel: function(){
     window.loggingLevel = 'all';
   }(),

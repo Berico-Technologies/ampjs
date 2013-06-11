@@ -7,8 +7,9 @@ define [
   'test/websocket/Server.coffee-compiled'
   'test/websocket/Client.coffee-compiled'
   'cmf/webstomp/ChannelProvider'
+  'jquery'
 ],
-(TransportProviderFactory, JsonEventSerializer, EventBus, EnvelopeBus, OutboundHeadersProcessor, MockAMQPServer, MockWebSocket, ChannelProvider) ->
+(TransportProviderFactory, JsonEventSerializer, EventBus, EnvelopeBus, OutboundHeadersProcessor, MockAMQPServer, MockWebSocket, ChannelProvider,$) ->
 
   MockAMQPServer.configure testConfig.rabbitmqAddress, ->
     @addResponder('message',"CONNECT\naccept-version:1.1,1.0\nheart-beat:10000,10000\nlogin:guest\npasscode:guest\n\n\u0000")
@@ -36,12 +37,20 @@ define [
           connectionFactory: if testConfig.useEmulatedWebSocket then MockWebSocket else SockJS
         })
       })
+      if testConfig.useSimulatedManager
+        sinon.stub $, 'ajax',(options)->
+          deferred = $.Deferred()
+          deferred.resolve()
+          return deferred.promise()
+
 
     afterEach (done)->
       transportProvider.dispose().then ->
         done()
+      $.ajax.restore() if testConfig.useSimulatedManager
 
     it 'should be able to send an object', (done)->
+
 
       payload = new GenericMessage("Slimer", "ascii", "
                              __---__
