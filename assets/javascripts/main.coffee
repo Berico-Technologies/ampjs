@@ -7,7 +7,7 @@ requirejs.config
     stomp: 'vendor/managed/stomp-websocket/dist/stomp'
     underscore: 'vendor/managed/underscore-amd/underscore'
     sockjs: 'vendor/managed/sockjs/sockjs'
-    flog: 'vendor/managed/flog/flog',
+    flog: 'vendor/managed/flog/flog'
     uuid: 'vendor/managed/node-uuid/uuid'
     jshashes: 'vendor/managed/jsHashes/hashes'
     jquery: 'vendor/managed/jquery/jquery'

@@ -54,6 +54,9 @@ define [
       Logger.log.info "ChannelProvider._createConnection >> creating new connection"
       ws = new @connectionFactory(@connectionStrategy(exchange))
       client = Stomp.over(ws)
+      client.heartbeat =
+        outgoing: 0
+        incoming: 0
       client.connect(@username, @password,
         ->
           deferred.resolve client, false

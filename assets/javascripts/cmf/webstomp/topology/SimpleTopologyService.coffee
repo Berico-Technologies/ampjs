@@ -28,7 +28,7 @@ define [
         @buildIdentifiableQueueName(topic), #topic
         "direct", #exchange type
         false, #is durable
-        false, #is auto-delete
+        true, #is auto-delete
         null) #arguments
 
       theOneRoute = new RouteInfo(theOneExchange, theOneExchange)
