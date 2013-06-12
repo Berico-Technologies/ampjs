@@ -1,0 +1,31 @@
+{
+  "name": "flog",
+  "version": "0.0.1",
+  "description": "light-weight configurable front-end logger. CJS, AMD, script compatible ",
+  "main": "flog.js",
+  "scripts": {
+    "test": "./node_modules/.bin/testacular start --single-run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/gillesruppert/flog.git"
+  },
+  "keywords": [
+    "front-end",
+    "client-side",
+    "browser",
+    "console.log",
+    "logger",
+    "logging"
+  ],
+  "author": "Gilles Ruppert <gilles@madeofbytes.com> (http://www.madeofbytes.com)",
+  "license": {
+    "type": "MIT",
+    "url": "https://github.com/gillesruppert/flog/raw/master/LICENSE"
+  },
+  "devDependencies": {
+    "expect.js": "*",
+    "testacular": "*"
+  },
+  "readmeFilename": "README.md"
+}

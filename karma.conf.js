@@ -1,4 +1,3 @@
-
 // list of files / patterns to load in the browser
 files = [
   MOCHA,
@@ -6,21 +5,38 @@ files = [
   REQUIRE,
   REQUIRE_ADAPTER,
   'test/vendor/assert.js',
+  'test/vendor/sinon-1.7.1.js',
   'test/test-main.js',
+  {pattern: 'test/*Spec.coffee', included: false},
   {pattern: 'public/javascripts/**/*.js', included: false},
-  {pattern: 'test/**/*Spec.js', included: false}
+  {pattern: 'test/websocket/*.coffee', included: false}
 ];
 
+preprocessors = {
+  '**/*.coffee' : 'coffee'
+};
 
 // list of files to exclude
 exclude = [
-  'public/javascripts/src/main.js'
+  'public/javascripts/main.js'
 ];
 
 
 // test results reporter to use
 // possible values: 'dots', 'progress', 'junit'
-reporters = ['progress'];
+reporters = ['dots', 'junit', 'coverage'];
+
+junitReporter = {
+  outputFile: 'test-results.xml'
+};
+
+preprocessors['public/javascripts/cmf/**/*.js'] = 'coverage';
+
+coverageReporter={
+  type: 'cobertura',
+  dir: 'coverage/',
+  file: 'coverage.xml'
+};
 
 
 // web server port
@@ -37,11 +53,11 @@ colors = true;
 
 // level of logging
 // possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
-logLevel = LOG_INFO;
+logLevel = LOG_DEBUG;
 
 
 // enable / disable watching file and executing tests whenever any file changes
-autoWatch = true;
+autoWatch = false;
 
 
 // Start these browsers, currently available:
@@ -61,4 +77,4 @@ captureTimeout = 60000;
 
 // Continuous Integration mode
 // if true, it capture browsers, run tests and exit
-singleRun = false;
+singleRun = true;
