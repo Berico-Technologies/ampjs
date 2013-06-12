@@ -59,6 +59,6 @@ define [
       assert.equal exchange.routingKey, 'mytopic'
       assert.equal exchange.exchangeType, 'direct'
       assert.equal exchange.isDurable, false
-      assert.equal exchange.autoDelete, false
+      assert.equal exchange.autoDelete, true
       assert.equal exchange.arguments, null
 

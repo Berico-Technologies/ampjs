@@ -20,8 +20,8 @@ define [
   exchange = new Exchange('test','127.0.0.1','/stomp',15674)
 
   MockAMQPServer.configure testConfig.rabbitmqAddress, ->
-    @addResponder('message', "CONNECT\naccept-version:1.1,1.0\nheart-beat:10000,10000\nlogin:guest\npasscode:guest\n\n\u0000")
-      .respond("CONNECTED\nsession:session-8N75XCn8cB8VBQxD1gh9fg\nheart-beat:10000,10000\nserver:RabbitMQ/3.0.4\nversion:1.1\n\n")
+    @addResponder('message', "CONNECT\naccept-version:1.1,1.0\nheart-beat:0,0\nlogin:guest\npasscode:guest\n\n\u0000")
+      .respond("CONNECTED\nsession:session-8N75XCn8cB8VBQxD1gh9fg\nheart-beat:0,0\nserver:RabbitMQ/3.0.4\nversion:1.1\n\n")
     @addResponder('message', "SUBSCRIBE\nid:sub-0\ndestination:/queue/test\n\n\u0000")
       .respond("")
     @addResponder('message', "SEND\ndestination:/queue/test\ncontent-length:22\n\nAre you the Keymaster?\u0000")
@@ -36,6 +36,9 @@ define [
     it 'needs to be able to call the connect callback', (done) ->
       ws = if testConfig.useEmulatedWebSocket then new MockWebSocket(testConfig.rabbitmqAddress) else new SockJS(testConfig.rabbitmqAddress)
       client = Stomp.over(ws)
+      client.heartbeat =
+        outgoing: 0
+        incoming: 0
       client.connect("guest", "guest", ->
         done()
       )
