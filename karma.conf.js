@@ -30,7 +30,7 @@ junitReporter = {
   outputFile: 'test-results.xml'
 };
 
-preprocessors['public/javascripts/src/**/*.js'] = 'coverage';
+preprocessors['public/javascripts/cmf/**/*.js'] = 'coverage';
 
 coverageReporter={
   type: 'cobertura',
