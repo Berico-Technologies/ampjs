@@ -24,7 +24,7 @@ exclude = [
 
 // test results reporter to use
 // possible values: 'dots', 'progress', 'junit'
-reporters = ['dots', 'progress'];
+reporters = ['dots', 'junit'];
 
 junitReporter = {
   outputFile: 'test-results.xml'
@@ -63,7 +63,7 @@ autoWatch = false;
 // - Safari (only Mac)
 // - PhantomJS
 // - IE (only Windows)
-browsers = ['PhantomJS'];
+browsers = ['Chrome'];
 
 
 // If browser does not capture in given timeout [ms], kill it
