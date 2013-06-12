@@ -24,14 +24,19 @@ exclude = [
 
 // test results reporter to use
 // possible values: 'dots', 'progress', 'junit'
-reporters = ['dots', 'junit'];
+reporters = ['dots', 'junit', 'coverage'];
 
 junitReporter = {
   outputFile: 'test-results.xml'
 };
 
-// preprocessors['public/javascripts/src/**/*.js'] = 'coverage';
-// reporters.push('coverage');
+preprocessors['public/javascripts/src/**/*.js'] = 'coverage';
+
+coverageReporter={
+  type: 'cobertura',
+  dir: 'coverage/',
+  file: 'coverage.xml'
+};
 
 
 // web server port
