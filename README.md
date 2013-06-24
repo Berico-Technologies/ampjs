@@ -2,6 +2,16 @@ AMPJS
 =====
 A Javascript WEB-STOMP-based client for [AMP](https://github.com/Berico-Technologies/AMP)
 
+
+Installation
+------------
+
+    npm install -g bower
+    npm install -g karma 
+    npm install -g phantomjs 
+    bower install 
+    mimosa build 
+
 Running Tests
 -------------
 1. Compile the source code. We're using mimosa, so either have the project running 'mimosa watch -s' or compile the code 'mimosa build'
