@@ -1,8 +1,8 @@
 define [
   'underscore'
-  'cmf/bus/Envelope'
-  'cmf/bus/berico/EnvelopeHeaderConstants'
-  'cmf/bus/berico/EnvelopeHelper'
+  'amp/bus/Envelope'
+  'amp/bus/berico/EnvelopeHeaderConstants'
+  'amp/bus/berico/EnvelopeHelper'
 ],
 (_,Envelope, EnvelopeHeaderConstants, EnvelopeHelper) ->
   describe 'The Envelope', ->

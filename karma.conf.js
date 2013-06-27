@@ -30,7 +30,7 @@ junitReporter = {
   outputFile: 'test-results.xml'
 };
 
-preprocessors['public/javascripts/cmf/**/*.js'] = 'coverage';
+preprocessors['public/javascripts/amp/**/*.js'] = 'coverage';
 
 coverageReporter={
   type: 'cobertura',
@@ -53,7 +53,7 @@ colors = true;
 
 // level of logging
 // possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
-logLevel = LOG_DEBUG;
+logLevel = LOG_ERROR;
 
 
 // enable / disable watching file and executing tests whenever any file changes

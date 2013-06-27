@@ -3,12 +3,12 @@ define [
   'stomp'
   'test/websocket/Server.coffee-compiled'
   'test/websocket/Client.coffee-compiled'
-  'cmf/webstomp/ChannelProvider'
+  'amp/webstomp/ChannelProvider'
   'sockjs'
-  'cmf/webstomp/topology/Exchange'
-  'cmf/bus/Envelope'
-  'cmf/bus/berico/EnvelopeHelper'
-  'cmf/webstomp/topology/SimpleTopologyService'
+  'amp/webstomp/topology/Exchange'
+  'amp/bus/Envelope'
+  'amp/bus/berico/EnvelopeHelper'
+  'amp/webstomp/topology/SimpleTopologyService'
 
 ],
 (_, Stomp, MockAMQPServer, MockWebSocket, ChannelProvider, SockJS, Exchange, Envelope, EnvelopeHelper, SimpleTopologyService) ->
@@ -19,7 +19,7 @@ define [
 
   exchange = new Exchange('test','127.0.0.1','/stomp',15674)
 
-  MockAMQPServer.configure testConfig.rabbitmqAddress, ->
+  MockAMQPServer.configure 'http://127.0.0.1:15674/stomp', ->
     @addResponder('message', "CONNECT\naccept-version:1.1,1.0\nheart-beat:0,0\nlogin:guest\npasscode:guest\n\n\u0000")
       .respond("CONNECTED\nsession:session-8N75XCn8cB8VBQxD1gh9fg\nheart-beat:0,0\nserver:RabbitMQ/3.0.4\nversion:1.1\n\n")
     @addResponder('message', "SUBSCRIBE\nid:sub-0\ndestination:/queue/test\n\n\u0000")
@@ -34,7 +34,7 @@ define [
   ###
   describe 'The stomp library', ->
     it 'needs to be able to call the connect callback', (done) ->
-      ws = if testConfig.useEmulatedWebSocket then new MockWebSocket(testConfig.rabbitmqAddress) else new SockJS(testConfig.rabbitmqAddress)
+      ws = if testConfig.useEmulatedWebSocket then new MockWebSocket('http://127.0.0.1:15674/stomp') else new SockJS('http://127.0.0.1:15674/stomp')
       client = Stomp.over(ws)
       client.heartbeat =
         outgoing: 0

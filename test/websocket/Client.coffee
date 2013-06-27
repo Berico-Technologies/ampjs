@@ -1,5 +1,5 @@
 define [
-  'cmf/util/Logger'
+  'amp/util/Logger'
   './Request.coffee-compiled'
   './Server.coffee-compiled'
   'underscore'
