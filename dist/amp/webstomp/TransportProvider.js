@@ -6,8 +6,6 @@ define(['./Listener', 'underscore', 'jquery', '../util/Logger'], function(Listen
 
     TransportProvider.prototype.envCallbacks = [];
 
-    TransportProvider.prototype.managementUrl = 'http://localhost:8080/rabbit/declareExchange';
-
     function TransportProvider(config) {
       var _ref, _ref1;
 
@@ -17,26 +15,29 @@ define(['./Listener', 'underscore', 'jquery', '../util/Logger'], function(Listen
     }
 
     TransportProvider.prototype.register = function(registration) {
-      var deferred, exchange, exchanges, listenerDeferred, pendingListeners, routing, _i, _len,
+      var deferred, pendingListeners,
         _this = this;
 
       Logger.log.info("TransportProvider.register >> registering new connection");
       deferred = $.Deferred();
       pendingListeners = [];
-      routing = this.topologyService.getRoutingInfo(registration.registrationInfo);
-      exchanges = _.pluck(routing.routes, 'consumerExchange');
-      for (_i = 0, _len = exchanges.length; _i < _len; _i++) {
-        exchange = exchanges[_i];
-        listenerDeferred = $.Deferred();
-        pendingListeners.push(listenerDeferred);
-        this._createListener(registration, exchange).then(function(listener) {
-          listenerDeferred.resolve();
-          return _this.listeners[registration] = listener;
+      this.topologyService.getRoutingInfo(registration.registrationInfo).then(function(routing) {
+        var exchange, exchanges, listenerDeferred, _i, _len;
+
+        exchanges = _.pluck(routing.routes, 'consumerExchange');
+        for (_i = 0, _len = exchanges.length; _i < _len; _i++) {
+          exchange = exchanges[_i];
+          listenerDeferred = $.Deferred();
+          pendingListeners.push(listenerDeferred);
+          _this._createListener(registration, exchange).then(function(listener) {
+            listenerDeferred.resolve();
+            return _this.listeners[registration] = listener;
+          });
+        }
+        return $.when.apply($, pendingListeners).done(function() {
+          Logger.log.info("TransportProvider.register >> all listeners have been created");
+          return deferred.resolve();
         });
-      }
-      $.when.apply($, pendingListeners).done(function() {
-        Logger.log.info("TransportProvider.register >> all listeners have been created");
-        return deferred.resolve();
       });
       return deferred.promise();
     };
@@ -74,53 +75,35 @@ define(['./Listener', 'underscore', 'jquery', '../util/Logger'], function(Listen
     };
 
     TransportProvider.prototype.send = function(envelope) {
-      var deferred, exchange, exchangeDeferred, exchanges, pendingExchanges, routing, _i, _len,
+      var deferred, pendingExchanges,
         _this = this;
 
       deferred = $.Deferred();
       pendingExchanges = [];
-      routing = this.topologyService.getRoutingInfo(envelope.getHeaders());
-      exchanges = _.pluck(routing.routes, 'producerExchange');
-      for (_i = 0, _len = exchanges.length; _i < _len; _i++) {
-        exchange = exchanges[_i];
-        exchangeDeferred = $.Deferred();
-        pendingExchanges.push(exchangeDeferred);
-        this.channelProvider.getConnection(exchange).then(function(connection, existing) {
-          var entry, headers, newHeaders, req;
+      this.topologyService.getRoutingInfo(envelope.getHeaders()).then(function(routing) {
+        var exchange, exchangeDeferred, exchanges, _i, _len;
 
-          newHeaders = {};
-          headers = envelope.getHeaders;
-          for (entry in headers) {
-            newHeaders[entry] = headers[entry];
-          }
-          Logger.log.info("TransportProvider.send >> declaring exchange " + exchange.name);
-          req = $.ajax({
-            url: _this.managementUrl,
-            type: "GET",
-            dataType: 'jsonp',
-            data: {
-              data: JSON.stringify({
-                exchangeName: exchange.name,
-                exchangeType: exchange.exchangeType,
-                exchangeIsDurable: exchange.isDurable,
-                exchangeIsAutoDelete: exchange.autoDelete,
-                exchangeArguments: exchange["arguments"]
-              })
+        exchanges = _.pluck(routing.routes, 'producerExchange');
+        for (_i = 0, _len = exchanges.length; _i < _len; _i++) {
+          exchange = exchanges[_i];
+          exchangeDeferred = $.Deferred();
+          pendingExchanges.push(exchangeDeferred);
+          _this.channelProvider.getConnection(exchange).then(function(connection, existing) {
+            var entry, headers, newHeaders;
+
+            newHeaders = {};
+            headers = envelope.getHeaders();
+            for (entry in headers) {
+              newHeaders[entry] = headers[entry];
             }
-          });
-          req.done(function(data, textStatus, jqXHR) {
             Logger.log.info("TransportProvider.send >> sending message to /exchange/" + exchange.name + "/" + exchange.routingKey);
             exchangeDeferred.resolve();
             return connection.send("/exchange/" + exchange.name + "/" + exchange.routingKey, newHeaders, envelope.getPayload());
           });
-          return req.fail(function(jqXHR, textStatus, errorThrown) {
-            Logger.log.error("TransportProvider.send >> failed to create exchange");
-            return exchangeDeferred.reject();
-          });
+        }
+        return $.when.apply($, pendingExchanges).done(function() {
+          return deferred.resolve();
         });
-      }
-      $.when.apply($, pendingExchanges).done(function() {
-        return deferred.resolve();
       });
       return deferred.promise();
     };

@@ -43,50 +43,26 @@ The package is written as a [RequireJS](http://requirejs.org/) module and has a 
     }
 
 ###Configuration###
-Assuming you have installed and aliased AmpJS to 'cmf,' here is how you would instantiate the client and publish / subscribe to a topic. **Note that in this example messages are not published on the topic until the subscriber's deferred is resolved. Any messages published on the topic before the subscriber is initialized will not be received by the client**
+Assuming you have installed and aliased AmpJS to 'amp,' here is how you would instantiate the client and publish / subscribe to a topic. **Note that in this example messages are not published on the topic until the subscriber's deferred is resolved. Any messages published on the topic before the subscriber is initialized will not be received by the client**
 
-    requirejs([
-      'cmf/bus/berico/TransportProviderFactory',
-      'cmf/eventing/berico/serializers/JsonEventSerializer',
-      'cmf/eventing/berico/EventBus',
-      'cmf/bus/berico/EnvelopeBus',
-      'cmf/eventing/berico/OutboundHeadersProcessor',
-      'cmf/webstomp/ChannelProvider'
-    ], function(TransportProviderFactory, JsonEventSerializer, EventBus, EnvelopeBus, OutboundHeadersProcessor, ChannelProvider,$){
-      GenericMessage = (function() {
-        function GenericMessage(name, type, visualization) {
-          this.name = name;
-          this.type = type;
-          this.visualization = visualization;
-        }
+    define [
+      'amp/factory/ShortBus'
+    ],
+    (ShortBus)->
 
-        return GenericMessage;
+      publishAMessage:->
+        shortBus = ShortBus.getBus({
+          publishTopicOverride: "my.cool.topic.123"
+        })
+        shortBus.subscribe({
+          getEventType: ->
+            return "my.cool.topic.123"
+          handle: (arg0, arg1)->
+            console.log arg0.data
 
-      })();
-
-      var payload = new GenericMessage("Laughing Out Loud", "emoticon", "lol");
-
-      var transportProvider = TransportProviderFactory.getTransportProvider(
-        TransportProviderFactory.TransportProviders.WebStomp
-      });
-
-      var eventBus = new EventBus(
-        new EnvelopeBus(transportProvider),
-        [new JsonEventSerializer()],
-        [new OutboundHeadersProcessor(), new JsonEventSerializer()]
-      );
-      eventBus.subscribe({
-        getEventType: function() {
-          return "GenericMessage";
-        },
-        handle: function(arg0, arg1) {
-          //do something with the event here
-        },
-        handleFailed: function(arg0, arg1) {}
-      }).then(function() {
-        return eventBus.publish(payload);
-      });
-    })
+          handleFailed: (arg0, arg1)->
+          }).then ->
+            shortBus.publish({data: 'interesting stuff'})
 
 
 

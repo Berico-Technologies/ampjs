@@ -4,8 +4,8 @@ define(['./ProcessingContext', '../../bus/Envelope', './EventRegistration', '../
   EventBus = (function() {
     function EventBus(envelopeBus, inboundProcessors, outboundProcessors) {
       this.envelopeBus = envelopeBus;
-      this.inboundProcessors = _.isArray(inboundProcessors) ? inboundProcessors : this.inboundProcessors;
-      this.outboundProcessors = _.isArray(outboundProcessors) ? outboundProcessors : this.outboundProcessors;
+      this.inboundProcessors = inboundProcessors != null ? inboundProcessors : [];
+      this.outboundProcessors = outboundProcessors != null ? outboundProcessors : [];
     }
 
     EventBus.prototype.dispose = function() {

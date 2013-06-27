@@ -8,8 +8,6 @@ define(['underscore', '../bus/Envelope', '../bus/berico/EnvelopeHelper', './Enve
 
     Listener.prototype.connectionErrorCallbacks = [];
 
-    Listener.prototype.serviceUrl = 'http://localhost:8080/rabbit/createBinding';
-
     function Listener(registration, exchange) {
       this.registration = registration;
       this.exchange = exchange;
@@ -28,44 +26,13 @@ define(['underscore', '../bus/Envelope', '../bus/berico/EnvelopeHelper', './Enve
     };
 
     Listener.prototype.start = function(channel) {
+      var deferred;
+
       this.channel = channel;
-      Logger.log.info("Listener.start >> subscribing to /queue/" + this.exchange.queueName);
-      channel.subscribe("/queue/" + this.exchange.queueName, _.bind(this.handleNextDelivery, this));
-      return this.createBinding();
-    };
-
-    Listener.prototype.createBinding = function() {
-      var deferred, req;
-
-      Logger.log.info("Listener.createBinding >> binding queue to exchange");
       deferred = $.Deferred();
-      req = $.ajax({
-        url: this.serviceUrl,
-        dataType: 'jsonp',
-        data: {
-          data: JSON.stringify({
-            exchangeName: this.exchange.name,
-            exchangeType: this.exchange.exchangeType,
-            exchangeIsDurable: this.exchange.isDurable,
-            exchangeIsAutoDelete: this.exchange.autoDelete,
-            exchangeArguments: this.exchange["arguments"],
-            queueName: this.exchange.queueName,
-            queueIsDurable: this.exchange.isDurable,
-            queueIsExclusive: false,
-            queueIsAutoDelete: this.exchange.autoDelete,
-            queueArguments: this.exchange["arguments"],
-            routingKey: this.exchange.routingKey
-          })
-        }
-      });
-      req.done(function(data, textStatus, jqXHR) {
-        Logger.log.info("Listener.createBinding >> created binding");
-        return deferred.resolve();
-      });
-      req.fail(function(jqXHR, textStatus, errorThrown) {
-        Logger.log.error("Listener.createBinding >> failed to create binding");
-        return deferred.reject();
-      });
+      Logger.log.info("Listener.start >> subscribing to /queue/" + this.exchange.queueName);
+      channel.subscribe("/amq/queue/" + this.exchange.queueName, _.bind(this.handleNextDelivery, this));
+      deferred.resolve();
       return deferred.promise();
     };
 

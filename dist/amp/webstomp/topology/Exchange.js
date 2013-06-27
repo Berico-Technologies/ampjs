@@ -2,7 +2,7 @@ define(['jshashes'], function(Hashes) {
   var Exchange;
 
   Exchange = (function() {
-    function Exchange(name, hostName, vHost, port, routingKey, queueName, exchangeType, isDurable, autoDelete, _arguments) {
+    function Exchange(name, hostName, vHost, port, routingKey, queueName, exchangeType, isDurable, isAutoDelete, _arguments) {
       this.name = name;
       this.hostName = hostName;
       this.vHost = vHost;
@@ -11,12 +11,12 @@ define(['jshashes'], function(Hashes) {
       this.queueName = queueName;
       this.exchangeType = exchangeType;
       this.isDurable = isDurable;
-      this.autoDelete = autoDelete;
+      this.isAutoDelete = isAutoDelete;
       this["arguments"] = _arguments;
     }
 
     Exchange.prototype.toString = function() {
-      return "{Name: " + this.name + ", HostName: " + this.hostName + ", VirtualHost: " + this.vHost + ", Port: " + this.port + ", RoutingKey: " + this.routingKey + ", Queue Name: " + this.queueName + ", ExchangeType: " + this.exchangeType + ", IsDurable: " + this.isDurable + ", IsAutoDelete: " + this.autoDelete + "}";
+      return "{Name: " + this.name + ", HostName: " + this.hostName + ", VirtualHost: " + this.vHost + ", Port: " + this.port + ", RoutingKey: " + this.routingKey + ", Queue Name: " + this.queueName + ", ExchangeType: " + this.exchangeType + ", IsDurable: " + this.isDurable + ", IsAutoDelete: " + this.isAutoDelete + "}";
     };
 
     Exchange.prototype.hashCode = function() {

@@ -30,7 +30,7 @@ define(['stomp', '../util/Logger', 'sockjs', 'underscore', 'jquery'], function(S
       connectionName = this.connectionStrategy(exchange);
       connection = this.connectionPool[connectionName];
       if (connection == null) {
-        Logger.log.info("ChannelProvider.getConnection >> creating new connection");
+        Logger.log.info("ChannelProvider.getConnection >> could not find existing connection");
         this._createConnection(exchange, deferred);
         deferred.then(function(connection) {
           return _this.connectionPool[connectionName] = connection;
@@ -63,7 +63,7 @@ define(['stomp', '../util/Logger', 'sockjs', 'underscore', 'jquery'], function(S
     ChannelProvider.prototype._createConnection = function(exchange, deferred) {
       var client, ws;
 
-      Logger.log.info("ChannelProvider._createConnection >> creating new connection");
+      Logger.log.info("ChannelProvider._createConnection >> attempting to create a new connection");
       ws = new this.connectionFactory(this.connectionStrategy(exchange));
       client = Stomp.over(ws);
       client.heartbeat = {
@@ -71,11 +71,13 @@ define(['stomp', '../util/Logger', 'sockjs', 'underscore', 'jquery'], function(S
         incoming: 0
       };
       client.connect(this.username, this.password, function() {
+        Logger.log.info("ChannelProvider._createConnection >> successfully connected");
         return deferred.resolve(client, false);
       }, function(err) {
         var errorMessage;
 
         errorMessage = "ChannelProvider._createConnection >> " + err;
+        Logger.log.error("ChannelProvider._createConnection >> unable to connect: " + err);
         deferred.reject(errorMessage);
         return Logger.log.error(errorMessage);
       });

@@ -30,7 +30,7 @@ define(['../../bus/berico/EnvelopeHelper', 'uuid', 'underscore', '../../util/Log
     OutboundHeadersProcessor.prototype.getMessageType = function(event) {
       var type;
 
-      type = event.__proto__.constructor.name;
+      type = Object.getPrototypeOf(event).constructor.name;
       Logger.log.info("OutboundHeadersProcessor.getMessageType >> inferring type as " + type);
       return type;
     };
@@ -38,7 +38,7 @@ define(['../../bus/berico/EnvelopeHelper', 'uuid', 'underscore', '../../util/Log
     OutboundHeadersProcessor.prototype.getMessageTopic = function(event) {
       var type;
 
-      type = event.__proto__.constructor.name;
+      type = Object.getPrototypeOf(event).constructor.name;
       Logger.log.info("OutboundHeadersProcessor.getMessageTopic >> inferring topic as " + type);
       return type;
     };

@@ -2,9 +2,9 @@ define(['underscore'], function(_) {
   var Envelope;
 
   Envelope = (function() {
-    function Envelope() {
-      this.headers = {};
-      this.payload = '';
+    function Envelope(headers, payload) {
+      this.headers = headers != null ? headers : {};
+      this.payload = payload != null ? payload : '';
     }
 
     Envelope.prototype.equals = function(obj) {

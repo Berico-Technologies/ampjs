@@ -4,8 +4,8 @@ define(['underscore', '../berico/InboundEnvelopeProcessorCallback', '../../util/
   EnvelopeBus = (function() {
     function EnvelopeBus(transportProvider, inboundProcessors, outboundProcessors) {
       this.transportProvider = transportProvider;
-      this.inboundProcessors = _.isArray(inboundProcessors) ? inboundProcessors : [];
-      this.outboundProcessors = _.isArray(outboundProcessors) ? outboundProcessors : [];
+      this.inboundProcessors = inboundProcessors != null ? inboundProcessors : [];
+      this.outboundProcessors = outboundProcessors != null ? outboundProcessors : [];
       this.initialize();
     }
 
@@ -15,13 +15,13 @@ define(['underscore', '../berico/InboundEnvelopeProcessorCallback', '../../util/
       _ref = this.inboundProcessors;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         p = _ref[_i];
-        p.dispose;
+        p.dispose();
       }
       _ref1 = this.outboundProcessors;
       _results = [];
       for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
         p = _ref1[_j];
-        _results.push(p.dispose);
+        _results.push(p.dispose());
       }
       return _results;
     };
