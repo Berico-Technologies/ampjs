@@ -11,7 +11,6 @@ define [
     envCallbacks: []
     closeCallbacks: []
     connectionErrorCallbacks: []
-    serviceUrl: 'http://localhost:8080/rabbit/createBinding'
 
     constructor: (@registration, @exchange)->
 
@@ -25,37 +24,11 @@ define [
       @connectionErrorCallbacks.push(callback)
 
     start: (@channel)->
-      Logger.log.info "Listener.start >> subscribing to /queue/#{@exchange.queueName}"
-      channel.subscribe("/queue/#{@exchange.queueName}", _.bind(@handleNextDelivery, @))
-      @createBinding()
-
-    createBinding: ()->
-      Logger.log.info "Listener.createBinding >> binding queue to exchange"
       deferred = $.Deferred()
-      req = $.ajax
-        url: @serviceUrl
-        dataType: 'jsonp'
-        data: data: JSON.stringify
-          exchangeName: @exchange.name
-          exchangeType: @exchange.exchangeType
-          exchangeIsDurable: @exchange.isDurable
-          exchangeIsAutoDelete: @exchange.autoDelete
-          exchangeArguments: @exchange.arguments
-
-          queueName: @exchange.queueName
-          queueIsDurable: @exchange.isDurable
-          queueIsExclusive: false
-          queueIsAutoDelete: @exchange.autoDelete
-          queueArguments: @exchange.arguments
-
-          routingKey: @exchange.routingKey
-      req.done (data, textStatus, jqXHR)->
-          Logger.log.info "Listener.createBinding >> created binding"
-          deferred.resolve()
-      req.fail (jqXHR, textStatus, errorThrown)->
-          Logger.log.error "Listener.createBinding >> failed to create binding"
-          deferred.reject()
-      return deferred.promise()
+      Logger.log.info "Listener.start >> subscribing to /queue/#{@exchange.queueName}"
+      channel.subscribe("/amq/queue/#{@exchange.queueName}", _.bind(@handleNextDelivery, @))
+      deferred.resolve()
+      deferred.promise()
 
     handleNextDelivery: (result)->
       Logger.log.info "Listener.handleNextDelivery >> received a message"

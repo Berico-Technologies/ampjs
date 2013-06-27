@@ -3,9 +3,7 @@ define [
 ],
 (_)->
   class Envelope
-    constructor: ->
-      @headers = {}
-      @payload = ''
+    constructor: (@headers = {}, @payload = '')->
     equals: (obj)->
       return true if obj == @
       return false if _.isNull obj

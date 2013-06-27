@@ -6,18 +6,15 @@ define [
   './Exchange'
   'underscore'
   '../../bus/berico/EnvelopeHeaderConstants'
+  'jquery'
 ],
-(uuid, Logger, RoutingInfo, RouteInfo, Exchange, _,EnvelopeHeaderConstants)->
+(uuid, Logger, RoutingInfo, RouteInfo, Exchange, _,EnvelopeHeaderConstants, $)->
   class SimpleTopologyService
-    constructor: (clientProfile, name, hostname, vhost, port) ->
-      @clientProfile = if _.isString clientProfile then clientProfile else uuid.v4()
-      @name = if _.isString name then name else "cmf.simple.exchange"
-      @hostname = if _.isString hostname then hostname else "127.0.0.1"
-      @virtualHost = if _.isString vhost then vhost else "/stomp"
-      @port = if _.isNumber port then port else 15674
-      @QUEUE_NUMBER = 0
+    constructor: (@clientProfile=uuid.v4(), @name='cmf.simple.exchange', @hostname='127.0.0.1', @virtualHost='/stomp', @port=15674, @QUEUE_NUMBER=0) ->
+
 
     getRoutingInfo: (headers) ->
+      deferred = $.Deferred()
       topic = headers[EnvelopeHeaderConstants.MESSAGE_TOPIC]
       theOneExchange = new Exchange(
         @name, #exchange name
@@ -32,8 +29,15 @@ define [
         null) #arguments
 
       theOneRoute = new RouteInfo(theOneExchange, theOneExchange)
+      @createRoute(theOneExchange).then (data)->
+        deferred.resolve(new RoutingInfo([theOneRoute]))
 
-      new RoutingInfo([theOneRoute])
+      return deferred.promise()
+
+    createRoute: (exchange)->
+      deferred = $.Deferred()
+      deferred.resolve(null)
+      return deferred.promise()
 
     buildIdentifiableQueueName: (topic)->
       "#{@clientProfile}##{@pad(++@QUEUE_NUMBER,3,0)}##{topic}"

@@ -5,14 +5,12 @@ define [
 ],
 (_, InboundEnvelopeProcessorCallback, Logger)->
   class EnvelopeBus
-    constructor: (@transportProvider, inboundProcessors, outboundProcessors)->
-      @inboundProcessors = if _.isArray inboundProcessors then inboundProcessors else []
-      @outboundProcessors = if _.isArray outboundProcessors then outboundProcessors else []
+    constructor: (@transportProvider, @inboundProcessors = [], @outboundProcessors = [])->
       @initialize()
 
     dispose: ->
-      p.dispose for p in @inboundProcessors
-      p.dispose for p in @outboundProcessors
+      p.dispose() for p in @inboundProcessors
+      p.dispose() for p in @outboundProcessors
 
     initialize: ->
       Logger.log.info "EnvelopeBus.initialize >> initialized"

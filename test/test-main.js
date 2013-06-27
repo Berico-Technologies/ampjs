@@ -1,6 +1,6 @@
 var tests = Object.keys(window.__karma__.files).filter(function(file){
   return /Spec\.coffee-compiled\.js$/.test(file);
-  // return /webStompChannel/.test(file);
+  // return /shortBus/.test(file);
 });
 
 testConfig = {
@@ -8,8 +8,7 @@ testConfig = {
   useSimulatedManager: true,
   configureLoggingLevel: function(){
     window.loggingLevel = 'all';
-  }(),
-  rabbitmqAddress: 'http://127.0.0.1:15674/stomp'
+  }()
 };
 
 //configure mocha to ignore the global variable jquery throws jsonp responses into
@@ -28,8 +27,9 @@ requirejs.config({
     'uuid': 'vendor/managed/node-uuid/uuid',
     'test': '../../test',
     'sockjs': 'vendor/managed/sockjs/sockjs',
-    'jshashes': 'vendor/managed/jsHashes/hashes',
-    'jquery': 'vendor/managed/jquery/jquery'
+    'jshashes': 'vendor/managed/jshashes/hashes',
+    'jquery': 'vendor/managed/jquery/jquery',
+    'LRUCache': 'vendor/managed/node-lru-cache/lib/lru-cache'
   },
   shim:{
     'stomp':{
@@ -43,6 +43,9 @@ requirejs.config({
     },
     'jquery':{
       exports: 'jquery'
+    },
+    'LRUCache':{
+      exports: 'LRUCache'
     }
   },
   deps: tests,

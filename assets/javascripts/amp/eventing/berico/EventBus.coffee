@@ -6,9 +6,7 @@ define [
 ],
 (ProcessingContext, Envelope, EventRegistration, Logger)->
   class EventBus
-    constructor: (@envelopeBus, inboundProcessors, outboundProcessors)->
-      @inboundProcessors = if _.isArray inboundProcessors then inboundProcessors else @inboundProcessors
-      @outboundProcessors = if _.isArray outboundProcessors then outboundProcessors else @outboundProcessors
+    constructor: (@envelopeBus, @inboundProcessors=[], @outboundProcessors=[])->
     dispose: ->
       @envelopeBus.dispose()
     finalize: ->

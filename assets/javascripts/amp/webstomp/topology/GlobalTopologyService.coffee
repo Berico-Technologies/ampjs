@@ -1,0 +1,49 @@
+define [
+  '../../util/Logger'
+  'LRUCache'
+  'underscore'
+  '../../bus/berico/EnvelopeHeaderConstants'
+  'jquery'
+  ],
+(Logger, LRUCache, _, EnvelopeHeaderConstants, $)->
+  class GlobalTopologyService
+    @CACHE_EXPIRY_TIME_IN_MS: 1000000
+    @WEBSTOMP_PORT_OVERRIDE: 15674
+    @WEBSTOMP_VHOST_OVERRIDE: "/stomp"
+    routingInfoCache: {}
+    fallbackProvider: null
+
+    constructor: (@routingInfoRetriever, cacheExpiryTime, @fallbackProvider)->
+      @routingInfoCache = new LRUCache(
+        maxAge: if _.isNumber cacheExpiryTime then cacheExpiryTime else GlobalTopologyService.CACHE_EXPIRY_TIME_IN_MS
+      )
+    getRoutingInfo: (routingHints)->
+      deferred = $.Deferred()
+      topic = routingHints[EnvelopeHeaderConstants.MESSAGE_TOPIC]
+      Logger.log.info "GlobalTopologyService.getRoutingInfo>> Getting routing info for topic: #{topic}"
+      routingInfo = @routingInfoCache.get(topic)
+      if _.isUndefined routingInfo
+        Logger.log.info "GlobalTopologyService.getRoutingInfo>> route not in cache, attempting external lookup"
+        @routingInfoRetriever.retrieveRoutingInfo(topic).then (data)=>
+          if _.has(data, 'routes') && _.size(data.routes) > 0
+            Logger.log.info "GlobalTopologyService.getRoutingInfo>> Successfully retrieved #{_.size data.routes} GTS routes"
+            @_fixExhangeInformation(data)
+            @routingInfoCache.set topic, data
+            deferred.resolve(data)
+          else
+              Logger.log.info "GlobalTopologyService.getRoutingInfo>> no route in GTS: using fallback route"
+              @fallbackProvider.getFallbackRoute(topic).then (data)->
+                deferred.resolve(data)
+      else
+        Logger.log.info "GlobalTopologyService.getRoutingInfo>> cache hit, returning route without lookup"
+        deferred.resolve(routingInfo)
+      return deferred.promise()
+
+    _fixExhangeInformation: (routingInfo)->
+      for route in routingInfo.routes
+        route.consumerExchange.port = GlobalTopologyService.WEBSTOMP_PORT_OVERRIDE
+        route.consumerExchange.vHost = GlobalTopologyService.WEBSTOMP_VHOST_OVERRIDE
+        route.producerExchange.port = GlobalTopologyService.WEBSTOMP_PORT_OVERRIDE
+        route.producerExchange.vHost = GlobalTopologyService.WEBSTOMP_VHOST_OVERRIDE
+
+  return GlobalTopologyService

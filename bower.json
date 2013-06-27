@@ -17,7 +17,8 @@
     "requirejs-domready": "2.0.1",
     "requirejs-i18n": "2.0.2",
     "stomp-websocket": "git://github.com/jmesnil/stomp-websocket.git",
-    "underscore-amd": "1.4.4"
+    "underscore-amd": "1.4.4",
+    "node-lru-cache": "git://github.com/Berico-Technologies/node-lru-cache"
   },
   "ignore":[
     "assets/",

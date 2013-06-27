@@ -32,11 +32,11 @@ define [
       env.setSenderIdentity senderIdentity
 
     getMessageType: (event)->
-      type = event.__proto__.constructor.name
+      type = Object.getPrototypeOf(event).constructor.name
       Logger.log.info "OutboundHeadersProcessor.getMessageType >> inferring type as #{type}"
       return type
     getMessageTopic: (event)->
-      type = event.__proto__.constructor.name
+      type = Object.getPrototypeOf(event).constructor.name
       Logger.log.info "OutboundHeadersProcessor.getMessageTopic >> inferring topic as #{type}"
       return type
   return OutboundHeadersProcessor

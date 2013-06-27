@@ -1,8 +1,8 @@
 define [
   'underscore'
-  'cmf/webstomp/topology/Exchange'
-  'cmf/webstomp/topology/SimpleTopologyService'
-  'cmf/bus/berico/EnvelopeHeaderConstants'
+  'amp/webstomp/topology/Exchange'
+  'amp/webstomp/topology/SimpleTopologyService'
+  'amp/bus/berico/EnvelopeHeaderConstants'
 ],
 (_,Exchange, SimpleTopologyService, EnvelopeHeaderConstants) ->
   describe 'The Topology Exchange', ->
@@ -47,18 +47,18 @@ define [
       headers = {}
       headers[EnvelopeHeaderConstants.MESSAGE_TOPIC] = "mytopic"
 
-      routingInfo = simpleTopologyService.getRoutingInfo(headers)
-      assert.notEqual null, routingInfo
+      simpleTopologyService.getRoutingInfo(headers).then (routingInfo)->
+        assert.notEqual null, routingInfo
 
-      exchange = routingInfo.routes[0].consumerExchange
-      assert.notEqual null, exchange
-      assert.equal exchange.name, 'cmf.simple.exchange'
-      assert.equal exchange.hostName, '127.0.0.1'
-      assert.equal exchange.vHost, '/stomp'
-      assert.equal exchange.port, 15674
-      assert.equal exchange.routingKey, 'mytopic'
-      assert.equal exchange.exchangeType, 'direct'
-      assert.equal exchange.isDurable, false
-      assert.equal exchange.autoDelete, true
-      assert.equal exchange.arguments, null
+        exchange = routingInfo.routes[0].consumerExchange
+        assert.notEqual null, exchange
+        assert.equal exchange.name, 'cmf.simple.exchange'
+        assert.equal exchange.hostName, '127.0.0.1'
+        assert.equal exchange.vHost, '/stomp'
+        assert.equal exchange.port, 15674
+        assert.equal exchange.routingKey, 'mytopic'
+        assert.equal exchange.exchangeType, 'direct'
+        assert.equal exchange.isDurable, false
+        assert.equal exchange.isAutoDelete, true
+        assert.equal exchange.arguments, null
 
