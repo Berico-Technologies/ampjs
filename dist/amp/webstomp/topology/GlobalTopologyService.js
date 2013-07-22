@@ -1,20 +1,24 @@
 define(['../../util/Logger', 'LRUCache', 'underscore', '../../bus/berico/EnvelopeHeaderConstants', 'jquery'], function(Logger, LRUCache, _, EnvelopeHeaderConstants, $) {
   var GlobalTopologyService;
-
   GlobalTopologyService = (function() {
     GlobalTopologyService.CACHE_EXPIRY_TIME_IN_MS = 1000000;
-
-    GlobalTopologyService.WEBSTOMP_PORT_OVERRIDE = 15674;
-
-    GlobalTopologyService.WEBSTOMP_VHOST_OVERRIDE = "/stomp";
 
     GlobalTopologyService.prototype.routingInfoCache = {};
 
     GlobalTopologyService.prototype.fallbackProvider = null;
 
-    function GlobalTopologyService(routingInfoRetriever, cacheExpiryTime, fallbackProvider) {
-      this.routingInfoRetriever = routingInfoRetriever;
-      this.fallbackProvider = fallbackProvider;
+    function GlobalTopologyService(config) {
+      var cacheExpiryTime;
+      if (config == null) {
+        config = {};
+      }
+      this.routingInfoRetriever = config.routingInfoRetriever, cacheExpiryTime = config.cacheExpiryTime, this.fallbackProvider = config.fallbackProvider, this.exchangeOverrides = config.exchangeOverrides;
+      if (!_.isObject(this.exchangeOverrides)) {
+        this.exchangeOverrides = {
+          port: 15678,
+          vHost: '/stomp'
+        };
+      }
       this.routingInfoCache = new LRUCache({
         maxAge: _.isNumber(cacheExpiryTime) ? cacheExpiryTime : GlobalTopologyService.CACHE_EXPIRY_TIME_IN_MS
       });
@@ -23,7 +27,6 @@ define(['../../util/Logger', 'LRUCache', 'underscore', '../../bus/berico/Envelop
     GlobalTopologyService.prototype.getRoutingInfo = function(routingHints) {
       var deferred, routingInfo, topic,
         _this = this;
-
       deferred = $.Deferred();
       topic = routingHints[EnvelopeHeaderConstants.MESSAGE_TOPIC];
       Logger.log.info("GlobalTopologyService.getRoutingInfo>> Getting routing info for topic: " + topic);
@@ -51,16 +54,22 @@ define(['../../util/Logger', 'LRUCache', 'underscore', '../../bus/berico/Envelop
     };
 
     GlobalTopologyService.prototype._fixExhangeInformation = function(routingInfo) {
-      var route, _i, _len, _ref, _results;
-
+      var override, route, value, _i, _len, _ref, _results;
       _ref = routingInfo.routes;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         route = _ref[_i];
-        route.consumerExchange.port = GlobalTopologyService.WEBSTOMP_PORT_OVERRIDE;
-        route.consumerExchange.vHost = GlobalTopologyService.WEBSTOMP_VHOST_OVERRIDE;
-        route.producerExchange.port = GlobalTopologyService.WEBSTOMP_PORT_OVERRIDE;
-        _results.push(route.producerExchange.vHost = GlobalTopologyService.WEBSTOMP_VHOST_OVERRIDE);
+        _results.push((function() {
+          var _ref1, _results1;
+          _ref1 = this.exchangeOverrides;
+          _results1 = [];
+          for (override in _ref1) {
+            value = _ref1[override];
+            route.consumerExchange[override] = value;
+            _results1.push(route.producerExchange[override] = value);
+          }
+          return _results1;
+        }).call(this));
       }
       return _results;
     };

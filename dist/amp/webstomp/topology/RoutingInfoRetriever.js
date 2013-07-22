@@ -1,23 +1,33 @@
 define(['../../util/Logger', 'jquery'], function(Logger) {
   var RoutingInfoRetriever;
-
   RoutingInfoRetriever = (function() {
-    function RoutingInfoRetriever(username, password, hostname, port, serviceUrlExpression, serializer) {
-      this.username = username;
-      this.password = password;
-      this.hostname = hostname;
-      this.port = port;
-      this.serviceUrlExpression = serviceUrlExpression;
-      this.serializer = serializer;
+    function RoutingInfoRetriever(config) {
+      if (config == null) {
+        config = {};
+      }
+      this.hostname = config.hostname, this.port = config.port, this.serviceUrlExpression = config.serviceUrlExpression, this.connectionStrategy = config.connectionStrategy;
+      if (!_.isString(this.hostname)) {
+        this.hostname = '127.0.0.1';
+      }
+      if (!_.isNumber(this.port)) {
+        this.port = 15677;
+      }
+      if (!_.isString(this.serviceUrlExpression)) {
+        this.serviceUrlExpression = "/service/topology/get-routing-info";
+      }
+      if (!_.isFunction(this.connectionStrategy)) {
+        this.connectionStrategy = function(topic) {
+          return "https://" + this.hostname + ":" + this.port + this.serviceUrlExpression + "/" + topic + "?c=true";
+        };
+      }
     }
 
     RoutingInfoRetriever.prototype.retrieveRoutingInfo = function(topic) {
       var deferred, req;
-
       Logger.log.info("RoutingInfoRetriever.retrieveRoutingInfo >> Getting routing info for topic: " + topic);
       deferred = $.Deferred();
       req = $.ajax({
-        url: "http://" + this.username + ":" + this.password + "@" + this.hostname + ":" + this.port + this.serviceUrlExpression + "/" + topic + "?c=true",
+        url: this.connectionStrategy(topic),
         dataType: 'jsonp'
       });
       req.done(function(data, textStatus, jqXHR) {

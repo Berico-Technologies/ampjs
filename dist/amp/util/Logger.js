@@ -1,6 +1,5 @@
 define(['flog'], function(flog) {
   var Logger;
-
   Logger = (function() {
     var _ref;
 
@@ -10,7 +9,6 @@ define(['flog'], function(flog) {
 
     Logger.log = (function() {
       var temp;
-
       temp = flog.create();
       temp.setLevel(Logger.loggingLevel);
       return temp;

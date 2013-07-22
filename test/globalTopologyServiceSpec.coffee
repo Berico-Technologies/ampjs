@@ -75,14 +75,28 @@ define [
           deferred.resolve(JSON.parse(response))
           return deferred.promise()
 
-      retriever = new RoutingInfoRetriever("app01","password", "localhost", 15677, "/service/topology/get-routing-info")
-      fallbackProvider = new DefaultApplicationExchangeProvider('localhost',15677,'/service/fallbackRouting/routeCreator', "TESTONLY")
+      retriever = new RoutingInfoRetriever({
+        hostname: "localhost"
+        connectionStrategy: (topic)->"http://app01:password@#{@hostname}:#{@port}#{@serviceUrlExpression}/#{topic}?c=true"
+      })
+      fallbackProvider = new DefaultApplicationExchangeProvider({
+          connectionStrategy: ->
+            return "http://#{@managementHostname}:#{@managementPort}#{@managementServiceUrl}"
+          clientProfile: 'TESTONLY'
+          exchangePort: 15674
+        })
 
     afterEach ->
       $.ajax.restore() if testConfig.useSimulatedManager
 
     it 'should use default routing when GTS presents no routes', (done)->
-      service = new GlobalTopologyService(retriever, null, fallbackProvider)
+      service = new GlobalTopologyService({
+        routingInfoRetriever: retriever
+        exchangeOverrides:
+          port: 15674
+          vHost: '/stomp'
+        fallbackProvider: fallbackProvider
+      })
       routingHints = {}
       routingHints[EnvelopeHeaderConstants.MESSAGE_TOPIC] = "my.cool.topic"
 
@@ -92,7 +106,12 @@ define [
         done();
 
     it 'should return GTS routes when an existing route is queried', (done)->
-      service = new GlobalTopologyService(retriever, null, null)
+      service = new GlobalTopologyService({
+        routingInfoRetriever: retriever
+        exchangeOverrides:
+          port: 15674
+          vHost: '/stomp'
+      })
       routingHints = {}
       routingHints[EnvelopeHeaderConstants.MESSAGE_TOPIC] = "amp.examples.notifier.core.UserNotification"
 
@@ -109,14 +128,19 @@ define [
         assert.equal exchange.arguments, null
         done();
 
-
-
     it 'should allow publishing and subscribing to GTS topics', (done)->
       transportProvider = TransportProviderFactory.getTransportProvider({
-        topologyService: new GlobalTopologyService(retriever, null, null)
+        topologyService: new GlobalTopologyService({
+          routingInfoRetriever: retriever
+          exchangeOverrides:
+            port: 15674
+            vHost: '/stomp'
+        })
         transportProvider: TransportProviderFactory.TransportProviders.WebStomp
         channelProvider: new ChannelProvider({
           connectionFactory: if testConfig.useEmulatedWebSocket then MockWebSocket else SockJS
+          connectionStrategy: (exchange) ->
+            return "http://#{exchange.hostName}:#{exchange.port}#{exchange.vHost}"
         })
       })
       eventBus = new EventBus(

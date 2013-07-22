@@ -1,6 +1,5 @@
 define(['underscore', '../berico/InboundEnvelopeProcessorCallback', '../../util/Logger'], function(_, InboundEnvelopeProcessorCallback, Logger) {
   var EnvelopeBus;
-
   EnvelopeBus = (function() {
     function EnvelopeBus(transportProvider, inboundProcessors, outboundProcessors) {
       this.transportProvider = transportProvider;
@@ -11,7 +10,6 @@ define(['underscore', '../berico/InboundEnvelopeProcessorCallback', '../../util/
 
     EnvelopeBus.prototype.dispose = function() {
       var p, _i, _j, _len, _len1, _ref, _ref1, _results;
-
       _ref = this.inboundProcessors;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         p = _ref[_i];
@@ -33,7 +31,6 @@ define(['underscore', '../berico/InboundEnvelopeProcessorCallback', '../../util/
 
     EnvelopeBus.prototype.processInbound = function(envelope) {
       var context, inboundProcessor, _i, _len, _ref, _results;
-
       Logger.log.info("EnvelopeBus.processInbound >> executing processors");
       context = {};
       _ref = this.inboundProcessors;
@@ -47,7 +44,6 @@ define(['underscore', '../berico/InboundEnvelopeProcessorCallback', '../../util/
 
     EnvelopeBus.prototype.processOutbound = function(envelope) {
       var context, outboundProcessor, _i, _len, _ref, _results;
-
       Logger.log.info("EnvelopeBus.processOutbound >> executing processors");
       context = {};
       _ref = this.outboundProcessors;

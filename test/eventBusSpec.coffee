@@ -32,12 +32,18 @@ define [
     transportProvider = null
 
     beforeEach ->
-
       transportProvider = TransportProviderFactory.getTransportProvider({
-        topologyService: new DefaultApplicationExchangeProvider('localhost',15677,'/service/fallbackRouting/routeCreator', 'TESTONLY')
+        topologyService: new DefaultApplicationExchangeProvider({
+          connectionStrategy: ->
+            return "http://#{@managementHostname}:#{@managementPort}#{@managementServiceUrl}"
+          clientProfile: 'TESTONLY'
+          exchangePort: 15674
+        })
         transportProvider: TransportProviderFactory.TransportProviders.WebStomp
         channelProvider: new ChannelProvider({
           connectionFactory: if testConfig.useEmulatedWebSocket then MockWebSocket else SockJS
+          connectionStrategy: (exchange) ->
+            return "http://#{exchange.hostName}:#{exchange.port}#{exchange.vHost}"
         })
       })
 

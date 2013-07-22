@@ -1,6 +1,5 @@
 define([], function() {
   var EnvelopeHeaderConstants;
-
   EnvelopeHeaderConstants = (function() {
     function EnvelopeHeaderConstants() {}
 

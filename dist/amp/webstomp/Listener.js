@@ -1,6 +1,5 @@
 define(['underscore', '../bus/Envelope', '../bus/berico/EnvelopeHelper', './EnvelopeDispatcher', 'jquery', '../util/Logger'], function(_, Envelope, EnvelopeHelper, EnvelopeDispatcher, $, Logger) {
   var Listener;
-
   Listener = (function() {
     Listener.prototype.envCallbacks = [];
 
@@ -27,7 +26,6 @@ define(['underscore', '../bus/Envelope', '../bus/berico/EnvelopeHelper', './Enve
 
     Listener.prototype.start = function(channel) {
       var deferred;
-
       this.channel = channel;
       deferred = $.Deferred();
       Logger.log.info("Listener.start >> subscribing to /queue/" + this.exchange.queueName);
@@ -38,7 +36,6 @@ define(['underscore', '../bus/Envelope', '../bus/berico/EnvelopeHelper', './Enve
 
     Listener.prototype.handleNextDelivery = function(result) {
       var envelopeHelper;
-
       Logger.log.info("Listener.handleNextDelivery >> received a message");
       envelopeHelper = this.createEnvelopeFromDeliveryResult(result);
       if (this.shouldRaiseEvent(this.registration.filterPredicate, envelopeHelper.getEnvelope())) {
@@ -49,14 +46,12 @@ define(['underscore', '../bus/Envelope', '../bus/berico/EnvelopeHelper', './Enve
 
     Listener.prototype.dispatchEnvelope = function(envelope) {
       var dispatcher;
-
       dispatcher = new EnvelopeDispatcher(this.registration, envelope, this.channel);
       return this.raise_onEnvelopeRecievedEvent(dispatcher);
     };
 
     Listener.prototype.raise_onEnvelopeRecievedEvent = function(dispatcher) {
       var callback, _i, _len, _ref, _results;
-
       _ref = this.envCallbacks;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -76,7 +71,6 @@ define(['underscore', '../bus/Envelope', '../bus/berico/EnvelopeHelper', './Enve
 
     Listener.prototype.createEnvelopeFromDeliveryResult = function(result) {
       var envelopeHelper, prop, _i, _len, _ref;
-
       envelopeHelper = new EnvelopeHelper(new Envelope());
       envelopeHelper.setReciptTime(new Date().getMilliseconds);
       envelopeHelper.setPayload(result.body);

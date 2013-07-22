@@ -3,8 +3,9 @@ define [
   'amp/bus/Envelope'
   'amp/bus/berico/EnvelopeHeaderConstants'
   'amp/bus/berico/EnvelopeHelper'
+  'uuid'
 ],
-(_,Envelope, EnvelopeHeaderConstants, EnvelopeHelper) ->
+(_,Envelope, EnvelopeHeaderConstants, EnvelopeHelper, uuid) ->
   describe 'The Envelope', ->
     it 'should not be null', ->
       envelope = new Envelope()

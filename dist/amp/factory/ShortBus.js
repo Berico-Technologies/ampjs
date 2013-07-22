@@ -1,8 +1,7 @@
 var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-define(['../bus/berico/TransportProviderFactory', '../webstomp/topology/GlobalTopologyService', '../webstomp/ChannelProvider', '../webstomp/topology/DefaultApplicationExchangeProvider', '../bus/berico/EnvelopeBus', '../eventing/berico/serializers/JsonEventSerializer', '../eventing/berico/OutboundHeadersProcessor', '../eventing/berico/EventBus', '../webstomp/topology/RoutingInfoRetriever', 'underscore', '../util/Logger', '../bus/berico/EnvelopeHelper'], function(TransportProviderFactory, GlobalTopologyService, ChannelProvider, DefaultApplicationExchangeProvider, EnvelopeBus, JsonEventSerializer, OutboundHeadersProcessor, EventBus, RoutingInfoRetriever, _, Logger, EnvelopeHelper) {
+define(['../bus/berico/TransportProviderFactory', '../webstomp/topology/GlobalTopologyService', '../webstomp/ChannelProvider', '../webstomp/topology/DefaultApplicationExchangeProvider', '../bus/berico/EnvelopeBus', '../eventing/berico/serializers/JsonEventSerializer', '../eventing/berico/OutboundHeadersProcessor', '../eventing/berico/EventBus', '../webstomp/topology/RoutingInfoRetriever', 'underscore', '../util/Logger', '../bus/berico/EnvelopeHelper', '../webstomp/topology/DefaultAuthenticationProvider'], function(TransportProviderFactory, GlobalTopologyService, ChannelProvider, DefaultApplicationExchangeProvider, EnvelopeBus, JsonEventSerializer, OutboundHeadersProcessor, EventBus, RoutingInfoRetriever, _, Logger, EnvelopeHelper, DefaultAuthenticationProvider) {
   var HeaderOverrider, ShortBus;
-
   HeaderOverrider = (function() {
     function HeaderOverrider() {
       this.processOutbound = __bind(this.processOutbound, this);
@@ -14,7 +13,6 @@ define(['../bus/berico/TransportProviderFactory', '../webstomp/topology/GlobalTo
 
     HeaderOverrider.prototype.processOutbound = function(context) {
       var env;
-
       env = new EnvelopeHelper(context.getEnvelope());
       env.setMessageType(this.override);
       env.setMessageTopic(this.override);
@@ -27,25 +25,46 @@ define(['../bus/berico/TransportProviderFactory', '../webstomp/topology/GlobalTo
   ShortBus = (function() {
     function ShortBus() {}
 
-    ShortBus.ROUTING_INFO_URL = "/service/topology/get-routing-info";
-
-    ShortBus.ROUTE_CREATE_URL = '/service/fallbackRouting/routeCreator';
-
     ShortBus.getBus = function(config) {
-      var channelProvider, envelopeBus, fallbackProvider, globalTopologyService, hostname, inboundProcessors, outboundProcessors, password, port, publishTopicOverride, retriever, transportProvider, username;
-
-      if (!_.isObject(config)) {
+      var authenticationProvider, authenticationProviderConnectionStrategy, authenticationProviderHostname, authenticationProviderPort, authenticationProviderServiceUrl, channelProvider, channelProviderConnectionFactory, channelProviderConnectionStrategy, envelopeBus, exchangeProviderConnectionStrategy, exchangeProviderHostname, exchangeProviderPort, exchangeProviderServiceUrl, fallbackProvider, fallbackTopoClientProfile, fallbackTopoExchangeHostname, fallbackTopoExchangeName, fallbackTopoExchangePort, fallbackTopoExchangeVhost, globalTopologyService, gtsCacheExpiryTime, gtsExchangeOverrides, inboundProcessors, outboundProcessors, publishTopicOverride, routingInfoConnectionStrategy, routingInfoHostname, routingInfoPort, routingInfoRetriever, routingInfoServiceUrl, transportProvider;
+      if (config == null) {
         config = {};
       }
-      hostname = _.isString(config.hostname) ? config.hostname : 'localhost';
-      port = _.isNumber(config.port) ? config.port : 15677;
-      username = _.isString(config.username) ? config.username : 'app01';
-      password = _.isString(config.password) ? config.password : 'password';
-      publishTopicOverride = _.isString(config.publishTopicOverride) ? config.publishTopicOverride : null;
-      retriever = new RoutingInfoRetriever(username, password, hostname, port, ShortBus.ROUTING_INFO_URL);
-      fallbackProvider = new DefaultApplicationExchangeProvider(hostname, port, ShortBus.ROUTE_CREATE_URL);
-      globalTopologyService = new GlobalTopologyService(retriever, null, fallbackProvider);
-      channelProvider = new ChannelProvider();
+      routingInfoHostname = config.routingInfoHostname, routingInfoPort = config.routingInfoPort, routingInfoServiceUrl = config.routingInfoServiceUrl, routingInfoConnectionStrategy = config.routingInfoConnectionStrategy, exchangeProviderHostname = config.exchangeProviderHostname, exchangeProviderPort = config.exchangeProviderPort, exchangeProviderServiceUrl = config.exchangeProviderServiceUrl, exchangeProviderConnectionStrategy = config.exchangeProviderConnectionStrategy, fallbackTopoClientProfile = config.fallbackTopoClientProfile, fallbackTopoExchangeName = config.fallbackTopoExchangeName, fallbackTopoExchangeHostname = config.fallbackTopoExchangeHostname, fallbackTopoExchangeVhost = config.fallbackTopoExchangeVhost, fallbackTopoExchangePort = config.fallbackTopoExchangePort, gtsCacheExpiryTime = config.gtsCacheExpiryTime, gtsExchangeOverrides = config.gtsExchangeOverrides, channelProviderConnectionStrategy = config.channelProviderConnectionStrategy, channelProviderConnectionFactory = config.channelProviderConnectionFactory, publishTopicOverride = config.publishTopicOverride, authenticationProviderHostname = config.authenticationProviderHostname, authenticationProviderPort = config.authenticationProviderPort, authenticationProviderServiceUrl = config.authenticationProviderServiceUrl, authenticationProviderConnectionStrategy = config.authenticationProviderConnectionStrategy;
+      routingInfoRetriever = new RoutingInfoRetriever({
+        hostname: routingInfoHostname,
+        port: routingInfoPort,
+        serviceUrlExpression: routingInfoServiceUrl,
+        connectionStrategy: routingInfoConnectionStrategy
+      });
+      fallbackProvider = new DefaultApplicationExchangeProvider({
+        managementHostname: exchangeProviderHostname,
+        managementPort: exchangeProviderPort,
+        managementServiceUrl: exchangeProviderServiceUrl,
+        connectionStrategy: exchangeProviderConnectionStrategy,
+        clientProfile: fallbackTopoClientProfile,
+        exchangeName: fallbackTopoExchangeName,
+        exchangeHostname: fallbackTopoExchangeHostname,
+        exchangeVhost: fallbackTopoExchangeVhost,
+        exchangePort: fallbackTopoExchangePort
+      });
+      globalTopologyService = new GlobalTopologyService({
+        routingInfoRetriever: routingInfoRetriever,
+        cacheExpiryTime: gtsCacheExpiryTime,
+        fallbackProvider: fallbackProvider,
+        exchangeOverrides: gtsExchangeOverrides
+      });
+      authenticationProvider = new DefaultAuthenticationProvider({
+        hostname: authenticationProviderHostname,
+        port: authenticationProviderPort,
+        serviceUrl: authenticationProviderServiceUrl,
+        connectionStrategy: authenticationProviderConnectionStrategy
+      });
+      channelProvider = new ChannelProvider({
+        connectionStrategy: channelProviderConnectionStrategy,
+        connectionFactory: channelProviderConnectionFactory,
+        authenticationProvider: authenticationProvider
+      });
       transportProvider = TransportProviderFactory.getTransportProvider({
         topologyService: globalTopologyService,
         transportProvider: TransportProviderFactory.TransportProviders.WebStomp,
@@ -58,7 +77,6 @@ define(['../bus/berico/TransportProviderFactory', '../webstomp/topology/GlobalTo
         outboundProcessors.push({
           processOutbound: function(context) {
             var env;
-
             env = new EnvelopeHelper(context.getEnvelope());
             env.setMessageType(publishTopicOverride);
             env.setMessageTopic(publishTopicOverride);

@@ -1,30 +1,32 @@
-define(['stomp', '../util/Logger', 'sockjs', 'underscore', 'jquery'], function(Stomp, Logger, SockJS, _, $) {
+define(['stomp', '../util/Logger', 'sockjs', 'underscore', 'jquery', './topology/DefaultAuthenticationProvider'], function(Stomp, Logger, SockJS, _, $, DefaultAuthenticationProvider) {
   var ChannelProvider;
-
   ChannelProvider = (function() {
     ChannelProvider.DefaultConnectionStrategy = function(exchange) {
-      return "http://" + exchange.hostName + ":" + exchange.port + exchange.vHost;
+      return "https://" + exchange.hostName + ":" + exchange.port + exchange.vHost;
     };
 
-    function ChannelProvider(config) {
-      var _ref;
+    ChannelProvider.prototype.connectionPool = {};
 
-      config = config != null ? config : {};
-      this.username = _.isString(config.username) ? config.username : "guest";
-      this.password = _.isString(config.password) ? config.password : "guest";
-      this.connectionPool = {};
-      this.connectionStrategy = (_ref = config.connectionStrategy) != null ? _ref : ChannelProvider.DefaultConnectionStrategy;
-      Logger.log.info("ChannelProvider.ctor >> instantiated.");
-      this.connectionFactory = _.isFunction(config.connectionFactory) ? config.connectionFactory : SockJS;
-      if (!_.isFunction(config.connectionFactory)) {
-        Logger.log.info("ChannelProvider.ctor >> using default connection factory");
+    function ChannelProvider(config) {
+      if (config == null) {
+        config = {};
       }
+      this.connectionStrategy = config.connectionStrategy, this.connectionFactory = config.connectionFactory, this.authenticationProvider = config.authenticationProvider;
+      if (!_.isFunction(this.connectionStrategy)) {
+        this.connectionStrategy = ChannelProvider.DefaultConnectionStrategy;
+      }
+      if (!_.isFunction(this.connectionFactory)) {
+        this.connectionFactory = SockJS;
+      }
+      if (!_.isObject(this.authenticationProvider)) {
+        this.authenticationProvider = new DefaultAuthenticationProvider();
+      }
+      Logger.log.info("ChannelProvider.ctor >> instantiated.");
     }
 
     ChannelProvider.prototype.getConnection = function(exchange) {
       var connection, connectionName, deferred,
         _this = this;
-
       deferred = $.Deferred();
       Logger.log.info("ChannelProvider.getConnection >> Getting exchange");
       connectionName = this.connectionStrategy(exchange);
@@ -45,7 +47,6 @@ define(['stomp', '../util/Logger', 'sockjs', 'underscore', 'jquery'], function(S
     ChannelProvider.prototype.removeConnection = function(exchange) {
       var connection, connectionName, deferred,
         _this = this;
-
       deferred = $.Deferred();
       Logger.log.info("ConnectionFactory.removeConnection >> Removing connection");
       connectionName = this.connectionStrategy(exchange);
@@ -61,32 +62,34 @@ define(['stomp', '../util/Logger', 'sockjs', 'underscore', 'jquery'], function(S
     };
 
     ChannelProvider.prototype._createConnection = function(exchange, deferred) {
-      var client, ws;
-
+      var _this = this;
       Logger.log.info("ChannelProvider._createConnection >> attempting to create a new connection");
-      ws = new this.connectionFactory(this.connectionStrategy(exchange));
-      client = Stomp.over(ws);
-      client.heartbeat = {
-        outgoing: 0,
-        incoming: 0
-      };
-      client.connect(this.username, this.password, function() {
-        Logger.log.info("ChannelProvider._createConnection >> successfully connected");
-        return deferred.resolve(client, false);
-      }, function(err) {
-        var errorMessage;
-
-        errorMessage = "ChannelProvider._createConnection >> " + err;
-        Logger.log.error("ChannelProvider._createConnection >> unable to connect: " + err);
-        deferred.reject(errorMessage);
-        return Logger.log.error(errorMessage);
+      return this.authenticationProvider.getCredentials().then(function(credentials) {
+        var client, password, username, ws;
+        username = credentials.username, password = credentials.password;
+        Logger.log.info("Using username " + username + " and password " + password);
+        ws = new _this.connectionFactory(_this.connectionStrategy(exchange));
+        client = Stomp.over(ws);
+        client.heartbeat = {
+          outgoing: 0,
+          incoming: 0
+        };
+        client.connect(username, password, function() {
+          Logger.log.info("ChannelProvider._createConnection >> successfully connected");
+          return deferred.resolve(client, false);
+        }, function(err) {
+          var errorMessage;
+          errorMessage = "ChannelProvider._createConnection >> " + err;
+          Logger.log.error("ChannelProvider._createConnection >> unable to connect: " + err);
+          deferred.reject(errorMessage);
+          return Logger.log.error(errorMessage);
+        });
+        return deferred.promise();
       });
-      return deferred.promise();
     };
 
     ChannelProvider.prototype.dispose = function() {
       var connection, connectionDeferred, disposeDeferred, disposeDeferredCollection, _i, _len, _ref;
-
       Logger.log.info("ChannelProvider.dispose >> clearing connections");
       disposeDeferred = $.Deferred();
       disposeDeferredCollection = [];

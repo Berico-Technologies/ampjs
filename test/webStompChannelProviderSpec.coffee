@@ -46,8 +46,10 @@ define [
   describe 'The channel provider', (done)->
     channelProvider = null
     beforeEach ->
-      channelProvider = new ChannelProvider({
+      channelProvider= new ChannelProvider({
         connectionFactory: if testConfig.useEmulatedWebSocket then MockWebSocket else SockJS
+        connectionStrategy: (exchange) ->
+          "http://127.0.0.1:15674/stomp"
       })
 
     it 'should not be null', ->

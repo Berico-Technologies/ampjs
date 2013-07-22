@@ -1,6 +1,5 @@
 define(['../../bus/berico/EnvelopeHelper', 'uuid', 'underscore', '../../util/Logger'], function(EnvelopeHelper, uuid, _, Logger) {
   var OutboundHeadersProcessor;
-
   OutboundHeadersProcessor = (function() {
     OutboundHeadersProcessor.prototype.userInfoRepo = null;
 
@@ -10,7 +9,6 @@ define(['../../bus/berico/EnvelopeHelper', 'uuid', 'underscore', '../../util/Log
 
     OutboundHeadersProcessor.prototype.processOutbound = function(context) {
       var correlationId, env, messageId, messageTopic, messageType, senderIdentity;
-
       Logger.log.info("OutboundHeadersProcessor.processOutbound >> adding headers");
       env = new EnvelopeHelper(context.getEnvelope());
       messageId = _.isString(env.getMessageId()) ? env.getMessageId() : uuid.v4();
@@ -29,7 +27,6 @@ define(['../../bus/berico/EnvelopeHelper', 'uuid', 'underscore', '../../util/Log
 
     OutboundHeadersProcessor.prototype.getMessageType = function(event) {
       var type;
-
       type = Object.getPrototypeOf(event).constructor.name;
       Logger.log.info("OutboundHeadersProcessor.getMessageType >> inferring type as " + type);
       return type;
@@ -37,7 +34,6 @@ define(['../../bus/berico/EnvelopeHelper', 'uuid', 'underscore', '../../util/Log
 
     OutboundHeadersProcessor.prototype.getMessageTopic = function(event) {
       var type;
-
       type = Object.getPrototypeOf(event).constructor.name;
       Logger.log.info("OutboundHeadersProcessor.getMessageTopic >> inferring topic as " + type);
       return type;

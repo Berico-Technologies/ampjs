@@ -10,8 +10,14 @@ define [
 ],
 (uuid, Logger, RoutingInfo, RouteInfo, Exchange, _,EnvelopeHeaderConstants, $)->
   class SimpleTopologyService
-    constructor: (@clientProfile=uuid.v4(), @name='cmf.simple.exchange', @hostname='127.0.0.1', @virtualHost='/stomp', @port=15674, @QUEUE_NUMBER=0) ->
-
+    constructor: (config={}) ->
+      {@clientProfile, @name, @hostname, @virtualHost, @port, @queue_number} = config
+      unless _.isString @clientProfile then @clientProfile = uuid.v4()
+      unless _.isString @name then @name = 'cmf.simple.exchange'
+      unless _.isString @hostname then @hostname = '127.0.0.1'
+      unless _.isString @virtualHost then @virtualHost = '/stomp'
+      unless _.isNumber @port then @port = 15678
+      unless _.isNumber @queue_number then @queue_number = 0
 
     getRoutingInfo: (headers) ->
       deferred = $.Deferred()
@@ -40,7 +46,7 @@ define [
       return deferred.promise()
 
     buildIdentifiableQueueName: (topic)->
-      "#{@clientProfile}##{@pad(++@QUEUE_NUMBER,3,0)}##{topic}"
+      "#{@clientProfile}##{@pad(++@queue_number,3,0)}##{topic}"
     pad: (n,width,z)->
       z = z || '0';
       n = n + '';

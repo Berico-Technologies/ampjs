@@ -1,6 +1,5 @@
 define([], function() {
   var InboundProcessorCallback;
-
   InboundProcessorCallback = (function() {
     function InboundProcessorCallback() {}
 

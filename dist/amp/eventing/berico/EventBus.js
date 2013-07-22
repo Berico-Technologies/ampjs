@@ -1,6 +1,5 @@
 define(['./ProcessingContext', '../../bus/Envelope', './EventRegistration', '../../util/Logger'], function(ProcessingContext, Envelope, EventRegistration, Logger) {
   var EventBus;
-
   EventBus = (function() {
     function EventBus(envelopeBus, inboundProcessors, outboundProcessors) {
       this.envelopeBus = envelopeBus;
@@ -18,7 +17,6 @@ define(['./ProcessingContext', '../../bus/Envelope', './EventRegistration', '../
 
     EventBus.prototype.processOutbound = function(event, envelope) {
       var context, outboundProcessor, _i, _len, _ref, _results;
-
       Logger.log.info("EventBus.processOutbound >> executing processors");
       context = new ProcessingContext(envelope, event);
       _ref = this.outboundProcessors;
@@ -32,7 +30,6 @@ define(['./ProcessingContext', '../../bus/Envelope', './EventRegistration', '../
 
     EventBus.prototype.publish = function(event) {
       var envelope;
-
       envelope = new Envelope();
       this.processOutbound(event, envelope);
       return this.envelopeBus.send(envelope);
@@ -40,7 +37,6 @@ define(['./ProcessingContext', '../../bus/Envelope', './EventRegistration', '../
 
     EventBus.prototype.subscribe = function(eventHandler) {
       var registration;
-
       registration = new EventRegistration(eventHandler, this.inboundProcessors);
       return this.envelopeBus.register(registration);
     };

@@ -11,11 +11,13 @@ define [
   'underscore'
   '../util/Logger'
   '../bus/berico/EnvelopeHelper'
+  '../webstomp/topology/DefaultAuthenticationProvider'
 ],
-(TransportProviderFactory, GlobalTopologyService, ChannelProvider, DefaultApplicationExchangeProvider, EnvelopeBus, JsonEventSerializer, OutboundHeadersProcessor, EventBus, RoutingInfoRetriever, _, Logger, EnvelopeHelper)->
+(TransportProviderFactory, GlobalTopologyService, ChannelProvider, DefaultApplicationExchangeProvider, EnvelopeBus, JsonEventSerializer, OutboundHeadersProcessor, EventBus, RoutingInfoRetriever, _, Logger, EnvelopeHelper, DefaultAuthenticationProvider)->
 
   class HeaderOverrider
     constructror: (@override)->
+
     processOutbound: (context)=>
       env = new EnvelopeHelper(context.getEnvelope())
       env.setMessageType @override
@@ -23,24 +25,58 @@ define [
       Logger.log.info "HeaderOverrider.processOutbound >> overrode type and topic headers to #{@override}"
 
   class ShortBus
-    @ROUTING_INFO_URL = "/service/topology/get-routing-info"
-    @ROUTE_CREATE_URL = '/service/fallbackRouting/routeCreator'
 
-    @getBus: (config)->
-      config = {} if !_.isObject config
-      hostname = if _.isString config.hostname then config.hostname else 'localhost'
-      port= if _.isNumber config.port then config.port else 15677
-      username= if _.isString config.username then config.username else 'app01'
-      password= if _.isString config.password then config.password else 'password'
-      publishTopicOverride = if _.isString config.publishTopicOverride then config.publishTopicOverride else null
+    @getBus: (config={})->
+      {
+        routingInfoHostname, routingInfoPort, routingInfoServiceUrl,
+        routingInfoConnectionStrategy, exchangeProviderHostname, exchangeProviderPort,
+        exchangeProviderServiceUrl, exchangeProviderConnectionStrategy, fallbackTopoClientProfile,
+        fallbackTopoExchangeName, fallbackTopoExchangeHostname, fallbackTopoExchangeVhost,
+        fallbackTopoExchangePort, gtsCacheExpiryTime, gtsExchangeOverrides,
+        channelProviderConnectionStrategy, channelProviderConnectionFactory, publishTopicOverride,
+        authenticationProviderHostname, authenticationProviderPort, authenticationProviderServiceUrl,
+        authenticationProviderConnectionStrategy
+      } = config
 
-      retriever = new RoutingInfoRetriever(username, password, hostname, port, ShortBus.ROUTING_INFO_URL)
 
-      fallbackProvider = new DefaultApplicationExchangeProvider(hostname,port, ShortBus.ROUTE_CREATE_URL)
+      routingInfoRetriever = new RoutingInfoRetriever({
+        hostname: routingInfoHostname
+        port: routingInfoPort
+        serviceUrlExpression: routingInfoServiceUrl
+        connectionStrategy: routingInfoConnectionStrategy
+      })
 
-      globalTopologyService = new GlobalTopologyService(retriever, null, fallbackProvider)
+      fallbackProvider = new DefaultApplicationExchangeProvider({
+        managementHostname: exchangeProviderHostname
+        managementPort: exchangeProviderPort
+        managementServiceUrl: exchangeProviderServiceUrl
+        connectionStrategy: exchangeProviderConnectionStrategy
+        clientProfile: fallbackTopoClientProfile
+        exchangeName: fallbackTopoExchangeName
+        exchangeHostname: fallbackTopoExchangeHostname
+        exchangeVhost: fallbackTopoExchangeVhost
+        exchangePort: fallbackTopoExchangePort
+        })
 
-      channelProvider = new ChannelProvider()
+      globalTopologyService = new GlobalTopologyService({
+        routingInfoRetriever: routingInfoRetriever
+        cacheExpiryTime: gtsCacheExpiryTime
+        fallbackProvider: fallbackProvider
+        exchangeOverrides: gtsExchangeOverrides
+        })
+
+      authenticationProvider = new DefaultAuthenticationProvider({
+        hostname: authenticationProviderHostname
+        port: authenticationProviderPort
+        serviceUrl: authenticationProviderServiceUrl
+        connectionStrategy: authenticationProviderConnectionStrategy
+      })
+
+      channelProvider = new ChannelProvider({
+        connectionStrategy: channelProviderConnectionStrategy
+        connectionFactory: channelProviderConnectionFactory
+        authenticationProvider: authenticationProvider
+        })
 
       transportProvider = TransportProviderFactory.getTransportProvider({
         topologyService: globalTopologyService

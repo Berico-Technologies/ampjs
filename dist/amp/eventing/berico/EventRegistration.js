@@ -1,6 +1,5 @@
 define(['../../bus/berico/EnvelopeHeaderConstants', './ProcessingContext', '../../util/Logger'], function(EnvelopeHeaderConstants, ProcessingContext, Logger) {
   var EventRegistration;
-
   EventRegistration = (function() {
     EventRegistration.prototype.filterPredicate = null;
 
@@ -14,7 +13,6 @@ define(['../../bus/berico/EnvelopeHeaderConstants', './ProcessingContext', '../.
 
     EventRegistration.prototype.handle = function(envelope) {
       var ev, processorContext;
-
       Logger.log.info("EventRegistration.handle >> received new envelope");
       ev = {};
       processorContext = new ProcessingContext(envelope, ev);
@@ -25,7 +23,6 @@ define(['../../bus/berico/EnvelopeHeaderConstants', './ProcessingContext', '../.
 
     EventRegistration.prototype.processInbound = function(processorContext) {
       var processed, processor, _i, _len, _ref;
-
       Logger.log.info("EventRegistration.processInbound >> processing inbound queue");
       processed = true;
       _ref = this.inboundChain;

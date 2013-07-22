@@ -5,8 +5,23 @@ define [
 ],
 (SimpleTopoologyService, EnvelopeHeaderConstants, Logger)->
   class DefaultApplicationExchangeProvider extends SimpleTopoologyService
-      constructor: (@managementHostname, @managementPort, @managementServiceUrl, clientProfile, name, hostname, vhost, port)->
-        super(clientProfile, name, hostname, vhost, port)
+      constructor: (config={})->
+        {@managementHostname, @managementPort, @managementServiceUrl, @connectionStrategy, clientProfile, exchangeName, exchangeHostname, exchangeVhost, exchangePort} = config
+
+        #defaults for GTS
+        unless _.isString @managementHostname then @managementHostname = 'localhost'
+        unless _.isNumber @managementPort then @managementPort = 15677
+        unless _.isString @managementServiceUrl then @managementServiceUrl = '/service/fallbackRouting/routeCreator'
+        unless _.isFunction @connectionStrategy then @connectionStrategy = ->
+          "https://#{@managementHostname}:#{@managementPort}#{@managementServiceUrl}"
+
+        super({
+          clientProfile: clientProfile
+          name: exchangeName
+          hostname: exchangeHostname
+          vhost: exchangeVhost
+          port: exchangePort
+        })
       getFallbackRoute: (topic)->
         headers = []
         headers[EnvelopeHeaderConstants.MESSAGE_TOPIC] = topic
@@ -14,7 +29,7 @@ define [
       createRoute: (exchange)->
         deferred = $.Deferred()
         req = $.ajax
-          url: "http://#{@managementHostname}:#{@managementPort}#{@managementServiceUrl}"
+          url: @connectionStrategy()
           dataType: 'jsonp'
           data: data: JSON.stringify exchange
         req.done (data, textStatus, jqXHR)->

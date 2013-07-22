@@ -29,18 +29,24 @@ define [
       simpleTopologyService = new SimpleTopologyService()
       assert.equal simpleTopologyService.hostname, '127.0.0.1'
       assert.equal simpleTopologyService.name, 'cmf.simple.exchange'
-      assert.equal simpleTopologyService.port, 15674
+      assert.equal simpleTopologyService.port, 15678
       assert.equal simpleTopologyService.virtualHost, '/stomp'
-      assert.equal simpleTopologyService.QUEUE_NUMBER, 0
+      assert.equal simpleTopologyService.queue_number, 0
 
     it 'should accept constructor overrides', ->
-      simpleTopologyService = new SimpleTopologyService(null,'myexchange','myhostname','myvhost',1234)
+      simpleTopologyService = new SimpleTopologyService({
+        clientProfile: null
+        name: 'myexchange'
+        hostname: 'myhostname'
+        virtualHost: 'myvhost'
+        port: 1234
+      })
       assert.notEqual simpleTopologyService.clientProfile, null
       assert.equal simpleTopologyService.hostname, 'myhostname'
       assert.equal simpleTopologyService.name, 'myexchange'
       assert.equal simpleTopologyService.port, 1234
       assert.equal simpleTopologyService.virtualHost, 'myvhost'
-      assert.equal simpleTopologyService.QUEUE_NUMBER, 0
+      assert.equal simpleTopologyService.queue_number, 0
 
     it 'should return routing info', ->
       simpleTopologyService = new SimpleTopologyService()
@@ -55,7 +61,7 @@ define [
         assert.equal exchange.name, 'cmf.simple.exchange'
         assert.equal exchange.hostName, '127.0.0.1'
         assert.equal exchange.vHost, '/stomp'
-        assert.equal exchange.port, 15674
+        assert.equal exchange.port, 15678
         assert.equal exchange.routingKey, 'mytopic'
         assert.equal exchange.exchangeType, 'direct'
         assert.equal exchange.isDurable, false

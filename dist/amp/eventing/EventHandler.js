@@ -1,6 +1,5 @@
 define([], function() {
   var EventHandler;
-
   EventHandler = (function() {
     function EventHandler() {}
 

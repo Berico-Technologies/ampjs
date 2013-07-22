@@ -1,6 +1,5 @@
 define(['underscore', '../util/Logger'], function(_, Logger) {
   var EnvelopeDispatcher;
-
   EnvelopeDispatcher = (function() {
     function EnvelopeDispatcher(registration, envelope, channel) {
       this.registration = registration;

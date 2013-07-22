@@ -1,6 +1,5 @@
 define(['underscore'], function(_) {
   var Envelope;
-
   Envelope = (function() {
     function Envelope(headers, payload) {
       this.headers = headers != null ? headers : {};

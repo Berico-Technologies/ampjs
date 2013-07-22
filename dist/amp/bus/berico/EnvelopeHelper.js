@@ -1,6 +1,5 @@
 define(['./EnvelopeHeaderConstants', 'underscore'], function(EnvelopeHeaderConstants, _) {
   var EnvelopeHelper;
-
   EnvelopeHelper = (function() {
     function EnvelopeHelper(envelope) {
       this.envelope = envelope;

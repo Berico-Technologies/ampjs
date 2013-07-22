@@ -28,7 +28,5 @@ requirejs.config
 
 
 requirejs [
-  'underscore'
-  'stomp'
-  'sockjs'
-], (_,Stop, SockJS) ->
+  'amp/factory/ShortBus'
+], (ShortBus) ->

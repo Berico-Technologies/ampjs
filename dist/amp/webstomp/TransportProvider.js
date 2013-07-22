@@ -1,6 +1,5 @@
 define(['./Listener', 'underscore', 'jquery', '../util/Logger'], function(Listener, _, $, Logger) {
   var TransportProvider;
-
   TransportProvider = (function() {
     TransportProvider.prototype.listeners = {};
 
@@ -8,7 +7,6 @@ define(['./Listener', 'underscore', 'jquery', '../util/Logger'], function(Listen
 
     function TransportProvider(config) {
       var _ref, _ref1;
-
       config = config != null ? config : {};
       this.topologyService = (_ref = config.topologyService) != null ? _ref : {};
       this.channelProvider = (_ref1 = config.channelProvider) != null ? _ref1 : {};
@@ -17,13 +15,11 @@ define(['./Listener', 'underscore', 'jquery', '../util/Logger'], function(Listen
     TransportProvider.prototype.register = function(registration) {
       var deferred, pendingListeners,
         _this = this;
-
       Logger.log.info("TransportProvider.register >> registering new connection");
       deferred = $.Deferred();
       pendingListeners = [];
       this.topologyService.getRoutingInfo(registration.registrationInfo).then(function(routing) {
         var exchange, exchanges, listenerDeferred, _i, _len;
-
         exchanges = _.pluck(routing.routes, 'consumerExchange');
         for (_i = 0, _len = exchanges.length; _i < _len; _i++) {
           exchange = exchanges[_i];
@@ -45,11 +41,9 @@ define(['./Listener', 'underscore', 'jquery', '../util/Logger'], function(Listen
     TransportProvider.prototype._createListener = function(registration, exchange) {
       var deferred,
         _this = this;
-
       deferred = $.Deferred();
       this.channelProvider.getConnection(exchange).then(function(connection) {
         var listener;
-
         listener = _this._getListener(registration, exchange);
         listener.onEnvelopeReceived({
           handleRecieve: function(dispatcher) {
@@ -77,12 +71,10 @@ define(['./Listener', 'underscore', 'jquery', '../util/Logger'], function(Listen
     TransportProvider.prototype.send = function(envelope) {
       var deferred, pendingExchanges,
         _this = this;
-
       deferred = $.Deferred();
       pendingExchanges = [];
       this.topologyService.getRoutingInfo(envelope.getHeaders()).then(function(routing) {
         var exchange, exchangeDeferred, exchanges, _i, _len;
-
         exchanges = _.pluck(routing.routes, 'producerExchange');
         for (_i = 0, _len = exchanges.length; _i < _len; _i++) {
           exchange = exchanges[_i];
@@ -90,7 +82,6 @@ define(['./Listener', 'underscore', 'jquery', '../util/Logger'], function(Listen
           pendingExchanges.push(exchangeDeferred);
           _this.channelProvider.getConnection(exchange).then(function(connection, existing) {
             var entry, headers, newHeaders;
-
             newHeaders = {};
             headers = envelope.getHeaders();
             for (entry in headers) {
@@ -118,7 +109,6 @@ define(['./Listener', 'underscore', 'jquery', '../util/Logger'], function(Listen
 
     TransportProvider.prototype.raise_onEnvelopeRecievedEvent = function(dispatcher) {
       var callback, _i, _len, _ref, _results;
-
       _ref = this.envCallbacks;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
@@ -130,7 +120,6 @@ define(['./Listener', 'underscore', 'jquery', '../util/Logger'], function(Listen
 
     TransportProvider.prototype.dispose = function() {
       var deferred, listener, pendingCleanups, registration, _ref;
-
       deferred = $.Deferred();
       pendingCleanups = [];
       pendingCleanups.push(this.channelProvider.dispose());

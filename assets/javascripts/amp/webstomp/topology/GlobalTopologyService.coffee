@@ -8,12 +8,15 @@ define [
 (Logger, LRUCache, _, EnvelopeHeaderConstants, $)->
   class GlobalTopologyService
     @CACHE_EXPIRY_TIME_IN_MS: 1000000
-    @WEBSTOMP_PORT_OVERRIDE: 15674
-    @WEBSTOMP_VHOST_OVERRIDE: "/stomp"
     routingInfoCache: {}
     fallbackProvider: null
 
-    constructor: (@routingInfoRetriever, cacheExpiryTime, @fallbackProvider)->
+    constructor: (config = {})->
+      {@routingInfoRetriever, cacheExpiryTime, @fallbackProvider, @exchangeOverrides} = config
+      unless _.isObject @exchangeOverrides then @exchangeOverrides =
+        port: 15678
+        vHost: '/stomp'
+
       @routingInfoCache = new LRUCache(
         maxAge: if _.isNumber cacheExpiryTime then cacheExpiryTime else GlobalTopologyService.CACHE_EXPIRY_TIME_IN_MS
       )
@@ -41,9 +44,9 @@ define [
 
     _fixExhangeInformation: (routingInfo)->
       for route in routingInfo.routes
-        route.consumerExchange.port = GlobalTopologyService.WEBSTOMP_PORT_OVERRIDE
-        route.consumerExchange.vHost = GlobalTopologyService.WEBSTOMP_VHOST_OVERRIDE
-        route.producerExchange.port = GlobalTopologyService.WEBSTOMP_PORT_OVERRIDE
-        route.producerExchange.vHost = GlobalTopologyService.WEBSTOMP_VHOST_OVERRIDE
+        for override, value of @exchangeOverrides
+          route.consumerExchange[override] = value
+          route.producerExchange[override] = value
+
 
   return GlobalTopologyService

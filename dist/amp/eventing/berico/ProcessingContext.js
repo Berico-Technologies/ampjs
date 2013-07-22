@@ -1,6 +1,5 @@
 define([], function() {
   var ProcessingContext;
-
   ProcessingContext = (function() {
     ProcessingContext.prototype.properties = {};
 

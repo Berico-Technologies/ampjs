@@ -1,6 +1,5 @@
 define(['../../webstomp/TransportProvider', '../../webstomp/ChannelProvider', '../../webstomp/topology/SimpleTopologyService', 'underscore', '../../util/Logger'], function(WebStompTransportProvider, WebStompChannelProvider, SimpleTopologyService, _, Logger) {
   var TransportFactory;
-
   TransportFactory = (function() {
     function TransportFactory() {}
 
@@ -18,7 +17,6 @@ define(['../../webstomp/TransportProvider', '../../webstomp/ChannelProvider', '.
 
     TransportFactory.getTransportProvider = function(config) {
       var channelProvider, topologyService;
-
       Logger.log.info("TransportFactory.getTransportProvider >> getting transport provider");
       if (!_.isObject(config) && _.isString(config)) {
         config = {

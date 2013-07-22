@@ -1,6 +1,5 @@
 define(['jshashes'], function(Hashes) {
   var Exchange;
-
   Exchange = (function() {
     function Exchange(name, hostName, vHost, port, routingKey, queueName, exchangeType, isDurable, isAutoDelete, _arguments) {
       this.name = name;

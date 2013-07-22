@@ -3,20 +3,40 @@ var __hasProp = {}.hasOwnProperty,
 
 define(['./SimpleTopologyService', '../../bus/berico/EnvelopeHeaderConstants', '../../util/Logger'], function(SimpleTopoologyService, EnvelopeHeaderConstants, Logger) {
   var DefaultApplicationExchangeProvider;
-
   DefaultApplicationExchangeProvider = (function(_super) {
     __extends(DefaultApplicationExchangeProvider, _super);
 
-    function DefaultApplicationExchangeProvider(managementHostname, managementPort, managementServiceUrl, clientProfile, name, hostname, vhost, port) {
-      this.managementHostname = managementHostname;
-      this.managementPort = managementPort;
-      this.managementServiceUrl = managementServiceUrl;
-      DefaultApplicationExchangeProvider.__super__.constructor.call(this, clientProfile, name, hostname, vhost, port);
+    function DefaultApplicationExchangeProvider(config) {
+      var clientProfile, exchangeHostname, exchangeName, exchangePort, exchangeVhost;
+      if (config == null) {
+        config = {};
+      }
+      this.managementHostname = config.managementHostname, this.managementPort = config.managementPort, this.managementServiceUrl = config.managementServiceUrl, this.connectionStrategy = config.connectionStrategy, clientProfile = config.clientProfile, exchangeName = config.exchangeName, exchangeHostname = config.exchangeHostname, exchangeVhost = config.exchangeVhost, exchangePort = config.exchangePort;
+      if (!_.isString(this.managementHostname)) {
+        this.managementHostname = 'localhost';
+      }
+      if (!_.isNumber(this.managementPort)) {
+        this.managementPort = 15677;
+      }
+      if (!_.isString(this.managementServiceUrl)) {
+        this.managementServiceUrl = '/service/fallbackRouting/routeCreator';
+      }
+      if (!_.isFunction(this.connectionStrategy)) {
+        this.connectionStrategy = function() {
+          return "https://" + this.managementHostname + ":" + this.managementPort + this.managementServiceUrl;
+        };
+      }
+      DefaultApplicationExchangeProvider.__super__.constructor.call(this, {
+        clientProfile: clientProfile,
+        name: exchangeName,
+        hostname: exchangeHostname,
+        vhost: exchangeVhost,
+        port: exchangePort
+      });
     }
 
     DefaultApplicationExchangeProvider.prototype.getFallbackRoute = function(topic) {
       var headers;
-
       headers = [];
       headers[EnvelopeHeaderConstants.MESSAGE_TOPIC] = topic;
       return this.getRoutingInfo(headers);
@@ -24,10 +44,9 @@ define(['./SimpleTopologyService', '../../bus/berico/EnvelopeHeaderConstants', '
 
     DefaultApplicationExchangeProvider.prototype.createRoute = function(exchange) {
       var deferred, req;
-
       deferred = $.Deferred();
       req = $.ajax({
-        url: "http://" + this.managementHostname + ":" + this.managementPort + this.managementServiceUrl,
+        url: this.connectionStrategy(),
         dataType: 'jsonp',
         data: {
           data: JSON.stringify(exchange)
