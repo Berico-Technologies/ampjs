@@ -55,7 +55,6 @@ define [
       Logger.log.info "ChannelProvider._createConnection >> attempting to create a new connection"
       @authenticationProvider.getCredentials().then (credentials)=>
         {username, password} = credentials
-        Logger.log.info "Using username #{username} and password #{password}"
         ws = new @connectionFactory(@connectionStrategy(exchange))
         client = Stomp.over(ws)
         #rabbit does not support heartbeat in stomp 1.1, you need to set this to 0

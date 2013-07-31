@@ -82,7 +82,7 @@ define [
       return deferred.promise()
 
     unregister: (registration)->
-      delete listeners[registration]
+      delete @listeners[registration]
     onEnvelopeRecieved: (callback)->
       @envCallbacks.push(callback)
     raise_onEnvelopeRecievedEvent: (dispatcher)->

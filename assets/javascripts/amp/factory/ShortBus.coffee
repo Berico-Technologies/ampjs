@@ -12,8 +12,9 @@ define [
   '../util/Logger'
   '../bus/berico/EnvelopeHelper'
   '../webstomp/topology/DefaultAuthenticationProvider'
+  '../eventing/berico/RpcBus'
 ],
-(TransportProviderFactory, GlobalTopologyService, ChannelProvider, DefaultApplicationExchangeProvider, EnvelopeBus, JsonEventSerializer, OutboundHeadersProcessor, EventBus, RoutingInfoRetriever, _, Logger, EnvelopeHelper, DefaultAuthenticationProvider)->
+(TransportProviderFactory, GlobalTopologyService, ChannelProvider, DefaultApplicationExchangeProvider, EnvelopeBus, JsonEventSerializer, OutboundHeadersProcessor, EventBus, RoutingInfoRetriever, _, Logger, EnvelopeHelper, DefaultAuthenticationProvider, RpcBus)->
 
   class HeaderOverrider
     constructror: (@override)->
@@ -25,6 +26,9 @@ define [
       Logger.log.info "HeaderOverrider.processOutbound >> overrode type and topic headers to #{@override}"
 
   class ShortBus
+    @BUSTYPE:
+        RPC: 'rpc'
+        EVENT: 'event'
 
     @getBus: (config={})->
       {
@@ -35,7 +39,7 @@ define [
         fallbackTopoExchangePort, gtsCacheExpiryTime, gtsExchangeOverrides,
         channelProviderConnectionStrategy, channelProviderConnectionFactory, publishTopicOverride,
         authenticationProviderHostname, authenticationProviderPort, authenticationProviderServiceUrl,
-        authenticationProviderConnectionStrategy
+        authenticationProviderConnectionStrategy, busType
       } = config
 
 
@@ -98,6 +102,11 @@ define [
         }
       outboundProcessors.push(new OutboundHeadersProcessor(),new JsonEventSerializer())
 
-      new EventBus(envelopeBus, inboundProcessors, outboundProcessors)
+      if(busType == ShortBus.BUSTYPE.RPC)
+        console.log "rpc bus"
+        new RpcBus(envelopeBus, inboundProcessors, outboundProcessors)
+      else
+        console.log "eventbus"
+        new EventBus(envelopeBus, inboundProcessors, outboundProcessors)
 
   return ShortBus
