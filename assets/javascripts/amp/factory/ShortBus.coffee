@@ -103,10 +103,8 @@ define [
       outboundProcessors.push(new OutboundHeadersProcessor(),new JsonEventSerializer())
 
       if(busType == ShortBus.BUSTYPE.RPC)
-        console.log "rpc bus"
         new RpcBus(envelopeBus, inboundProcessors, outboundProcessors)
       else
-        console.log "eventbus"
         new EventBus(envelopeBus, inboundProcessors, outboundProcessors)
 
   return ShortBus
