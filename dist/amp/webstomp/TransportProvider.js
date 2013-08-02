@@ -100,7 +100,7 @@ define(['./Listener', 'underscore', 'jquery', '../util/Logger'], function(Listen
     };
 
     TransportProvider.prototype.unregister = function(registration) {
-      return delete listeners[registration];
+      return delete this.listeners[registration];
     };
 
     TransportProvider.prototype.onEnvelopeRecieved = function(callback) {

@@ -1,4 +1,4 @@
-define([], function() {
+define(['../util/Logger'], function(Logger) {
   var EventHandler;
   EventHandler = (function() {
     function EventHandler() {}
@@ -8,7 +8,7 @@ define([], function() {
     };
 
     EventHandler.prototype.handle = function(arg0, arg1) {
-      return console.log("EventHandler.handle >> recieved new event to handle");
+      return Logger.log.info("EventHandler.handle >> recieved new event to handle");
     };
 
     EventHandler.prototype.handleFailed = function(arg0, arg1) {};

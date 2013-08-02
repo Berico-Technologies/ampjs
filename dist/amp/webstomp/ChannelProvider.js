@@ -67,7 +67,6 @@ define(['stomp', '../util/Logger', 'sockjs', 'underscore', 'jquery', './topology
       return this.authenticationProvider.getCredentials().then(function(credentials) {
         var client, password, username, ws;
         username = credentials.username, password = credentials.password;
-        Logger.log.info("Using username " + username + " and password " + password);
         ws = new _this.connectionFactory(_this.connectionStrategy(exchange));
         client = Stomp.over(ws);
         client.heartbeat = {
