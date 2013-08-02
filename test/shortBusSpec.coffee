@@ -53,3 +53,16 @@ define [
           handleFailed: (arg0, arg1)->
           }).then ->
             shortBus.publish({data: 'interesting stuff'})
+    unless testConfig.useEmulatedWebSocket || testConfig.useSimulatedManager
+      it 'should support RPC-based data exchange', (done)->
+        @timeout(5000)
+        shortBus = ShortBus.getBus({
+          publishTopicOverride: "models.CompartmentInfo"
+          exchangeProviderHostname: "gts.archnet.mil"
+          routingInfoHostname: "gts.archnet.mil"
+          authenticationProviderHostname: "anubis.archnet.mil"
+          fallbackTopoExchangeHostname: "rabbit02.archnet.mil"
+          busType: ShortBus.BUSTYPE.RPC
+          })
+        shortBus.getResponseTo({data: 'interesting stuff'},1000, "models.CompartmentInfo").then (data)->
+          console.log "yay"

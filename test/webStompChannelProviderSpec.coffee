@@ -20,6 +20,8 @@ define [
   exchange = new Exchange('test','127.0.0.1','/stomp',15674)
 
   MockAMQPServer.configure 'http://127.0.0.1:15674/stomp', ->
+    @addResponder('message',"CONNECT\naccept-version:1.1,1.0\nheart-beat:0,0\nlogin:CN=Test User, CN=Users, DC=archnet, DC=mil\npasscode:4MbBsTPMGkOyFmLRl/Ax5A==\n\n\u0000")
+      .respond("CONNECTED\nsession:session-8N75XCn8cB8VBQxD1gh9fg\nheart-beat:0,0\nserver:RabbitMQ/3.0.4\nversion:1.1\n\n")
     @addResponder('message', "CONNECT\naccept-version:1.1,1.0\nheart-beat:0,0\nlogin:guest\npasscode:guest\n\n\u0000")
       .respond("CONNECTED\nsession:session-8N75XCn8cB8VBQxD1gh9fg\nheart-beat:0,0\nserver:RabbitMQ/3.0.4\nversion:1.1\n\n")
     @addResponder('message', "SUBSCRIBE\nid:sub-0\ndestination:/queue/test\n\n\u0000")
@@ -51,6 +53,18 @@ define [
         connectionStrategy: (exchange) ->
           "http://127.0.0.1:15674/stomp"
       })
+      if testConfig.useSimulatedManager
+        sinon.stub $, 'ajax',(options)->
+          deferred = $.Deferred()
+          switch options.url
+            when 'https://localhost:15679/anubis/identity/authenticate'
+              response = '{"token":"4MbBsTPMGkOyFmLRl/Ax5A==","identity":"CN=Test User, CN=Users, DC=archnet, DC=mil"}'
+            else
+              Logger.log.error "Unable to emulate repsonse to request #{options.url}"
+          deferred.resolve(JSON.parse(response))
+          return deferred.promise()
+    afterEach ->
+      $.ajax.restore() if testConfig.useSimulatedManager
 
     it 'should not be null', ->
       assert.notEqual channelProvider, null

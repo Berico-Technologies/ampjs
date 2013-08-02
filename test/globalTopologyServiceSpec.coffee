@@ -15,8 +15,9 @@ define [
   'test/websocket/Server.coffee-compiled'
   'test/websocket/Client.coffee-compiled'
   'jquery'
+  'amp/webstomp/topology/DefaultAuthenticationProvider'
 ],
-(_, GlobalTopologyService, EnvelopeHeaderConstants, RoutingInfoRetriever, EnvelopeHelper, DefaultApplicationExchangeProvider, TransportProviderFactory, JsonEventSerializer, EventBus, EnvelopeBus, OutboundHeadersProcessor, ChannelProvider, Logger, MockAMQPServer, MockWebSocket, $) ->
+(_, GlobalTopologyService, EnvelopeHeaderConstants, RoutingInfoRetriever, EnvelopeHelper, DefaultApplicationExchangeProvider, TransportProviderFactory, JsonEventSerializer, EventBus, EnvelopeBus, OutboundHeadersProcessor, ChannelProvider, Logger, MockAMQPServer, MockWebSocket, $, DefaultAuthenticationProvider) ->
 
   class HeaderOverrider
     processOutbound: (context)->
@@ -46,7 +47,7 @@ define [
 
   describe 'The Global Topology Service', ->
     MockAMQPServer.configure 'http://localhost:15674/stomp', ->
-      @addResponder('message',"CONNECT\naccept-version:1.1,1.0\nheart-beat:0,0\nlogin:guest\npasscode:guest\n\n\u0000"  )
+      @addResponder('message',"CONNECT\naccept-version:1.1,1.0\nheart-beat:0,0\nlogin:CN=Test User, CN=Users, DC=archnet, DC=mil\npasscode:4MbBsTPMGkOyFmLRl/Ax5A==\n\n\u0000")
         .respond("CONNECTED\nsession:session-hrB7nF3u2quJUTjWc5Owgg\nheart-beat:0,0\nserver:RabbitMQ/3.0.4\nversion:1.1\n\n\u0000")
 
       @addResponder('message',"SUBSCRIBE\nid:sub-0\ndestination:/amq/queue/security-service\n\n\u0000")
@@ -70,6 +71,8 @@ define [
               response = '{"routes":[{"consumerExchange":{"arguments":null,"exchangeType":"direct","hostName":"localhost","isAutoDelete":false,"isDurable":false,"name":"cmf.apps","port":5672,"queueName":"","routingKey":"amq.direct","virtualHost":"/"},"producerExchange":{"arguments":null,"exchangeType":"direct","hostName":"localhost","isAutoDelete":false,"isDurable":false,"name":"cmf.apps","port":5672,"queueName":"","routingKey":"amq.direct","virtualHost":"/"}}]}'
             when 'http://localhost:15677/service/fallbackRouting/routeCreator'
               response = '{"statusType":"OK","entity":null,"entityType":null,"metadata":{},"status":200}'
+            when 'https://localhost:15679/anubis/identity/authenticate'
+              response = '{"token":"4MbBsTPMGkOyFmLRl/Ax5A==","identity":"CN=Test User, CN=Users, DC=archnet, DC=mil"}'
             else
               Logger.log.error "Unable to emulate repsonse to request #{options.url}"
           deferred.resolve(JSON.parse(response))
