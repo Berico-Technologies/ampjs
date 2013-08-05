@@ -26,7 +26,7 @@ define [
       return deferred.promise()
     publish: (event)->
       envelope = new Envelope()
-      @processOutbound(event, envelope).then ->
+      @processOutbound(event, envelope).then =>
         @envelopeBus.send(envelope)
     subscribe: (eventHandler)->
       registration = new EventRegistration(eventHandler, @inboundProcessors)
