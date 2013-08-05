@@ -89,7 +89,9 @@ define(['../bus/berico/TransportProviderFactory', '../webstomp/topology/GlobalTo
           }
         });
       }
-      outboundProcessors.push(new OutboundHeadersProcessor(), new JsonEventSerializer());
+      outboundProcessors.push(new OutboundHeadersProcessor({
+        authenticationProvider: authenticationProvider
+      }), new JsonEventSerializer());
       if (busType === ShortBus.BUSTYPE.RPC) {
         return new RpcBus(envelopeBus, inboundProcessors, outboundProcessors);
       } else {

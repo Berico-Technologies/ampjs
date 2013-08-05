@@ -12,23 +12,26 @@ define(['./EventBus', '../../util/Logger', './ProcessingContext', 'uuid', '../..
     }
 
     RpcBus.prototype.getResponseTo = function(request, timeout, expectedTopic) {
-      var deferred, env, requestId, rpcRegistration,
+      var deferred, env, requestId,
         _this = this;
       Logger.log.info("RpcBus.getResponseTo >> executing get response");
       deferred = $.Deferred();
       requestId = uuid.v4();
       env = this.buildRequestEnvelope(requestId, timeout);
-      this.processOutbound(request, env);
-      rpcRegistration = new RpcRegistration({
-        requestId: requestId,
-        expectedTopic: expectedTopic,
-        inboundChain: this.inboundProcessors
-      });
-      this.envelopeBus.register(rpcRegistration);
-      this.envelopeBus.send(env);
-      rpcRegistration.getResponse().then(function(data) {
-        _this.envelopeBus.unregister(rpcRegistration);
-        return deferred.resolve(data);
+      this.processOutbound(request, env).then(function() {
+        var rpcRegistration;
+        rpcRegistration = new RpcRegistration({
+          requestId: requestId,
+          expectedTopic: expectedTopic,
+          inboundChain: _this.inboundProcessors
+        });
+        return _this.envelopeBus.register(rpcRegistration).then(function() {
+          _this.envelopeBus.send(env);
+          return rpcRegistration.getResponse().then(function(data) {
+            _this.envelopeBus.unregister(rpcRegistration);
+            return deferred.resolve(data);
+          });
+        });
       });
       return deferred.promise();
     };

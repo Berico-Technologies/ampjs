@@ -23,7 +23,10 @@ define(['../../bus/berico/EnvelopeHelper', 'jquery', './ProcessingContext', './E
     }
 
     RpcRegistration.prototype.buildRpcTopic = function(expectedTopic, requestId) {
-      return "" + expectedTopic + "#" + requestId;
+      var topic;
+      topic = "" + expectedTopic + "#" + requestId;
+      Logger.log.info("RpcRegistration.buildRpcTopic >> rpc topic is " + topic);
+      return topic;
     };
 
     RpcRegistration.prototype.getResponse = function() {
