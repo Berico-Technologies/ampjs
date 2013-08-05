@@ -1,4 +1,4 @@
-define(['./ProcessingContext', '../../bus/Envelope', './EventRegistration', '../../util/Logger'], function(ProcessingContext, Envelope, EventRegistration, Logger) {
+define(['./ProcessingContext', '../../bus/Envelope', './EventRegistration', '../../util/Logger', 'jquery'], function(ProcessingContext, Envelope, EventRegistration, Logger, $) {
   var EventBus;
   EventBus = (function() {
     function EventBus(envelopeBus, inboundProcessors, outboundProcessors) {
@@ -16,23 +16,32 @@ define(['./ProcessingContext', '../../bus/Envelope', './EventRegistration', '../
     };
 
     EventBus.prototype.processOutbound = function(event, envelope) {
-      var context, outboundProcessor, _i, _len, _ref, _results;
+      var context, deferred, looper, outboundProcessor, _i, _len, _ref;
       Logger.log.info("EventBus.processOutbound >> executing processors");
       context = new ProcessingContext(envelope, event);
+      deferred = $.Deferred();
+      looper = $.Deferred().resolve();
       _ref = this.outboundProcessors;
-      _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         outboundProcessor = _ref[_i];
-        _results.push(outboundProcessor.processOutbound(context));
+        looper = looper.then(function() {
+          return outboundProcessor.processOutbound(context);
+        });
       }
-      return _results;
+      looper.then(function() {
+        Logger.log.info("EventBus.processOutbound >> all outbound processors executed");
+        return deferred.resolve();
+      });
+      return deferred.promise();
     };
 
     EventBus.prototype.publish = function(event) {
-      var envelope;
+      var envelope,
+        _this = this;
       envelope = new Envelope();
-      this.processOutbound(event, envelope);
-      return this.envelopeBus.send(envelope);
+      return this.processOutbound(event, envelope).then(function() {
+        return _this.envelopeBus.send(envelope);
+      });
     };
 
     EventBus.prototype.subscribe = function(eventHandler) {

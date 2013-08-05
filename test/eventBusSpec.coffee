@@ -20,7 +20,7 @@ define [
     @addResponder('message',"SUBSCRIBE\nid:sub-0\ndestination:/amq/queue/TESTONLY#001#GenericMessage\n\n\u0000")
       .respond("")
 
-    @addResponder('message', "SEND\ncmf.bus.message.id:testmessageid\ncmf.bus.message.type:GenericMessage\ncmf.bus.message.topic:GenericMessage\ncmf.bus.message.sender_identity:unknown\ndestination:/exchange/cmf.simple.exchange/GenericMessage\ncontent-length:58\n\n{\"name\":\"Smiley Face\",\"type\":\"ascii\",\"visualization\":\":)\"}\u0000"  )
+    @addResponder('message', "SEND\ncmf.bus.message.id:testmessageid\ncmf.bus.message.type:GenericMessage\ncmf.bus.message.topic:GenericMessage\ncmf.bus.message.sender_identity:CN=Test User, CN=Users, DC=archnet, DC=mil\ndestination:/exchange/cmf.simple.exchange/GenericMessage\ncontent-length:58\n\n{\"name\":\"Smiley Face\",\"type\":\"ascii\",\"visualization\":\":)\"}\u0000" )
       .respond("MESSAGE\nsubscription:sub-0\ndestination:/exchange/cmf.simple.exchange/GenericMessage\nmessage-id:T_sub-0@@session-7SIBEp8KAROK0Jb61n0eog@@1\ncmf.bus.message.sender_identity:unknown\ncmf.bus.message.topic:GenericMessage\ncmf.bus.message.type:GenericMessage\ncmf.bus.message.id:testmessageid\ncontent-length:58\n\n{\"name\":\"Smiley Face\",\"type\":\"ascii\",\"visualization\":\":)\"}\u0000" )
 
 

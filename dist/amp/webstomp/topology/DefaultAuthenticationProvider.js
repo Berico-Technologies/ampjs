@@ -46,8 +46,6 @@ define(['jquery', 'underscore', '../../util/Logger'], function($, _, Logger) {
       return deferred.promise();
     };
 
-    DefaultAuthenticationProvider.prototype.getPassword = function() {};
-
     DefaultAuthenticationProvider.prototype._authenticate = function() {
       var deferred, req,
         _this = this;

@@ -46,7 +46,11 @@ define(['uuid', '../../util/Logger', './RoutingInfo', './RouteInfo', './Exchange
     };
 
     SimpleTopologyService.prototype.buildIdentifiableQueueName = function(topic) {
-      return "" + this.clientProfile + "#" + (this.pad(++this.queue_number, 3, 0)) + "#" + topic;
+      if (topic.indexOf("#") === -1) {
+        return "" + this.clientProfile + "#" + (this.pad(++this.queue_number, 3, 0)) + "#" + topic;
+      } else {
+        return topic;
+      }
     };
 
     SimpleTopologyService.prototype.pad = function(n, width, z) {

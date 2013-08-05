@@ -24,15 +24,24 @@ define [
     processOutbound: (envelope)->
       Logger.log.info "EnvelopeBus.processOutbound >> executing processors"
       context = {}
-      outboundProcessor.processOutbound(envelope, context) for outboundProcessor in @outboundProcessors
+
+      deferred = $.Deferred()
+      looper = $.Deferred().resolve()
+      for outboundProcessor in @outboundProcessors
+        looper = looper.then ->
+          return outboundProcessor.processOutbound(envelope, context)
+      looper.then ->
+        Logger.log.info "EnvelopeBus.processOutbound >> all outbound processors executed"
+        deferred.resolve()
+      return deferred.promise()
 
     register: (registration)->
       @transportProvider.register registration unless _.isNull registration
 
     send: (envelope)->
       Logger.log.info "EnvelopeBus.send >> sending envelope"
-      @processOutbound(envelope)
-      @transportProvider.send(envelope)
+      @processOutbound(envelope).then =>
+        @transportProvider.send(envelope)
 
     setInboundProcessors: (@inboundProcessors)->
 

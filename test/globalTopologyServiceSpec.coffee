@@ -53,7 +53,7 @@ define [
       @addResponder('message',"SUBSCRIBE\nid:sub-0\ndestination:/amq/queue/security-service\n\n\u0000")
         .respond("")
 
-      @addResponder('message', "SEND\ncmf.bus.message.id:testmessageid\ncmf.bus.message.type:cmf.security.AccessEvent\ncmf.bus.message.topic:cmf.security.AccessEvent\ncmf.bus.message.sender_identity:unknown\ndestination:/exchange/cmf.security/cmf.security\ncontent-length:40\n\n{\"interestingStuff\":\"interesting stuff\"}\u0000")
+      @addResponder('message', "SEND\ncmf.bus.message.id:testmessageid\ncmf.bus.message.type:cmf.security.AccessEvent\ncmf.bus.message.topic:cmf.security.AccessEvent\ncmf.bus.message.sender_identity:CN=Test User, CN=Users, DC=archnet, DC=mil\ndestination:/exchange/cmf.security/cmf.security\ncontent-length:40\n\n{\"interestingStuff\":\"interesting stuff\"}\u0000")
         .respond("MESSAGE\nsubscription:sub-0\ndestination:/exchange/cmf.security/cmf.security\nmessage-id:T_sub-0@@session-_-izNu4iMzsblSU57HFbag@@1\ncmf.bus.message.sender_identity:unknown\ncmf.bus.message.topic:cmf.security.AccessEvent\ncmf.bus.message.type:cmf.security.AccessEvent\ncmf.bus.message.id:testmessageid\ncontent-length:40\n\n{\"interestingStuff\":\"interesting stuff\"}\u0000" )
 
 

@@ -43,16 +43,23 @@ define(['underscore', '../berico/InboundEnvelopeProcessorCallback', '../../util/
     };
 
     EnvelopeBus.prototype.processOutbound = function(envelope) {
-      var context, outboundProcessor, _i, _len, _ref, _results;
+      var context, deferred, looper, outboundProcessor, _i, _len, _ref;
       Logger.log.info("EnvelopeBus.processOutbound >> executing processors");
       context = {};
+      deferred = $.Deferred();
+      looper = $.Deferred().resolve();
       _ref = this.outboundProcessors;
-      _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         outboundProcessor = _ref[_i];
-        _results.push(outboundProcessor.processOutbound(envelope, context));
+        looper = looper.then(function() {
+          return outboundProcessor.processOutbound(envelope, context);
+        });
       }
-      return _results;
+      looper.then(function() {
+        Logger.log.info("EnvelopeBus.processOutbound >> all outbound processors executed");
+        return deferred.resolve();
+      });
+      return deferred.promise();
     };
 
     EnvelopeBus.prototype.register = function(registration) {
@@ -62,9 +69,11 @@ define(['underscore', '../berico/InboundEnvelopeProcessorCallback', '../../util/
     };
 
     EnvelopeBus.prototype.send = function(envelope) {
+      var _this = this;
       Logger.log.info("EnvelopeBus.send >> sending envelope");
-      this.processOutbound(envelope);
-      return this.transportProvider.send(envelope);
+      return this.processOutbound(envelope).then(function() {
+        return _this.transportProvider.send(envelope);
+      });
     };
 
     EnvelopeBus.prototype.setInboundProcessors = function(inboundProcessors) {

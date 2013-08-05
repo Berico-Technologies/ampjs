@@ -23,7 +23,9 @@ define [
       @requestDeferred = $.Deferred()
 
     buildRpcTopic: (expectedTopic, requestId)->
-      "#{expectedTopic}##{requestId}"
+      topic = "#{expectedTopic}##{requestId}"
+      Logger.log.info "RpcRegistration.buildRpcTopic >> rpc topic is #{topic}"
+      return topic
 
     getResponse: ()->
       @requestDeferred.promise()

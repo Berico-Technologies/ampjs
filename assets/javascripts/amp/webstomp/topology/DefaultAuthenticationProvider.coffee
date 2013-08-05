@@ -26,7 +26,6 @@ define [
         deferred.resolve({username: @username, password: @password})
 
       return deferred.promise()
-    getPassword: ->
     _authenticate: ->
       deferred = $.Deferred()
 
