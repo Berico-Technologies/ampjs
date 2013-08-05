@@ -20,26 +20,26 @@ define [
       env = @buildRequestEnvelope(requestId, timeout)
 
       #build the envelope
-      @processOutbound(request, env);
+      @processOutbound(request, env).then =>
 
-      #create RPC registration
-      rpcRegistration = new RpcRegistration({
-        requestId: requestId
-        expectedTopic: expectedTopic
-        inboundChain: @inboundProcessors
-      })
+        #create RPC registration
+        rpcRegistration = new RpcRegistration({
+          requestId: requestId
+          expectedTopic: expectedTopic
+          inboundChain: @inboundProcessors
+        })
 
-      #register with envelope bus
-      @envelopeBus.register(rpcRegistration)
+        #register with envelope bus
+        @envelopeBus.register(rpcRegistration).then =>
 
-      #send the request
-      @envelopeBus.send(env)
+          #send the request
+          @envelopeBus.send(env)
 
-      #get the response
-      rpcRegistration.getResponse().then (data)=>
-        #unregister from the bus
-        @envelopeBus.unregister(rpcRegistration)
-        deferred.resolve(data)
+          #get the response
+          rpcRegistration.getResponse().then (data)=>
+            #unregister from the bus
+            @envelopeBus.unregister(rpcRegistration)
+            deferred.resolve(data)
 
       return deferred.promise()
 

@@ -46,7 +46,10 @@ define [
       return deferred.promise()
 
     buildIdentifiableQueueName: (topic)->
-      "#{@clientProfile}##{@pad(++@queue_number,3,0)}##{topic}"
+      if(topic.indexOf("#") == -1)
+        "#{@clientProfile}##{@pad(++@queue_number,3,0)}##{topic}"
+      else
+        topic
     pad: (n,width,z)->
       z = z || '0';
       n = n + '';

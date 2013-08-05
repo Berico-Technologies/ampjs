@@ -100,7 +100,12 @@ define [
             env.setMessageTopic publishTopicOverride
             Logger.log.info "HeaderOverrider.processOutbound >> overrode type and topic headers to #{publishTopicOverride}"
         }
-      outboundProcessors.push(new OutboundHeadersProcessor(),new JsonEventSerializer())
+      outboundProcessors.push(
+        new OutboundHeadersProcessor({
+          authenticationProvider: authenticationProvider
+        }),
+        new JsonEventSerializer()
+      )
 
       if(busType == ShortBus.BUSTYPE.RPC)
         new RpcBus(envelopeBus, inboundProcessors, outboundProcessors)
