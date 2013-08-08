@@ -16,15 +16,6 @@ define [
 ],
 (TransportProviderFactory, GlobalTopologyService, ChannelProvider, DefaultApplicationExchangeProvider, EnvelopeBus, JsonEventSerializer, OutboundHeadersProcessor, EventBus, RoutingInfoRetriever, _, Logger, EnvelopeHelper, DefaultAuthenticationProvider, RpcBus)->
 
-  class HeaderOverrider
-    constructror: (@override)->
-
-    processOutbound: (context)=>
-      env = new EnvelopeHelper(context.getEnvelope())
-      env.setMessageType @override
-      env.setMessageTopic @override
-      Logger.log.info "HeaderOverrider.processOutbound >> overrode type and topic headers to #{@override}"
-
   class ShortBus
     @BUSTYPE:
         RPC: 'rpc'
@@ -92,20 +83,13 @@ define [
       inboundProcessors = [new JsonEventSerializer()]
 
       outboundProcessors = []
-      unless _.isNull publishTopicOverride
-        outboundProcessors.push {
-          processOutbound: (context)->
-            env = new EnvelopeHelper(context.getEnvelope())
-            env.setMessageType publishTopicOverride
-            env.setMessageTopic publishTopicOverride
-            Logger.log.info "HeaderOverrider.processOutbound >> overrode type and topic headers to #{publishTopicOverride}"
-        }
-      outboundProcessors.push(
-        new OutboundHeadersProcessor({
-          authenticationProvider: authenticationProvider
-        }),
-        new JsonEventSerializer()
-      )
+
+      outboundProcessors = [
+          new OutboundHeadersProcessor({
+            authenticationProvider: authenticationProvider
+          }),
+          new JsonEventSerializer()
+      ]
 
       if(busType == ShortBus.BUSTYPE.RPC)
         new RpcBus(envelopeBus, inboundProcessors, outboundProcessors)

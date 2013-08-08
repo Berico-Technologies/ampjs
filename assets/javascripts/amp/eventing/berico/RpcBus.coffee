@@ -17,7 +17,7 @@ define [
 
       deferred = $.Deferred()
       requestId = uuid.v4()
-      env = @buildRequestEnvelope(requestId, timeout)
+      env = @buildRequestEnvelope(requestId, timeout, expectedTopic)
 
       #build the envelope
       @processOutbound(request, env).then =>
@@ -43,9 +43,14 @@ define [
 
       return deferred.promise()
 
-    buildRequestEnvelope: (requestId, timeout)->
+    buildRequestEnvelope: (requestId, timeout, expectedTopic)->
       env = new Envelope()
       envelopeHelper = new EnvelopeHelper(env)
+
+      #if specified set the topic and type
+      if _.isString expectedTopic
+        envelopeHelper.setMessageType expectedTopic
+        envelopeHelper.setMessageTopic expectedTopic
 
       #set the envelope id
       envelopeHelper.setMessageId(requestId)

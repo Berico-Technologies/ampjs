@@ -4,8 +4,10 @@ define [
   './EventRegistration'
   '../../util/Logger'
   'jquery'
+  '../../bus/berico/EnvelopeHelper'
+  'underscore'
 ],
-(ProcessingContext, Envelope, EventRegistration, Logger, $)->
+(ProcessingContext, Envelope, EventRegistration, Logger, $, EnvelopeHelper, _)->
   class EventBus
     constructor: (@envelopeBus, @inboundProcessors=[], @outboundProcessors=[])->
     dispose: ->
@@ -24,8 +26,14 @@ define [
         Logger.log.info "EventBus.processOutbound >> all outbound processors executed"
         deferred.resolve()
       return deferred.promise()
-    publish: (event)->
+    publish: (event, expectedTopic)->
       envelope = new Envelope()
+
+      if _.isString expectedTopic
+        helper = new EnvelopeHelper(envelope)
+        helper.setMessageType expectedTopic
+        helper.setMessageTopic expectedTopic
+
       @processOutbound(event, envelope).then =>
         @envelopeBus.send(envelope)
     subscribe: (eventHandler)->
