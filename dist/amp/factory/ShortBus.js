@@ -1,27 +1,5 @@
-var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-
 define(['../bus/berico/TransportProviderFactory', '../webstomp/topology/GlobalTopologyService', '../webstomp/ChannelProvider', '../webstomp/topology/DefaultApplicationExchangeProvider', '../bus/berico/EnvelopeBus', '../eventing/berico/serializers/JsonEventSerializer', '../eventing/berico/OutboundHeadersProcessor', '../eventing/berico/EventBus', '../webstomp/topology/RoutingInfoRetriever', 'underscore', '../util/Logger', '../bus/berico/EnvelopeHelper', '../webstomp/topology/DefaultAuthenticationProvider', '../eventing/berico/RpcBus'], function(TransportProviderFactory, GlobalTopologyService, ChannelProvider, DefaultApplicationExchangeProvider, EnvelopeBus, JsonEventSerializer, OutboundHeadersProcessor, EventBus, RoutingInfoRetriever, _, Logger, EnvelopeHelper, DefaultAuthenticationProvider, RpcBus) {
-  var HeaderOverrider, ShortBus;
-  HeaderOverrider = (function() {
-    function HeaderOverrider() {
-      this.processOutbound = __bind(this.processOutbound, this);
-    }
-
-    HeaderOverrider.prototype.constructror = function(override) {
-      this.override = override;
-    };
-
-    HeaderOverrider.prototype.processOutbound = function(context) {
-      var env;
-      env = new EnvelopeHelper(context.getEnvelope());
-      env.setMessageType(this.override);
-      env.setMessageTopic(this.override);
-      return Logger.log.info("HeaderOverrider.processOutbound >> overrode type and topic headers to " + this.override);
-    };
-
-    return HeaderOverrider;
-
-  })();
+  var ShortBus;
   ShortBus = (function() {
     function ShortBus() {}
 
@@ -78,20 +56,11 @@ define(['../bus/berico/TransportProviderFactory', '../webstomp/topology/GlobalTo
       envelopeBus = new EnvelopeBus(transportProvider);
       inboundProcessors = [new JsonEventSerializer()];
       outboundProcessors = [];
-      if (!_.isNull(publishTopicOverride)) {
-        outboundProcessors.push({
-          processOutbound: function(context) {
-            var env;
-            env = new EnvelopeHelper(context.getEnvelope());
-            env.setMessageType(publishTopicOverride);
-            env.setMessageTopic(publishTopicOverride);
-            return Logger.log.info("HeaderOverrider.processOutbound >> overrode type and topic headers to " + publishTopicOverride);
-          }
-        });
-      }
-      outboundProcessors.push(new OutboundHeadersProcessor({
-        authenticationProvider: authenticationProvider
-      }), new JsonEventSerializer());
+      outboundProcessors = [
+        new OutboundHeadersProcessor({
+          authenticationProvider: authenticationProvider
+        }), new JsonEventSerializer()
+      ];
       if (busType === ShortBus.BUSTYPE.RPC) {
         return new RpcBus(envelopeBus, inboundProcessors, outboundProcessors);
       } else {
