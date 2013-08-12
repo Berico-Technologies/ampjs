@@ -1,12 +1,12 @@
 var tests = Object.keys(window.__karma__.files).filter(function(file){
-  return /Spec\.coffee-compiled\.js$/.test(file);
+  // return /Spec\.coffee-compiled\.js$/.test(file);
   // return /(envelope|eventBus|globalTopology|simpleTopology|webStompChannel|webStompTransport).*\.coffee-compiled\.js$/.test(file);
-  // return /(shortBus).*\.coffee-compiled\.js$/.test(file);
+  return /(shortBus).*\.coffee-compiled\.js$/.test(file);
 });
 
 testConfig = {
-  useEmulatedWebSocket: true,
-  useSimulatedManager: true,
+  useEmulatedWebSocket: false,
+  useSimulatedManager: false,
   configureLoggingLevel: function(){
     window.loggingLevel = 'all';
   }()
@@ -28,7 +28,6 @@ requirejs.config({
     'uuid': 'vendor/managed/node-uuid/uuid',
     'test': '../../test',
     'sockjs': 'vendor/managed/sockjs/sockjs',
-    'jshashes': 'vendor/managed/jshashes/hashes',
     'jquery': 'vendor/managed/jquery/jquery',
     'LRUCache': 'vendor/managed/node-lru-cache/lib/lru-cache'
   },

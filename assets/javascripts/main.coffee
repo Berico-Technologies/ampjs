@@ -9,7 +9,6 @@ requirejs.config
     sockjs: 'vendor/managed/sockjs/sockjs'
     flog: 'vendor/managed/flog/flog'
     uuid: 'vendor/managed/node-uuid/uuid'
-    jshashes: 'vendor/managed/jshashes/hashes'
     jquery: 'vendor/managed/jquery/jquery'
     LRUCache: 'vendor/managed/node-lru-cache/lib/lru-cache'
   shim:
