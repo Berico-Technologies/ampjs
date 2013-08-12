@@ -1,4 +1,4 @@
-define(['jshashes'], function(Hashes) {
+define([], function() {
   var Exchange;
   Exchange = (function() {
     function Exchange(name, hostName, vHost, port, routingKey, queueName, exchangeType, isDurable, isAutoDelete, _arguments) {
@@ -16,10 +16,6 @@ define(['jshashes'], function(Hashes) {
 
     Exchange.prototype.toString = function() {
       return "{Name: " + this.name + ", HostName: " + this.hostName + ", VirtualHost: " + this.vHost + ", Port: " + this.port + ", RoutingKey: " + this.routingKey + ", Queue Name: " + this.queueName + ", ExchangeType: " + this.exchangeType + ", IsDurable: " + this.isDurable + ", IsAutoDelete: " + this.isAutoDelete + "}";
-    };
-
-    Exchange.prototype.hashCode = function() {
-      return new Hashes.MD5(this.toString).hex();
     };
 
     Exchange.prototype.equals = function(input) {

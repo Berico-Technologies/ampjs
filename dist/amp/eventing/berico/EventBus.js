@@ -1,4 +1,4 @@
-define(['./ProcessingContext', '../../bus/Envelope', './EventRegistration', '../../util/Logger', 'jquery'], function(ProcessingContext, Envelope, EventRegistration, Logger, $) {
+define(['./ProcessingContext', '../../bus/Envelope', './EventRegistration', '../../util/Logger', 'jquery', '../../bus/berico/EnvelopeHelper', 'underscore'], function(ProcessingContext, Envelope, EventRegistration, Logger, $, EnvelopeHelper, _) {
   var EventBus;
   EventBus = (function() {
     function EventBus(envelopeBus, inboundProcessors, outboundProcessors) {
@@ -35,10 +35,15 @@ define(['./ProcessingContext', '../../bus/Envelope', './EventRegistration', '../
       return deferred.promise();
     };
 
-    EventBus.prototype.publish = function(event) {
-      var envelope,
+    EventBus.prototype.publish = function(event, expectedTopic) {
+      var envelope, helper,
         _this = this;
       envelope = new Envelope();
+      if (_.isString(expectedTopic)) {
+        helper = new EnvelopeHelper(envelope);
+        helper.setMessageType(expectedTopic);
+        helper.setMessageTopic(expectedTopic);
+      }
       return this.processOutbound(event, envelope).then(function() {
         return _this.envelopeBus.send(envelope);
       });

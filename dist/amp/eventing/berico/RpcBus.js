@@ -17,7 +17,7 @@ define(['./EventBus', '../../util/Logger', './ProcessingContext', 'uuid', '../..
       Logger.log.info("RpcBus.getResponseTo >> executing get response");
       deferred = $.Deferred();
       requestId = uuid.v4();
-      env = this.buildRequestEnvelope(requestId, timeout);
+      env = this.buildRequestEnvelope(requestId, timeout, expectedTopic);
       this.processOutbound(request, env).then(function() {
         var rpcRegistration;
         rpcRegistration = new RpcRegistration({
@@ -36,10 +36,14 @@ define(['./EventBus', '../../util/Logger', './ProcessingContext', 'uuid', '../..
       return deferred.promise();
     };
 
-    RpcBus.prototype.buildRequestEnvelope = function(requestId, timeout) {
+    RpcBus.prototype.buildRequestEnvelope = function(requestId, timeout, expectedTopic) {
       var env, envelopeHelper;
       env = new Envelope();
       envelopeHelper = new EnvelopeHelper(env);
+      if (_.isString(expectedTopic)) {
+        envelopeHelper.setMessageType(expectedTopic);
+        envelopeHelper.setMessageTopic(expectedTopic);
+      }
       envelopeHelper.setMessageId(requestId);
       envelopeHelper.setMessagePattern(EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC);
       envelopeHelper.setRpcTimeout(timeout);
