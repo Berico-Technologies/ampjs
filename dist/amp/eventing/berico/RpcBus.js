@@ -11,18 +11,22 @@ define(['./EventBus', '../../util/Logger', './ProcessingContext', 'uuid', '../..
       return _ref;
     }
 
-    RpcBus.prototype.getResponseTo = function(request, timeout, expectedTopic) {
-      var deferred, env, requestId,
+    RpcBus.prototype.getResponseTo = function(config) {
+      var deferred, env, inboundTopic, outboundTopic, request, requestId, timeout,
         _this = this;
+      if (config == null) {
+        config = {};
+      }
+      request = config.request, timeout = config.timeout, outboundTopic = config.outboundTopic, inboundTopic = config.inboundTopic;
       Logger.log.info("RpcBus.getResponseTo >> executing get response");
       deferred = $.Deferred();
       requestId = uuid.v4();
-      env = this.buildRequestEnvelope(requestId, timeout, expectedTopic);
+      env = this.buildRequestEnvelope(requestId, timeout, outboundTopic);
       this.processOutbound(request, env).then(function() {
         var rpcRegistration;
         rpcRegistration = new RpcRegistration({
           requestId: requestId,
-          expectedTopic: expectedTopic,
+          expectedTopic: inboundTopic,
           inboundChain: _this.inboundProcessors
         });
         return _this.envelopeBus.register(rpcRegistration).then(function() {

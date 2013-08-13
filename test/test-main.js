@@ -1,12 +1,12 @@
 var tests = Object.keys(window.__karma__.files).filter(function(file){
-  // return /Spec\.coffee-compiled\.js$/.test(file);
+  return /Spec\.coffee-compiled\.js$/.test(file);
   // return /(envelope|eventBus|globalTopology|simpleTopology|webStompChannel|webStompTransport).*\.coffee-compiled\.js$/.test(file);
-  return /(shortBus).*\.coffee-compiled\.js$/.test(file);
+  // return /(shortBus).*\.coffee-compiled\.js$/.test(file);
 });
 
 testConfig = {
-  useEmulatedWebSocket: false,
-  useSimulatedManager: false,
+  useEmulatedWebSocket: true,
+  useSimulatedManager: true,
   configureLoggingLevel: function(){
     window.loggingLevel = 'all';
   }()

@@ -12,12 +12,13 @@ define [
 (EventBus, Logger, ProcessingContext, uuid, Envelope, EnvelopeHelper, EnvelopeHeaderConstants, RpcRegistration, $)->
   class RpcBus extends EventBus
 
-    getResponseTo: (request, timeout, expectedTopic)->
+    getResponseTo: (config={})->
+      {request, timeout, outboundTopic, inboundTopic} = config
       Logger.log.info "RpcBus.getResponseTo >> executing get response"
 
       deferred = $.Deferred()
       requestId = uuid.v4()
-      env = @buildRequestEnvelope(requestId, timeout, expectedTopic)
+      env = @buildRequestEnvelope(requestId, timeout, outboundTopic)
 
       #build the envelope
       @processOutbound(request, env).then =>
@@ -25,7 +26,7 @@ define [
         #create RPC registration
         rpcRegistration = new RpcRegistration({
           requestId: requestId
-          expectedTopic: expectedTopic
+          expectedTopic: inboundTopic
           inboundChain: @inboundProcessors
         })
 

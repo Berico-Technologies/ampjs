@@ -17,9 +17,6 @@ define [
     it 'should support a printable version of itself', ->
       assert.equal exchange.toString(), '{Name: webstomp, HostName: localhost, VirtualHost: /stomp, Port: 15674, RoutingKey: testTopic, Queue Name: testQueue, ExchangeType: direct, IsDurable: true, IsAutoDelete: false}'
 
-    it 'should support a hashable version of itself', ->
-      assert.equal exchange.hashCode(), 'd41d8cd98f00b204e9800998ecf8427e'
-
     it 'should support an equal method', ->
       assert.equal true, exchange.equals(exchange)
 
