@@ -1,5 +1,5 @@
 define [
-  './Response.coffee-compiled'
+  './Response'
 ],
 (Response)->
   class Responder

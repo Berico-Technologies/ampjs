@@ -26,6 +26,8 @@
     "karma.conf.js",
     "mimosa-config.coffee",
     ".bowerrc",
-    "public/javascripts/vendor"
+    "public/javascripts/vendor",
+    "node_modules"
+    "package.json"
   ]
 }

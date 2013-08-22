@@ -1,8 +1,8 @@
 define [
   'underscore'
   'stomp'
-  'test/websocket/Server.coffee-compiled'
-  'test/websocket/Client.coffee-compiled'
+  'test/websocket/Server'
+  'test/websocket/Client'
   'amp/webstomp/ChannelProvider'
   'sockjs'
   'amp/webstomp/topology/Exchange'

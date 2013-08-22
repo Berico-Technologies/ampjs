@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "karma": "*",
+    "karma-mocha": "*",
+    "karma-coverage": "*",
+    "karma-coffee-preprocessor": "*",
+    "karma-requirejs": "*",
+    "karma-junit-reporter": "*"
+  }
+}

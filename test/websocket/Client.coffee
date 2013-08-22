@@ -1,7 +1,7 @@
 define [
   'amp/util/Logger'
-  './Request.coffee-compiled'
-  './Server.coffee-compiled'
+  './Request'
+  './Server'
   'underscore'
 ],
 (Logger, Request, Server, _)->

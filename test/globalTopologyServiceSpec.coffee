@@ -12,8 +12,8 @@ define [
   'amp/eventing/berico/OutboundHeadersProcessor'
   'amp/webstomp/ChannelProvider'
   'amp/util/Logger'
-  'test/websocket/Server.coffee-compiled'
-  'test/websocket/Client.coffee-compiled'
+  'test/websocket/Server'
+  'test/websocket/Client'
   'jquery'
   'amp/webstomp/topology/DefaultAuthenticationProvider'
 ],

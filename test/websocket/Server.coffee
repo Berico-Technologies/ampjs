@@ -1,9 +1,9 @@
 define [
-  './Request.coffee-compiled'
-  './Responder.coffee-compiled'
+  './Request'
+  './Responder'
   'amp/util/Logger'
   'underscore'
-  './Response.coffee-compiled'
+  './Response'
 ],
 (Request, Responder, Logger, _, Response)->
   class Server
