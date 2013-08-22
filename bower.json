@@ -27,7 +27,7 @@
     "mimosa-config.coffee",
     ".bowerrc",
     "public/javascripts/vendor",
-    "node_modules"
+    "node_modules",
     "package.json"
   ]
 }
