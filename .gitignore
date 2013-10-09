@@ -1,0 +1,6 @@
+assets/javascripts/vendor/managed
+coverage
+node_modules
+public
+test-results.xml
+.mimosa/bower/
