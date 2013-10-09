@@ -23,13 +23,13 @@ requirejs.config({
     'i18n': 'vendor/managed/requirejs-i18n/i18n',
     'domReady': 'vendor/managed/requirejs-domready/domReady',
     'underscore': 'vendor/managed/underscore-amd/underscore',
-    'stomp': 'vendor/managed/stomp-websocket/dist/stomp',
+    'stomp': 'vendor/managed/stomp-websocket/stomp',
     'flog': 'vendor/managed/flog/flog',
     'uuid': 'vendor/managed/node-uuid/uuid',
     'test': '../../test',
     'sockjs': 'vendor/managed/sockjs/sockjs',
     'jquery': 'vendor/managed/jquery/jquery',
-    'LRUCache': 'vendor/managed/node-lru-cache/lib/lru-cache'
+    'LRUCache': 'vendor/managed/node-lru-cache/lru-cache'
   },
   shim:{
     'stomp':{
