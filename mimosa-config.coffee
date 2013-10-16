@@ -1,15 +1,15 @@
 exports.config =
   minMimosaVersion:"1.0.1"
   modules: ['lint'
-    'server'
     'require'
+    'require-library-package'
     'minify'
-    'live-reload'
     'bower'
-    'require-lint']
+    'require-lint'
+    'require-library-package']
   server:
     defaultServer:
-      enabled: true
+      enabled: false
     views:
       compileWith: 'html'
       extension: 'html'
@@ -23,3 +23,19 @@ exports.config =
         "stomp-websocket":["dist/stomp.js"]
         "requirejs-domready":["domReady.js"]
         "requirejs-i18n":["i18n.js"]
+  libraryPackage:
+    packaging:
+      shimmedWithDependencies:true
+      noShimNoDependencies:true
+      noShimWithDependencies:true
+    overrides:
+      shimmedWithDependencies: {}
+      noShimNoDependencies: {}
+      noShimWithDependencies: {}
+    outFolder: "build"
+    cleanOutFolder: true
+    globalName: "ShortBus"
+    name:"ShortBus.js"
+    main:"amp/factory/ShortBus"
+    mainConfigFile: "javascripts/main.js"
+    removeDependencies: []

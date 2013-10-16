@@ -3,49 +3,17 @@
   <head>
     <title>Mimosa</title>
 
+    <link rel="stylesheet" href="/stylesheets/style.css" />
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="/javascripts/reload-client.js"></script>
 
-
-    <script src="/javascripts/vendor/unmanaged/require.js" data-main="/javascripts/main.js"></script>
-    <script type="text/javascript">
-      require([
-        'cmf/bus/berico/TransportProviderFactory',
-        'cmf/eventing/berico/serializers/JsonEventSerializer',
-        'cmf/eventing/berico/EventBus',
-        'cmf/bus/berico/EnvelopeBus',
-        'cmf/eventing/berico/OutboundHeadersProcessor',
-        'cmf/webstomp/ChannelProvider'
-        ], function(TransportProviderFactory, JsonEventSerializer, EventBus, EnvelopeBus, OutboundHeadersProcessor, ChannelProvider){
-
-        var transportProvider = TransportProviderFactory.getTransportProvider({
-          transportProvider: TransportProviderFactory.TransportProviders.WebStomp
-        })
-
-        var eventBus = new EventBus(
-          new EnvelopeBus(transportProvider),
-          [new JsonEventSerializer()],
-          [new OutboundHeadersProcessor(), new JsonEventSerializer()]
-        )
-        eventBus.subscribe({
-          getEventType: function(){
-            return "mil.capture.knowledge.details.service.EntityDetails";
-          },
-          handle: function(arg0, arg1){
-            console.log("in handle");
-          },
-          handleFailed: function(arg0, arg1){
-            console.log('in handle failed');
-          }
-          })
-        })
-    </script>
+    <script src="/javascripts/vendor/requirejs/require.js" data-main="/javascripts/main.js"></script>
 
   </head>
-<body>
+  <body>
 
-  hello
+    <p>Welcome to Mimosa</p>
 
-</body>
+  </body>
 </html>
