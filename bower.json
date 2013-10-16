@@ -1,14 +1,24 @@
 {
   "name": "ampjs",
-  "version": "0.0.14",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "components"
-  ],
-  "main":"public/javascripts/src/app.js",
-  "dependencies":{
-    "jquery": "2.0.2",
+  "version": "0.0.15",
+  "ignore":[
+    "assets/",
+    "coverage/",
+    "karma.conf.js",
+    "makefile",
+    "mimosa-config.coffee",
+    "node_modules"
+    "package.json"
+    "public/",
+    "test/",
+    "test-results.xml",
+    "views/"
+   ]
+
+  "main":"build/noShimNoDependencies/ShortBus.js",
+  "dependencies": {
+    "jquery": "1.10.2",
+    "requirejs": "2.1.8",
     "sockjs": "0.3.4",
     "flog": "0.0.1",
     "modernizr": "2.6.2",
@@ -18,16 +28,5 @@
     "stomp-websocket": "git://github.com/jmesnil/stomp-websocket.git#2.0.0",
     "underscore-amd": "1.4.4",
     "node-lru-cache": "git://github.com/Berico-Technologies/node-lru-cache"
-  },
-  "ignore":[
-    "assets/",
-    "test/",
-    "views/",
-    "karma.conf.js",
-    "mimosa-config.coffee",
-    ".bowerrc",
-    "public/javascripts/vendor",
-    "node_modules",
-    "package.json"
-  ]
+  }
 }
