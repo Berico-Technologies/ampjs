@@ -1,6 +1,21 @@
 {
   "name": "ampjs",
   "version": "0.0.15",
+  "ignore":[
+    "assets/",
+    "coverage/",
+    "karma.conf.js",
+    "makefile",
+    "mimosa-config.coffee",
+    "node_modules"
+    "package.json"
+    "public/",
+    "test/",
+    "test-results.xml",
+    "views/"
+   ]
+
+  "main":"build/noShimNoDependencies/ShortBus.js",
   "dependencies": {
     "jquery": "1.10.2",
     "requirejs": "2.1.8",
