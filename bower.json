@@ -1,6 +1,6 @@
 {
   "name": "ampjs",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "ignore":[
     "assets/",
     "coverage/",
