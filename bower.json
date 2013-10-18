@@ -7,13 +7,13 @@
     "karma.conf.js",
     "makefile",
     "mimosa-config.coffee",
-    "node_modules"
-    "package.json"
+    "node_modules",
+    "package.json",
     "public/",
     "test/",
     "test-results.xml",
     "views/"
-   ]
+   ],
 
   "main":"build/noShimNoDependencies/ShortBus.js",
   "dependencies": {
