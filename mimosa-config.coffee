@@ -5,8 +5,7 @@ exports.config =
     'require-library-package'
     'minify'
     'bower'
-    'require-lint'
-    'require-library-package']
+    'require-lint']
   server:
     defaultServer:
       enabled: false
