@@ -19,6 +19,7 @@ define [
     getReciptTime: -> @envelope.getHeader(EnvelopeHeaderConstants.ENVELOPE_RECEIPT_TIME)
     getRpcTimeout: -> @envelope.getHeader(EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC_TIMEOUT)
     getSenderIdentity: -> @envelope.getHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_IDENTITY)
+    getSenderAuthToken: -> @envelope.getHeader(EnvelopeHeaderConstants.SENDER_AUTH_TOKEN)
 
     isPubSub: -> EnvelopeHeaderConstants.MESSAGE_PATTERN_PUBSUB == @getMessagePattern
     isRequest: -> !(_.isString @getCorrelationId && @getCorrelationId.length > 0) && @isRpc
@@ -36,5 +37,6 @@ define [
     setReciptTime:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.ENVELOPE_RECEIPT_TIME, input)
     setRpcTimeout:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC_TIMEOUT, input)
     setSenderIdentity:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_IDENTITY, input)
+    setSenderAuthToken:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.SENDER_AUTH_TOKEN, input)
 
   return EnvelopeHelper

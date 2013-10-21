@@ -12,4 +12,6 @@ define [], ->
     @MESSAGE_SENDER_SIGNATURE = "cmf.bus.message.sender_signature"
     @MESSAGE_TOPIC = "cmf.bus.message.topic"
     @MESSAGE_TYPE = "cmf.bus.message.type"
+    @SENDER_AUTH_TOKEN: "SENDER_AUTH_TOKEN"
+
   return EnvelopeHeaderConstants

@@ -36,23 +36,28 @@ define [
       messageTopic = if _.isString messageTopic then messageTopic else @getMessageTopic context.getEvent()
       env.setMessageTopic messageTopic
 
-      outboundDeferreds.push @getUsername(env.getSenderIdentity()).then (username)->
-        env.setSenderIdentity username
+      outboundDeferreds.push @getAnubisCredentials(env.getSenderIdentity(), env.getSenderAuthToken()).then (credentials)->
+        env.setSenderIdentity credentials.username
+        env.setSenderAuthToken credentials.token
 
       $.when.apply($,outboundDeferreds).done ->
         deferred.resolve()
 
       return deferred.promise()
 
-    getUsername: (username)->
+    getAnubisCredentials: (username, token)->
       deferred = $.Deferred()
-      if _.isString username
+      if (_.isString username) && (_.isString token)
         Logger.log.info "OutboundHeadersProcessor.getUsername >> using username from envelope: #{username}"
-        deferred.resolve(username)
+        deferred.resolve
+          username: username
+          token: token
       else
         @authenticationProvider.getCredentials().then (data)->
           Logger.log.info "OutboundHeadersProcessor.getUsername >> using username from authenticationProvider: #{data.username}"
-          deferred.resolve(data.username)
+          deferred.resolve
+            username: data.username
+            token: data.password
       return deferred.promise()
     getMessageType: (event)->
       type = Object.getPrototypeOf(event).constructor.name

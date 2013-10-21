@@ -1,15 +1,14 @@
 define [
   './EventBus'
   '../../util/Logger'
-  './ProcessingContext'
   'uuid'
   '../../bus/Envelope'
   '../../bus/berico/EnvelopeHelper'
-  '../../bus/EnvelopeHeaderConstants'
+  '../../bus/berico/EnvelopeHeaderConstants'
   './RpcRegistration'
   'jquery'
 ],
-(EventBus, Logger, ProcessingContext, uuid, Envelope, EnvelopeHelper, EnvelopeHeaderConstants, RpcRegistration, $)->
+(EventBus, Logger, uuid, Envelope, EnvelopeHelper, EnvelopeHeaderConstants, RpcRegistration, $)->
   class RpcBus extends EventBus
 
     getResponseTo: (config={})->

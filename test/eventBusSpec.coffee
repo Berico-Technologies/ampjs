@@ -10,18 +10,19 @@ define [
   'amp/webstomp/topology/DefaultApplicationExchangeProvider'
   'amp/bus/berico/EnvelopeHelper'
   'jquery'
+  'amp/webstomp/topology/DefaultAuthenticationProvider'
 ],
-(TransportProviderFactory, JsonEventSerializer, EventBus, EnvelopeBus, OutboundHeadersProcessor, MockAMQPServer, MockWebSocket, ChannelProvider,DefaultApplicationExchangeProvider,EnvelopeHelper, $) ->
+(TransportProviderFactory, JsonEventSerializer, EventBus, EnvelopeBus, OutboundHeadersProcessor, MockAMQPServer, MockWebSocket, ChannelProvider,DefaultApplicationExchangeProvider,EnvelopeHelper, $, DefaultAuthenticationProvider) ->
 
-  MockAMQPServer.configure 'http://127.0.0.1:15674/stomp', ->
-    @addResponder('message',"CONNECT\naccept-version:1.1,1.0\nheart-beat:0,0\nlogin:CN=Test User, CN=Users, DC=archnet, DC=mil\npasscode:4MbBsTPMGkOyFmLRl/Ax5A==\n\n\u0000")
-      .respond("CONNECTED\nsession:session-WbnKIBsb4i9nvnxhYHQo_A\nheart-beat:0,0\nserver:RabbitMQ/3.0.4\nversion:1.1\n\n\u0000")
+  MockAMQPServer.configure 'https://bugsbunny-rabbit.archnet.mil:15678/stomp', ->
+    @addResponder('message', "CONNECT\naccept-version:1.1,1.0\nheart-beat:0,0\nlogin:CN=Drew Tayman, CN=Users, DC=archnet, DC=mil\npasscode:ILUXUSHYQW21OqGK+JMvzw==\n\n\u0000")
+      .respond("CONNECTED\nsession:session-Cneg9fMRM-eifnLMzU3A_Q\nheart-beat:0,0\nserver:RabbitMQ/3.1.3\nversion:1.1\n\n\u0000")
 
-    @addResponder('message',"SUBSCRIBE\nid:sub-0\ndestination:/amq/queue/TESTONLY#001#GenericMessage\n\n\u0000")
+    @addResponder('message', "SUBSCRIBE\nid:sub-0\ndestination:/amq/queue/0839eeba-a5f7-4019-a428-f751a882b33c#001#GenericMessage\n\n\u0000")
       .respond("")
 
-    @addResponder('message', "SEND\ncmf.bus.message.id:testmessageid\ncmf.bus.message.type:GenericMessage\ncmf.bus.message.topic:GenericMessage\ncmf.bus.message.sender_identity:CN=Test User, CN=Users, DC=archnet, DC=mil\ndestination:/exchange/cmf.simple.exchange/GenericMessage\ncontent-length:58\n\n{\"name\":\"Smiley Face\",\"type\":\"ascii\",\"visualization\":\":)\"}\u0000" )
-      .respond("MESSAGE\nsubscription:sub-0\ndestination:/exchange/cmf.simple.exchange/GenericMessage\nmessage-id:T_sub-0@@session-7SIBEp8KAROK0Jb61n0eog@@1\ncmf.bus.message.sender_identity:unknown\ncmf.bus.message.topic:GenericMessage\ncmf.bus.message.type:GenericMessage\ncmf.bus.message.id:testmessageid\ncontent-length:58\n\n{\"name\":\"Smiley Face\",\"type\":\"ascii\",\"visualization\":\":)\"}\u0000" )
+    @addResponder('message', "SEND\ncmf.bus.message.id:testmessageid\ncmf.bus.message.type:GenericMessage\ncmf.bus.message.topic:GenericMessage\ncmf.bus.message.sender_identity:CN=Drew Tayman, CN=Users, DC=archnet, DC=mil\nSENDER_AUTH_TOKEN:ILUXUSHYQW21OqGK+JMvzw==\ndestination:/exchange/cmf.simple.exchange/GenericMessage\ncontent-length:58\n\n{\"name\":\"Smiley Face\",\"type\":\"ascii\",\"visualization\":\":)\"}\u0000")
+      .respond("MESSAGE\nsubscription:sub-0\ndestination:/exchange/cmf.simple.exchange/GenericMessage\nmessage-id:T_sub-0@@session-Cneg9fMRM-eifnLMzU3A_Q@@1\SENDER_AUTH_TOKEN:ILUXUSHYQW21OqGK+JMvzw==\ncmf.bus.message.sender_identity:CN=Drew Tayman, CN=Users, DC=archnet, DC=mil\ncmf.bus.message.topic:GenericMessage\ncmf.bus.message.type:GenericMessage\ncmf.bus.message.id:testmessageid\ncontent-length:58\n\n{\"name\":\"Smiley Face\",\"type\":\"ascii\",\"visualization\":\":)\"}\u0000" )
 
 
   class GenericMessage
@@ -34,16 +35,14 @@ define [
     beforeEach ->
       transportProvider = TransportProviderFactory.getTransportProvider({
         topologyService: new DefaultApplicationExchangeProvider({
-          connectionStrategy: ->
-            return "http://#{@managementHostname}:#{@managementPort}#{@managementServiceUrl}"
-          clientProfile: 'TESTONLY'
-          exchangePort: 15674
+          managementHostname: "bugsbunny-gts.archnet.mil"
+          exchangeHostname: "bugsbunny-rabbit.archnet.mil"
         })
         transportProvider: TransportProviderFactory.TransportProviders.WebStomp
         channelProvider: new ChannelProvider({
           connectionFactory: if testConfig.useEmulatedWebSocket then MockWebSocket else SockJS
-          connectionStrategy: (exchange) ->
-            return "http://#{exchange.hostName}:#{exchange.port}#{exchange.vHost}"
+          authenticationProvider: new DefaultAuthenticationProvider
+            hostname: "bugsbunny-anubis.archnet.mil"
         })
       })
 
@@ -51,10 +50,10 @@ define [
         sinon.stub $, 'ajax',(options)->
           deferred = $.Deferred()
           switch options.url
-            when 'http://localhost:15677/service/fallbackRouting/routeCreator'
+            when 'https://bugsbunny-gts.archnet.mil:15677/service/fallbackRouting/routeCreator'
               response = '{"statusType":"OK","entity":null,"entityType":null,"metadata":{},"status":200}'
-            when 'https://localhost:15679/anubis/identity/authenticate'
-              response = '{"token":"4MbBsTPMGkOyFmLRl/Ax5A==","identity":"CN=Test User, CN=Users, DC=archnet, DC=mil"}'
+            when 'https://bugsbunny-anubis.archnet.mil:15679/anubis/identity/authenticate'
+              response = '{"token":"ILUXUSHYQW21OqGK+JMvzw==","identity":"CN=Drew Tayman, CN=Users, DC=archnet, DC=mil"}'
             else
               console.log "Unable to emulate repsonse to request #{options.url}"
 
@@ -80,7 +79,10 @@ define [
       eventBus = new EventBus(
         new EnvelopeBus(transportProvider),
         [new JsonEventSerializer()], #inbound
-        [new HeaderOverrider(), new OutboundHeadersProcessor(), new JsonEventSerializer()]  #outbound
+        [new HeaderOverrider(), new OutboundHeadersProcessor({
+          authenticationProvider: new DefaultAuthenticationProvider
+            hostname: "bugsbunny-anubis.archnet.mil"
+        }), new JsonEventSerializer()]  #outbound
       )
       eventBus.subscribe({
         getEventType: ->
