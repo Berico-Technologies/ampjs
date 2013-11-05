@@ -1,6 +1,6 @@
 {
   "name": "ampjs",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "ignore":[
     "assets/",
     "coverage/",
@@ -15,7 +15,7 @@
     "views/"
    ],
 
-  "main":"build/noShimNoDependencies/ShortBus.js",
+  "main":"build/noShimNoDependencies/ShortBus.min.js",
   "dependencies": {
     "jquery": "1.10.2",
     "requirejs": "2.1.8",
