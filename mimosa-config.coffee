@@ -34,7 +34,7 @@ exports.config =
     outFolder: "build"
     cleanOutFolder: true
     globalName: "ShortBus"
-    name:"ShortBus.js"
+    name:"ShortBus.min.js"
     main:"amp/factory/ShortBus"
     mainConfigFile: "javascripts/main.js"
     removeDependencies: []
