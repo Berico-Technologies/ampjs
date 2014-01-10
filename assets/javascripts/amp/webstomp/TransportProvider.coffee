@@ -57,7 +57,7 @@ define [
     send: (envelope)->
       deferred = $.Deferred()
       pendingExchanges = []
-      @topologyService.getRoutingInfo(envelope.getHeaders()).then (routing)=>
+      @topologyService.getRoutingInfo(envelope.getHeaders(), false).then (routing)=>
         exchanges = _.pluck routing.routes, 'producerExchange'
 
         for exchange in exchanges
