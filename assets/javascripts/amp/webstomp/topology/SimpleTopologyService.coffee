@@ -19,7 +19,7 @@ define [
       unless _.isNumber @port then @port = 15678
       unless _.isNumber @queue_number then @queue_number = 0
 
-    getRoutingInfo: (headers) ->
+    getRoutingInfo: (headers, create) ->
       deferred = $.Deferred()
       topic = headers[EnvelopeHeaderConstants.MESSAGE_TOPIC]
       theOneExchange = new Exchange(
@@ -35,7 +35,10 @@ define [
         null) #arguments
 
       theOneRoute = new RouteInfo(theOneExchange, theOneExchange)
-      @createRoute(theOneExchange).then (data)->
+      if create
+        @createRoute(theOneExchange).then (data)->
+          deferred.resolve(new RoutingInfo([theOneRoute]))
+      else
         deferred.resolve(new RoutingInfo([theOneRoute]))
 
       return deferred.promise()
@@ -46,8 +49,11 @@ define [
       return deferred.promise()
 
     buildIdentifiableQueueName: (topic)->
+      #should only be called when subscribing
       if(topic.indexOf("#") == -1)
         "#{@clientProfile}##{@pad(++@queue_number,3,0)}##{topic}"
+
+      #should be used when publishing
       else
         topic
     pad: (n,width,z)->

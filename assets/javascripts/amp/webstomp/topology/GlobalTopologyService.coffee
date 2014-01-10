@@ -20,7 +20,7 @@ define [
       @routingInfoCache = new LRUCache(
         maxAge: if _.isNumber cacheExpiryTime then cacheExpiryTime else GlobalTopologyService.CACHE_EXPIRY_TIME_IN_MS
       )
-    getRoutingInfo: (routingHints)->
+    getRoutingInfo: (routingHints, create=true)->
       deferred = $.Deferred()
       topic = routingHints[EnvelopeHeaderConstants.MESSAGE_TOPIC]
       Logger.log.info "GlobalTopologyService.getRoutingInfo>> Getting routing info for topic: #{topic}"
@@ -35,7 +35,7 @@ define [
             deferred.resolve(data)
           else
               Logger.log.info "GlobalTopologyService.getRoutingInfo>> no route in GTS: using fallback route"
-              @fallbackProvider.getFallbackRoute(topic).then (data)->
+              @fallbackProvider.getFallbackRoute(topic, create).then (data)->
                 deferred.resolve(data)
       else
         Logger.log.info "GlobalTopologyService.getRoutingInfo>> cache hit, returning route without lookup"

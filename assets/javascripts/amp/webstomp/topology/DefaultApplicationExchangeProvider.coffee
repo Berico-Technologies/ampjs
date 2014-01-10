@@ -22,10 +22,10 @@ define [
           vhost: exchangeVhost
           port: exchangePort
         })
-      getFallbackRoute: (topic)->
+      getFallbackRoute: (topic, create=true)->
         headers = []
         headers[EnvelopeHeaderConstants.MESSAGE_TOPIC] = topic
-        return @getRoutingInfo(headers)
+        return @getRoutingInfo(headers, create)
       createRoute: (exchange)->
         deferred = $.Deferred()
         req = $.ajax
