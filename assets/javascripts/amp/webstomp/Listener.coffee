@@ -33,7 +33,7 @@ define [
     handleNextDelivery: (result)->
       Logger.log.info "Listener.handleNextDelivery >> received a message"
       envelopeHelper = @createEnvelopeFromDeliveryResult(result)
-      if @shouldRaiseEvent @registration.filterPredicate, envelopeHelper.getEnvelope()
+      if @shouldRaiseEvent @registration, envelopeHelper
         Logger.log.info "Listener.handleNextDelivery >> raising event from received message"
         @dispatchEnvelope envelopeHelper.getEnvelope()
 
@@ -44,10 +44,15 @@ define [
     raise_onEnvelopeRecievedEvent: (dispatcher) ->
       callback.handleRecieve dispatcher for callback in @envCallbacks
 
-    shouldRaiseEvent: (filter, envelope)->
-      if (_.isNull(filter) || !(_.isObject filter))
-        return true
-      else filter.filter envelope
+    shouldRaiseEvent: (registration, envelopeHelper)->
+      if envelopeHelper.getMessageTopic() == registration.eventHandler.getEventType()
+        filter = registration.filterPredicate
+        envelope = envelopeHelper.getEnvelope()
+        if (_.isNull(filter) || !(_.isObject filter))
+          return true
+        else filter.filter envelope
+      else
+        return false
 
     createEnvelopeFromDeliveryResult: (result)->
       envelopeHelper = new EnvelopeHelper(new Envelope())
