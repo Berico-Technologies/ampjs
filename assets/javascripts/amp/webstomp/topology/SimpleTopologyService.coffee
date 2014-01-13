@@ -39,7 +39,7 @@ define [
         @createRoute(theOneExchange).then (data)->
           deferred.resolve(new RoutingInfo([theOneRoute]))
       else
-        deferred.resolve(new RoutingInfo([theOneRoute]))
+        setTimeout (->deferred.resolve(new RoutingInfo([theOneRoute]))), 1
 
       return deferred.promise()
 

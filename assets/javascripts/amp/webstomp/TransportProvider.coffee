@@ -72,8 +72,8 @@ define [
 
 
             Logger.log.info "TransportProvider.send >> sending message to /exchange/#{exchange.name}/#{exchange.routingKey}"
-            exchangeDeferred.resolve()
             connection.send("/exchange/#{exchange.name}/#{exchange.routingKey}",newHeaders,envelope.getPayload())
+            exchangeDeferred.resolve()
 
 
         $.when.apply($,pendingExchanges).done ->
