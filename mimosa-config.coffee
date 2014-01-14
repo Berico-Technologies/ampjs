@@ -1,17 +1,17 @@
 exports.config =
   minMimosaVersion:"1.0.1"
-  modules: ['lint'
+  modules: [
     'require'
-    'require-library-package'
     'minify'
     'bower'
-    'require-lint']
-  server:
-    defaultServer:
-      enabled: false
-    views:
-      compileWith: 'html'
-      extension: 'html'
+    'require-lint'
+    'mimosa-jshint'
+    'require-library-package'
+    'mimosa-karma-enterprise'
+  ]
+  karma:
+    configFile: 'karma.conf.js'
+    externalConfig: true
   bower:
     bowerDir:
       clean:false

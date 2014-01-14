@@ -126,12 +126,10 @@ In the above example a message will be sent to a server-side service listening t
 
 Running Tests
 -------------
-1. Compile the source code. We're using mimosa, so either have the project running 'mimosa watch -s' or compile the code 'mimosa build'
-
-2. Once the code is compiled you should be able to run the unit tests 'karma start'
-
-    **NOTE: the project does not currently include phantomjs. **You need to download it yourself and set the PHANTOMJS_BIN environement variable like this:
-    >export PHANTOMJS_BIN=/Applications/phantomjs-1.9.0-macosx/bin/phantomjs
+AMPJS is integrated with Mimosa and Karma to run its test automatically. You can run the tests by watching the project:
+```
+mimosa watch
+```
 
 [STOMP]: http://jmesnil.net/stomp-websocket/doc/
 [AMP]: https://github.com/Berico-Technologies/AMP
