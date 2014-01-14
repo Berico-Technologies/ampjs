@@ -45,7 +45,7 @@ define [
       callback.handleRecieve dispatcher for callback in @envCallbacks
 
     shouldRaiseEvent: (registration, envelopeHelper)->
-      if envelopeHelper.getMessageTopic() == registration.eventHandler.getEventType()
+      if envelopeHelper.getMessageTopic().indexOf(registration.eventHandler.getEventType()) != -1
         filter = registration.filterPredicate
         envelope = envelopeHelper.getEnvelope()
         if (_.isNull(filter) || !(_.isObject filter))

@@ -11,6 +11,10 @@ define [
     constructor: (config={})->
       {requestId, expectedTopic, @inboundChain} = config
 
+      @eventHandler =
+        getEventType: -> expectedTopic
+
+
       @responseFilter =
         filter: (envelope)->
           return new EnvelopeHelper(envelope).getCorrelationId() == requestId
