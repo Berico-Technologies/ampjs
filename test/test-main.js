@@ -18,7 +18,7 @@ mocha.setup({
 });
 
 requirejs.config({
-  baseUrl: '/base/public/javascripts',
+  baseUrl: '/base/assets/javascripts',
   paths:{
     'i18n': 'vendor/managed/requirejs-i18n/i18n',
     'domReady': 'vendor/managed/requirejs-domready/domReady',
