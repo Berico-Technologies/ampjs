@@ -1,21 +1,21 @@
 define [
   'underscore'
-  'amp/webstomp/topology/GlobalTopologyService'
+  'amp/connection/topology/GlobalTopologyService'
   'amp/bus/berico/EnvelopeHeaderConstants'
-  'amp/webstomp/topology/RoutingInfoRetriever'
+  'amp/connection/topology/RoutingInfoRetriever'
   'amp/bus/berico/EnvelopeHelper'
-  'amp/webstomp/topology/DefaultApplicationExchangeProvider'
+  'amp/connection/topology/DefaultApplicationExchangeProvider'
   'amp/bus/berico/TransportProviderFactory'
   'amp/eventing/berico/serializers/JsonEventSerializer'
   'amp/eventing/berico/EventBus'
   'amp/bus/berico/EnvelopeBus'
   'amp/eventing/berico/OutboundHeadersProcessor'
-  'amp/webstomp/ChannelProvider'
+  'amp/connection/ChannelProvider'
   'amp/util/Logger'
   'test/websocket/Server'
   'test/websocket/Client'
   'jquery'
-  'amp/webstomp/topology/DefaultAuthenticationProvider'
+  'amp/connection/topology/DefaultAuthenticationProvider'
 ],
 (_, GlobalTopologyService, EnvelopeHeaderConstants, RoutingInfoRetriever, EnvelopeHelper, DefaultApplicationExchangeProvider, TransportProviderFactory, JsonEventSerializer, EventBus, EnvelopeBus, OutboundHeadersProcessor, ChannelProvider, Logger, MockAMQPServer, MockWebSocket, $, DefaultAuthenticationProvider) ->
 

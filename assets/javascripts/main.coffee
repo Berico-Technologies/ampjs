@@ -11,6 +11,10 @@ requirejs.config
     uuid: 'vendor/managed/node-uuid/uuid'
     jquery: 'vendor/managed/jquery/jquery'
     LRUCache: 'vendor/managed/node-lru-cache/lru-cache'
+    JSEncrypt: 'vendor/managed/jsencrypt/jsencrypt.min'
+    CryptoJSLib: 'vendor/managed/cryptojslib'
+    CryptoJS: 'vendor/managed/cryptojslib/core'
+    Hashtable : 'vendor/managed/jshashtable/hashtable'
   shim:
     'modernizr':
       exports: 'Modernizr'
@@ -24,6 +28,12 @@ requirejs.config
       exports: 'jquery'
     'LRUCache':
       exports: 'LRUCache'
+    'CryptoJS':
+      exports: 'CryptoJS'
+    'Hashtable':
+      exports: 'Hashtable'
+
+
 
 
 requirejs [

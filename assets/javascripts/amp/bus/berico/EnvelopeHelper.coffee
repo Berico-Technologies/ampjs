@@ -21,9 +21,9 @@ define [
     getSenderIdentity: -> @envelope.getHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_IDENTITY)
     getSenderAuthToken: -> @envelope.getHeader(EnvelopeHeaderConstants.SENDER_AUTH_TOKEN)
 
-    isPubSub: -> EnvelopeHeaderConstants.MESSAGE_PATTERN_PUBSUB == @getMessagePattern
+    isPubSub: -> EnvelopeHeaderConstants.MESSAGE_PATTERN_PUBSUB == @getMessagePattern()
     isRequest: -> !(_.isString @getCorrelationId && @getCorrelationId.length > 0) && @isRpc
-    isRpc: -> EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC == @getMessagePattern
+    isRpc: -> EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC == @getMessagePattern()
 
     setCorrelationId:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.MESSAGE_CORRELATION_ID, input)
     setCreationTime:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.ENVELOPE_CREATION_TIME, input)

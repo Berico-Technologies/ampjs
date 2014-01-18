@@ -14,9 +14,11 @@ define [
     connectionPool: {}
     constructor: (config={}) ->
 
-      {@connectionStrategy, @connectionFactory, @authenticationProvider} = config
+      {@connectionStrategy, @connectionFactory, @authenticationProvider, @messagingFactory} = config
       unless _.isFunction @connectionStrategy then @connectionStrategy = ChannelProvider.DefaultConnectionStrategy
       unless _.isFunction @connectionFactory then @connectionFactory = SockJS
+      unless _.isFunction @messagingFactory then @messagingFactory = (ws)->
+        Stomp.over(ws)
       unless _.isObject @authenticationProvider then @authenticationProvider = new DefaultAuthenticationProvider()
       Logger.log.info "ChannelProvider.ctor >> instantiated."
 
@@ -56,7 +58,7 @@ define [
       @authenticationProvider.getCredentials().then (credentials)=>
         {username, password} = credentials
         ws = new @connectionFactory(@connectionStrategy(exchange))
-        client = Stomp.over(ws)
+        client = @messagingFactory(ws)
         #rabbit does not support heartbeat in stomp 1.1, you need to set this to 0
         #or the connection will die after the first timeout
         client.heartbeat =

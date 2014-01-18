@@ -54,6 +54,10 @@ define [
 
     _getListener: (registration, exchange)->
       new Listener(registration, exchange)
+
+    _send: (connection, exchange, headers, envelope)->
+      connection.send("/exchange/#{exchange.name}/#{exchange.routingKey}",headers,envelope.getPayload())
+
     send: (envelope)->
       deferred = $.Deferred()
       pendingExchanges = []
@@ -72,7 +76,9 @@ define [
 
 
             Logger.log.info "TransportProvider.send >> sending message to /exchange/#{exchange.name}/#{exchange.routingKey}"
-            connection.send("/exchange/#{exchange.name}/#{exchange.routingKey}",newHeaders,envelope.getPayload())
+
+            @_send(connection, exchange, newHeaders, envelope)
+
             exchangeDeferred.resolve()
 
 

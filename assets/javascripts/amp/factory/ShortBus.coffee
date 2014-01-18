@@ -1,20 +1,25 @@
 define [
   '../bus/berico/TransportProviderFactory'
-  '../webstomp/topology/GlobalTopologyService'
-  '../webstomp/ChannelProvider'
-  '../webstomp/topology/DefaultApplicationExchangeProvider'
+  '../connection/topology/GlobalTopologyService'
+  '../connection/ChannelProvider'
+  '../connection/topology/DefaultApplicationExchangeProvider'
   '../bus/berico/EnvelopeBus'
   '../eventing/berico/serializers/JsonEventSerializer'
   '../eventing/berico/OutboundHeadersProcessor'
   '../eventing/berico/EventBus'
-  '../webstomp/topology/RoutingInfoRetriever'
+  '../connection/topology/RoutingInfoRetriever'
   'underscore'
   '../util/Logger'
   '../bus/berico/EnvelopeHelper'
-  '../webstomp/topology/DefaultAuthenticationProvider'
+  '../connection/topology/DefaultAuthenticationProvider'
+  '../connection/topology/DefaultIdentityProvider'
   '../eventing/berico/RpcBus'
+  '../eventing/berico/handlers/EncryptedResponseHandler'
+  '../eventing/berico/handlers/EncryptedRequestHandler'
+  '../connection/topology/DefaultMessagingKeystore'
+
 ],
-(TransportProviderFactory, GlobalTopologyService, ChannelProvider, DefaultApplicationExchangeProvider, EnvelopeBus, JsonEventSerializer, OutboundHeadersProcessor, EventBus, RoutingInfoRetriever, _, Logger, EnvelopeHelper, DefaultAuthenticationProvider, RpcBus)->
+(TransportProviderFactory, GlobalTopologyService, ChannelProvider, DefaultApplicationExchangeProvider, EnvelopeBus, JsonEventSerializer, OutboundHeadersProcessor, EventBus, RoutingInfoRetriever, _, Logger, EnvelopeHelper, DefaultAuthenticationProvider, DefaultIdentityProvider, RpcBus, EncryptedResponseHandler, EncryptedRequestHandler, DefaultMessagingKeystore)->
 
   class ShortBus
     @BUSTYPE:
@@ -30,7 +35,7 @@ define [
         fallbackTopoExchangePort, gtsCacheExpiryTime, gtsExchangeOverrides,
         channelProviderConnectionStrategy, channelProviderConnectionFactory, publishTopicOverride,
         authenticationProviderHostname, authenticationProviderPort, authenticationProviderServiceUrl,
-        authenticationProviderConnectionStrategy, busType
+        authenticationProviderConnectionStrategy, busType, identityProviderServiceUrl, identityProviderConnectionStrategy, messagingFactory
       } = config
 
 
@@ -71,6 +76,7 @@ define [
         connectionStrategy: channelProviderConnectionStrategy
         connectionFactory: channelProviderConnectionFactory
         authenticationProvider: authenticationProvider
+        messagingFactory: messagingFactory
         })
 
       transportProvider = TransportProviderFactory.getTransportProvider({
@@ -80,15 +86,29 @@ define [
       })
 
       envelopeBus = new EnvelopeBus(transportProvider)
-      inboundProcessors = [new JsonEventSerializer()]
 
-      outboundProcessors = []
+      defaultMessagingKeystore = new DefaultMessagingKeystore()
+
+      defaultIdentityProvider = new DefaultIdentityProvider
+        hostname: authenticationProviderHostname
+        port: authenticationProviderPort
+        serviceUrl: identityProviderServiceUrl
+        connectionStrategy: identityProviderConnectionStrategy
+
+      inboundProcessors = [
+        new EncryptedResponseHandler({keystore: defaultMessagingKeystore}),
+        new JsonEventSerializer()
+      ]
 
       outboundProcessors = [
           new OutboundHeadersProcessor({
             authenticationProvider: authenticationProvider
           }),
           new JsonEventSerializer()
+          new EncryptedRequestHandler({
+            keystore: defaultMessagingKeystore
+            defaultIdentityProvider: defaultIdentityProvider
+          })
       ]
 
       if(busType == ShortBus.BUSTYPE.RPC)

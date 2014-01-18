@@ -3,7 +3,7 @@ define [
   'uuid'
   'underscore'
   '../../util/Logger'
-  '../../webstomp/topology/DefaultAuthenticationProvider'
+  '../../connection/topology/DefaultAuthenticationProvider'
   'jquery'
 ],
 (EnvelopeHelper, uuid, _, Logger, DefaultAuthenticationProvider,$)->

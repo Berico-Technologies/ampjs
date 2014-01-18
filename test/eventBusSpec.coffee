@@ -6,11 +6,11 @@ define [
   'amp/eventing/berico/OutboundHeadersProcessor'
   'test/websocket/Server'
   'test/websocket/Client'
-  'amp/webstomp/ChannelProvider'
-  'amp/webstomp/topology/DefaultApplicationExchangeProvider'
+  'amp/connection/ChannelProvider'
+  'amp/connection/topology/DefaultApplicationExchangeProvider'
   'amp/bus/berico/EnvelopeHelper'
   'jquery'
-  'amp/webstomp/topology/DefaultAuthenticationProvider'
+  'amp/connection/topology/DefaultAuthenticationProvider'
 ],
 (TransportProviderFactory, JsonEventSerializer, EventBus, EnvelopeBus, OutboundHeadersProcessor, MockAMQPServer, MockWebSocket, ChannelProvider,DefaultApplicationExchangeProvider,EnvelopeHelper, $, DefaultAuthenticationProvider) ->
 
@@ -21,7 +21,7 @@ define [
     @addResponder('message', "SUBSCRIBE\nid:sub-0\ndestination:/amq/queue/0839eeba-a5f7-4019-a428-f751a882b33c#001#GenericMessage\n\n\u0000")
       .respond("")
 
-    @addResponder('message', "SEND\ncmf.bus.message.id:testmessageid\ncmf.bus.message.type:GenericMessage\ncmf.bus.message.topic:GenericMessage\ncmf.bus.message.sender_identity:CN=Drew Tayman, CN=Users, DC=archnet, DC=mil\nSENDER_AUTH_TOKEN:ILUXUSHYQW21OqGK+JMvzw==\ndestination:/exchange/cmf.simple.exchange/GenericMessage\ncontent-length:58\n\n{\"name\":\"Smiley Face\",\"type\":\"ascii\",\"visualization\":\":)\"}\u0000")
+    @addResponder('message', "SEND\ncmf.bus.message.pattern:cmf.bus.message.pattern#pub_sub\ncmf.bus.message.id:testmessageid\ncmf.bus.message.type:GenericMessage\ncmf.bus.message.topic:GenericMessage\ncmf.bus.message.sender_identity:CN=Drew Tayman, CN=Users, DC=archnet, DC=mil\nSENDER_AUTH_TOKEN:ILUXUSHYQW21OqGK+JMvzw==\ndestination:/exchange/cmf.simple.exchange/GenericMessage\ncontent-length:58\n\n{\"name\":\"Smiley Face\",\"type\":\"ascii\",\"visualization\":\":)\"}\u0000")
       .respond("MESSAGE\nsubscription:sub-0\ndestination:/exchange/cmf.simple.exchange/GenericMessage\nmessage-id:T_sub-0@@session-Cneg9fMRM-eifnLMzU3A_Q@@1\SENDER_AUTH_TOKEN:ILUXUSHYQW21OqGK+JMvzw==\ncmf.bus.message.sender_identity:CN=Drew Tayman, CN=Users, DC=archnet, DC=mil\ncmf.bus.message.topic:GenericMessage\ncmf.bus.message.type:GenericMessage\ncmf.bus.message.id:testmessageid\ncontent-length:58\n\n{\"name\":\"Smiley Face\",\"type\":\"ascii\",\"visualization\":\":)\"}\u0000" )
 
 

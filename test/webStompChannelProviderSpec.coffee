@@ -3,12 +3,12 @@ define [
   'stomp'
   'test/websocket/Server'
   'test/websocket/Client'
-  'amp/webstomp/ChannelProvider'
+  'amp/connection/ChannelProvider'
   'sockjs'
-  'amp/webstomp/topology/Exchange'
+  'amp/connection/topology/Exchange'
   'amp/bus/Envelope'
   'amp/bus/berico/EnvelopeHelper'
-  'amp/webstomp/topology/SimpleTopologyService'
+  'amp/connection/topology/SimpleTopologyService'
 
 ],
 (_, Stomp, MockAMQPServer, MockWebSocket, ChannelProvider, SockJS, Exchange, Envelope, EnvelopeHelper, SimpleTopologyService) ->

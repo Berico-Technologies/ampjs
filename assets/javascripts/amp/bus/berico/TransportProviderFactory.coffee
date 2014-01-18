@@ -1,7 +1,7 @@
 define [
-  '../../webstomp/TransportProvider'
-  '../../webstomp/ChannelProvider'
-  '../../webstomp/topology/SimpleTopologyService'
+  '../../connection/TransportProvider'
+  '../../connection/ChannelProvider'
+  '../../connection/topology/SimpleTopologyService'
   'underscore'
   '../../util/Logger'
 ],

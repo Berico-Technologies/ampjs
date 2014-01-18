@@ -1,7 +1,7 @@
 define [
   'underscore'
-  'amp/webstomp/topology/Exchange'
-  'amp/webstomp/topology/SimpleTopologyService'
+  'amp/connection/topology/Exchange'
+  'amp/connection/topology/SimpleTopologyService'
   'amp/bus/berico/EnvelopeHeaderConstants'
 ],
 (_,Exchange, SimpleTopologyService, EnvelopeHeaderConstants) ->

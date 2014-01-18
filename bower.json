@@ -27,6 +27,9 @@
     "requirejs-i18n": "2.0.2",
     "stomp-websocket": "git://github.com/jmesnil/stomp-websocket.git#2.0.0",
     "underscore-amd": "1.4.4",
-    "node-lru-cache": "git://github.com/Berico-Technologies/node-lru-cache"
+    "node-lru-cache": "git://github.com/Berico-Technologies/node-lru-cache",
+    "jsencrypt": "*",
+    "cryptojslib": "*",
+    "jshashtable": "*"
   }
 }

@@ -5,9 +5,10 @@ define [
   '../../util/Logger'
   'jquery'
   '../../bus/berico/EnvelopeHelper'
+  '../../bus/berico/EnvelopeHeaderConstants'
   'underscore'
 ],
-(ProcessingContext, Envelope, EventRegistration, Logger, $, EnvelopeHelper, _)->
+(ProcessingContext, Envelope, EventRegistration, Logger, $, EnvelopeHelper, EnvelopeHeaderConstants, _)->
   class EventBus
     constructor: (@envelopeBus, @inboundProcessors=[], @outboundProcessors=[])->
     dispose: ->
@@ -28,9 +29,11 @@ define [
       return deferred.promise()
     publish: (event, expectedTopic)->
       envelope = new Envelope()
+      helper = new EnvelopeHelper(envelope)
+
+      helper.setMessagePattern EnvelopeHeaderConstants.MESSAGE_PATTERN_PUBSUB
 
       if _.isString expectedTopic
-        helper = new EnvelopeHelper(envelope)
         helper.setMessageType expectedTopic
         helper.setMessageTopic expectedTopic
 
