@@ -1,6 +1,7 @@
 define [
   '../bus/berico/TransportProviderFactory'
   '../connection/topology/GlobalTopologyService'
+  '../connection/topology/SimpleTopologyService'
   '../connection/ChannelProvider'
   '../connection/topology/DefaultApplicationExchangeProvider'
   '../bus/berico/EnvelopeBus'
@@ -19,12 +20,15 @@ define [
   '../connection/topology/DefaultMessagingKeystore'
 
 ],
-(TransportProviderFactory, GlobalTopologyService, ChannelProvider, DefaultApplicationExchangeProvider, EnvelopeBus, JsonEventSerializer, OutboundHeadersProcessor, EventBus, RoutingInfoRetriever, _, Logger, EnvelopeHelper, DefaultAuthenticationProvider, DefaultIdentityProvider, RpcBus, EncryptedResponseHandler, EncryptedRequestHandler, DefaultMessagingKeystore)->
+(TransportProviderFactory, GlobalTopologyService, SimpleTopologyService, ChannelProvider, DefaultApplicationExchangeProvider, EnvelopeBus, JsonEventSerializer, OutboundHeadersProcessor, EventBus, RoutingInfoRetriever, _, Logger, EnvelopeHelper, DefaultAuthenticationProvider, DefaultIdentityProvider, RpcBus, EncryptedResponseHandler, EncryptedRequestHandler, DefaultMessagingKeystore)->
 
   class ShortBus
     @BUSTYPE:
-        RPC: 'rpc'
-        EVENT: 'event'
+      RPC: 'rpc'
+      EVENT: 'event'
+    @TOPOLOGY_SERVICE:
+      GTS: "GTS"
+      SIMPLE: "SIMPLE"
 
     @getBus: (config={})->
       {
@@ -35,7 +39,7 @@ define [
         fallbackTopoExchangePort, gtsCacheExpiryTime, gtsExchangeOverrides,
         channelProviderConnectionStrategy, channelProviderConnectionFactory, publishTopicOverride,
         authenticationProviderHostname, authenticationProviderPort, authenticationProviderServiceUrl,
-        authenticationProviderConnectionStrategy, busType, identityProviderServiceUrl, identityProviderConnectionStrategy, messagingFactory
+        authenticationProviderConnectionStrategy, busType, identityProviderServiceUrl, identityProviderConnectionStrategy, messagingFactory, topologyService, simpleTopologyServiceClientProfile, simpleTopologyServiceName, simpleTopologyServiceHostname, simpleTopologyServiceVirtualHost, simpleTopologyServicePort
       } = config
 
 
@@ -58,12 +62,21 @@ define [
         exchangePort: fallbackTopoExchangePort
         })
 
-      globalTopologyService = new GlobalTopologyService({
-        routingInfoRetriever: routingInfoRetriever
-        cacheExpiryTime: gtsCacheExpiryTime
-        fallbackProvider: fallbackProvider
-        exchangeOverrides: gtsExchangeOverrides
-        })
+      if topologyService == @TOPOLOGY_SERVICE.SIMPLE
+        console.log "choosing simple..."
+        transportProviderTopologyService = new SimpleTopologyService
+          clientProfile: simpleTopologyServiceClientProfile
+          name: simpleTopologyServiceName
+          hostname: simpleTopologyServiceHostname
+          virtualHost: simpleTopologyServiceVirtualHost
+          port: simpleTopologyServicePort
+      else
+        transportProviderTopologyService = new GlobalTopologyService
+          routingInfoRetriever: routingInfoRetriever
+          cacheExpiryTime: gtsCacheExpiryTime
+          fallbackProvider: fallbackProvider
+          exchangeOverrides: gtsExchangeOverrides
+
 
       authenticationProvider = new DefaultAuthenticationProvider({
         hostname: authenticationProviderHostname
@@ -80,7 +93,7 @@ define [
         })
 
       transportProvider = TransportProviderFactory.getTransportProvider({
-        topologyService: globalTopologyService
+        topologyService: transportProviderTopologyService
         transportProvider: TransportProviderFactory.TransportProviders.WebStomp
         channelProvider: channelProvider
       })

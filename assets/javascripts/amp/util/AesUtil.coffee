@@ -1,7 +1,7 @@
 define [
-  "CryptoJSLib/aes"
-  'CryptoJSLib/pbkdf2'
-  'CryptoJSLib/enc-base64'
+  "CryptoJS_AES"
+  'CryptoJS_PBKDF2'
+  'CryptoJS_ENC_BASE64'
 ],
 ()->
   class AesUtil

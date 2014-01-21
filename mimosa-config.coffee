@@ -72,4 +72,26 @@ exports.config =
     name:"ShortBus.min.js"
     main:"amp/factory/ShortBus"
     mainConfigFile: "javascripts/main.js"
-    removeDependencies: []
+    removeDependencies: [
+      "i18n",
+      "domReady",
+      "modernizr",
+      "stomp",
+      "underscore",
+      "sockjs",
+      "flog",
+      "uuid",
+      "jquery",
+      "LRUCache",
+      "JSEncrypt",
+      "CryptoJS_CipherCore",
+      "CryptoJS_AES",
+      "CryptoJS_PBKDF2",
+      "CryptoJS_HMAC",
+      "CryptoJS_SHA384",
+      "CryptoJS_SHA512",
+      "CryptoJS_ENC_BASE64",
+      "CryptoJS_Core",
+      "CryptoJS_x64Core",
+      "Hashtable"
+    ]
