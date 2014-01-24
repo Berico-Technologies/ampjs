@@ -92,11 +92,15 @@ define [
         iterations = iterationCount = 1000
         passPhrase = "1qaz@WSX3e1qaz@WSX3e1qaz@WSX3e1qaz@WSX3e"
 
+        aesUtil = new AesUtil(keySize, iterationCount)
+
+
         message =
           data: "the aliens are located..."
-        aesUtil = new AesUtil(keySize, iterationCount)
         cipherText = aesUtil.encrypt(salt, iv, passPhrase, JSON.stringify(message))
-        plainText = aesUtil.decrypt(salt, iv, passPhrase, atob(cipherText))
+
+        plainText = aesUtil.decrypt(salt, iv, passPhrase, (cipherText))
+
         stompSubscribeCallback
           body: cipherText
           headers:
@@ -145,6 +149,7 @@ define [
         authenticationProviderHostname: "anubis.archnet.mil"
         fallbackTopoExchangeHostname: "rabbit.archnet.mil"
         messagingFactory: stubbedStomp
+        useEncryption: true
 
         busType: ShortBus.BUSTYPE.PUBSUB
       shortBus.subscribe({

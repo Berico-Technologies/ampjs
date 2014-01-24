@@ -1,5 +1,5 @@
 var tests = Object.keys(window.__karma__.files).filter(function(file){
-  return /(encryptedHandlerSpec|envelopeSpec|webStompTransportProviderSpec|webStompChannelProviderSpec|simpleTopologyServiceSpec)\.js$/.test(file);
+  return /(Spec)\.js$/.test(file);
   // return /encryptionBenchmarkSpec\.js$/.test(file);
   // return /(envelope|eventBus|globalTopology|simpleTopology|webStompChannel|webStompTransport).*\.coffee-compiled\.js$/.test(file);
   // return /(simpleTopology).*\.js$/.test(file);
@@ -31,10 +31,20 @@ requirejs.config({
     'sockjs': 'vendor/managed/sockjs/sockjs',
     'jquery': 'vendor/managed/jquery/jquery',
     'LRUCache': 'vendor/managed/node-lru-cache/lru-cache',
-    'JSEncrypt': 'vendor/managed/jsencrypt/jsencrypt.min',
-    'CryptoJSLib': 'vendor/managed/cryptojslib',
-    'CryptoJS' : 'vendor/managed/cryptojslib/core',
-    'Hashtable' : 'vendor/managed/jshashtable/hashtable'
+
+    JSEncrypt: 'vendor/managed/jsencrypt/jsencrypt.min',
+    CryptoJS_CipherCore: 'vendor/managed/cryptojslib/cipher-core',
+    CryptoJS_AES: 'vendor/unmanaged/cryptojslib/aes',
+    CryptoJS_PBKDF2: 'vendor/unmanaged/cryptojslib/pbkdf2',
+    CryptoJS_HMAC: 'vendor/unmanaged/cryptojslib/hmac',
+    CryptoJS_SHA1: 'vendor/unmanaged/cryptojslib/sha1',
+    CryptoJS_SHA384: 'vendor/unmanaged/cryptojslib/sha384',
+    CryptoJS_SHA512: 'vendor/unmanaged/cryptojslib/sha512',
+    CryptoJS_ENC_BASE64: 'vendor/unmanaged/cryptojslib/enc-base64',
+    CryptoJS_Core: 'vendor/unmanaged/cryptojslib/core',
+    CryptoJS_x64Core: 'vendor/unmanaged/cryptojslib/x64-core',
+
+    Hashtable : 'vendor/managed/jshashtable/hashtable'
   },
   shim:{
     'stomp':{
@@ -52,32 +62,35 @@ requirejs.config({
     'LRUCache':{
       exports: 'LRUCache'
     },
-    'JSEncrypt':{
+   'JSEncrypt': {
       exports: "JSEncrypt"
     },
-    'CryptoJSLib/cipher-core':{
-      deps: ['CryptoJSLib/core']
+    'CryptoJS_CipherCore': {
+      deps: ['CryptoJS_Core']
     },
-    "CryptoJSLib/aes":{
-      deps: ['CryptoJSLib/core','CryptoJSLib/cipher-core']
+    "CryptoJS_AES": {
+      deps: ['CryptoJS_Core', 'CryptoJS_CipherCore']
     },
-    'CryptoJSLib/pbkdf2':{
-      deps: ['CryptoJSLib/core', 'CryptoJSLib/hmac', 'CryptoJSLib/sha384']
+    'CryptoJS_PBKDF2': {
+      deps: ['CryptoJS_Core', 'CryptoJS_HMAC', 'CryptoJS_SHA384', 'CryptoJS_SHA1']
     },
-    'CryptoJSLib/hmac':{
-      deps: ['CryptoJSLib/core']
+    'CryptoJS_HMAC': {
+      deps: ['CryptoJS_Core']
     },
-    'CryptoJSLib/sha384':{
-      deps: ['CryptoJSLib/core', 'CryptoJSLib/x64-core', 'CryptoJSLib/sha512']
+    'CryptoJS_SHA384': {
+      deps: ['CryptoJS_Core', 'CryptoJS_x64Core', 'CryptoJS_SHA512']
     },
-    'CryptoJSLib/x64-core':{
-      deps: ['CryptoJSLib/core']
+    'CryptoJS_x64Core': {
+      deps: ['CryptoJS_Core']
     },
-    'CryptoJSLib/sha512':{
-      deps: ['CryptoJSLib/core', 'CryptoJSLib/x64-core']
+    'CryptoJS_SHA512': {
+      deps: ['CryptoJS_Core', 'CryptoJS_x64Core']
     },
-    'CryptoJSLib/enc-base64':{
-      deps: ['CryptoJSLib/core']
+    'CryptoJS_SHA1': {
+      deps: ['CryptoJS_Core']
+    },
+    'CryptoJS_ENC_BASE64': {
+      deps: ['CryptoJS_Core']
     },
     'Hashtable':{
       exports: 'Hashtable'

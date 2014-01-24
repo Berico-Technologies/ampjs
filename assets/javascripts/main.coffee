@@ -14,14 +14,16 @@ requirejs.config
 
     JSEncrypt: 'vendor/managed/jsencrypt/jsencrypt.min'
     CryptoJS_CipherCore: 'vendor/managed/cryptojslib/cipher-core'
-    CryptoJS_AES: 'vendor/managed/cryptojslib/aes'
-    CryptoJS_PBKDF2: 'vendor/managed/cryptojslib/pbkdf2'
-    CryptoJS_HMAC: 'vendor/managed/cryptojslib/hmac'
-    CryptoJS_SHA384: 'vendor/managed/cryptojslib/sha384'
-    CryptoJS_SHA512: 'vendor/managed/cryptojslib/sha512'
-    CryptoJS_ENC_BASE64: 'vendor/managed/cryptojslib/enc-base64'
-    CryptoJS_Core: 'vendor/managed/cryptojslib/core'
-    CryptoJS_x64Core: 'vendor/managed/cryptojslib/x64-core'
+    CryptoJS_AES: 'vendor/unmanaged/cryptojslib/aes'
+    CryptoJS_PBKDF2: 'vendor/unmanaged/cryptojslib/pbkdf2'
+    CryptoJS_HMAC: 'vendor/unmanaged/cryptojslib/hmac'
+    CryptoJS_SHA1: 'vendor/unmanaged/cryptojslib/sha1'
+    CryptoJS_SHA384: 'vendor/unmanaged/cryptojslib/sha384'
+    CryptoJS_SHA512: 'vendor/unmanaged/cryptojslib/sha512'
+    CryptoJS_ENC_BASE64: 'vendor/unmanaged/cryptojslib/enc-base64'
+    CryptoJS_Core: 'vendor/unmanaged/cryptojslib/core'
+    CryptoJS_x64Core: 'vendor/unmanaged/cryptojslib/x64-core'
+
     Hashtable : 'vendor/managed/jshashtable/hashtable'
   shim:
     'modernizr':

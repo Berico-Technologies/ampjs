@@ -13,6 +13,7 @@ define [
   '../util/Logger'
   '../bus/berico/EnvelopeHelper'
   '../connection/topology/DefaultAuthenticationProvider'
+  '../connection/topology/SimpleAuthenticationProvider'
   '../connection/topology/DefaultIdentityProvider'
   '../eventing/berico/RpcBus'
   '../eventing/berico/handlers/EncryptedResponseHandler'
@@ -20,7 +21,7 @@ define [
   '../connection/topology/DefaultMessagingKeystore'
 
 ],
-(TransportProviderFactory, GlobalTopologyService, SimpleTopologyService, ChannelProvider, DefaultApplicationExchangeProvider, EnvelopeBus, JsonEventSerializer, OutboundHeadersProcessor, EventBus, RoutingInfoRetriever, _, Logger, EnvelopeHelper, DefaultAuthenticationProvider, DefaultIdentityProvider, RpcBus, EncryptedResponseHandler, EncryptedRequestHandler, DefaultMessagingKeystore)->
+(TransportProviderFactory, GlobalTopologyService, SimpleTopologyService, ChannelProvider, DefaultApplicationExchangeProvider, EnvelopeBus, JsonEventSerializer, OutboundHeadersProcessor, EventBus, RoutingInfoRetriever, _, Logger, EnvelopeHelper, DefaultAuthenticationProvider, SimpleAuthenticationProvider, DefaultIdentityProvider, RpcBus, EncryptedResponseHandler, EncryptedRequestHandler, DefaultMessagingKeystore)->
 
   class ShortBus
     @BUSTYPE:
@@ -29,6 +30,9 @@ define [
     @TOPOLOGY_SERVICE:
       GTS: "GTS"
       SIMPLE: "SIMPLE"
+    @AUTHENTICATION_PROVIDER:
+      SIMPLE: "SIMPLE"
+      DEFAULT: "DEFAULT"
 
     @getBus: (config={})->
       {
@@ -39,7 +43,7 @@ define [
         fallbackTopoExchangePort, gtsCacheExpiryTime, gtsExchangeOverrides,
         channelProviderConnectionStrategy, channelProviderConnectionFactory, publishTopicOverride,
         authenticationProviderHostname, authenticationProviderPort, authenticationProviderServiceUrl,
-        authenticationProviderConnectionStrategy, busType, identityProviderServiceUrl, identityProviderConnectionStrategy, messagingFactory, topologyService, simpleTopologyServiceClientProfile, simpleTopologyServiceName, simpleTopologyServiceHostname, simpleTopologyServiceVirtualHost, simpleTopologyServicePort
+        authenticationProviderConnectionStrategy, busType, identityProviderServiceUrl, identityProviderConnectionStrategy, messagingFactory, topologyService, simpleTopologyServiceClientProfile, simpleTopologyServiceName, simpleTopologyServiceHostname, simpleTopologyServiceVirtualHost, simpleTopologyServicePort, authenticationProvider, authenticationProviderUsername, authenticationProviderPassword, useEncryption
       } = config
 
 
@@ -77,18 +81,22 @@ define [
           fallbackProvider: fallbackProvider
           exchangeOverrides: gtsExchangeOverrides
 
+      if authenticationProvider == @AUTHENTICATION_PROVIDER.SIMPLE
+        _authenticationProvider = new SimpleAuthenticationProvider
+          username: authenticationProviderUsername
+          password: authenticationProviderPassword
+      else
+        _authenticationProvider = new DefaultAuthenticationProvider
+          hostname: authenticationProviderHostname
+          port: authenticationProviderPort
+          serviceUrl: authenticationProviderServiceUrl
+          connectionStrategy: authenticationProviderConnectionStrategy
 
-      authenticationProvider = new DefaultAuthenticationProvider({
-        hostname: authenticationProviderHostname
-        port: authenticationProviderPort
-        serviceUrl: authenticationProviderServiceUrl
-        connectionStrategy: authenticationProviderConnectionStrategy
-      })
 
       channelProvider = new ChannelProvider({
         connectionStrategy: channelProviderConnectionStrategy
         connectionFactory: channelProviderConnectionFactory
-        authenticationProvider: authenticationProvider
+        authenticationProvider: _authenticationProvider
         messagingFactory: messagingFactory
         })
 
@@ -108,21 +116,27 @@ define [
         serviceUrl: identityProviderServiceUrl
         connectionStrategy: identityProviderConnectionStrategy
 
-      inboundProcessors = [
-        new EncryptedResponseHandler({keystore: defaultMessagingKeystore}),
-        new JsonEventSerializer()
-      ]
+      inboundProcessors = []
+
+      if useEncryption
+        inboundProcessors.push new EncryptedResponseHandler({keystore: defaultMessagingKeystore})
+
+      inboundProcessors.push new JsonEventSerializer()
+
+
+      outboundProcessors = []
 
       outboundProcessors = [
           new OutboundHeadersProcessor({
-            authenticationProvider: authenticationProvider
+            authenticationProvider: _authenticationProvider
           }),
           new JsonEventSerializer()
-          new EncryptedRequestHandler({
+      ]
+      if useEncryption
+        outboundProcessors.push new EncryptedRequestHandler({
             keystore: defaultMessagingKeystore
             defaultIdentityProvider: defaultIdentityProvider
           })
-      ]
 
       if(busType == ShortBus.BUSTYPE.RPC)
         new RpcBus(envelopeBus, inboundProcessors, outboundProcessors)

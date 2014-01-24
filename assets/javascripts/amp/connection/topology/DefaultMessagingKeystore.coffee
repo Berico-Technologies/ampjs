@@ -5,10 +5,6 @@ define [
   'Hashtable'
 ],
 ($,_, Logger, Hashtable)->
-  class Keypair
-    constructor: (keypair)->
-      {@privateKey, @publicKey} = keypair
-      null
 
   class DefaultMessagingKeystore
     constructor: ->
@@ -29,4 +25,6 @@ define [
 
       @setKeypair = (topic, keypair)->
         {publicKey, privateKey} = keypair
-        keystore.put topic, new Keypair(keypair)
+        keystore.put topic,
+          privateKey: keypair.privateKey
+          publicKey: keypair.publicKey
