@@ -4,8 +4,9 @@ define [
   'JSEncrypt'
   'amp/util/AesUtil'
   'amp/connection/topology/DefaultMessagingKeystore'
+  'JSRSASIGN'
 ],
-(EnvelopeHelper, Logger, JSEncrypt, AesUtil, DefaultMessagingKeystore)->
+(EnvelopeHelper, Logger, JSEncrypt, AesUtil, DefaultMessagingKeystore, KEYUTIL)->
   class EncryptedResponseHandler
 
     constructor: (config={})->
@@ -23,29 +24,24 @@ define [
         #it can only be an encrypted message if we're dealing  with pubsub
 
         #then extract the authentication token
-        anubisIdentity = JSON.parse(envelopeHelper.getSenderAuthToken())
+        anubisIdentity = envelopeHelper.getHeader("rsa_encrypted_secret_key")
 
         #now use our private RSA key to decrypt the AES symmetric key from the identity token
         decryptor = new JSEncrypt()
-        privateKey = @keystore.getPrivateKey envelopeHelper.getMessageTopic()
-        decryptor.setPrivateKey privateKey
-        passPhrase = decryptor.decrypt(anubisIdentity.key).replace(/(\r\n|\n|\r)/gm,"")
+        rsaKey = KEYUTIL.getRSAKeyFromPlainPKCS8PEM("-----BEGIN PRIVATE KEY-----\n"+this.keystore.getPrivateKey(envelopeHelper.getMessageTopic())+"\n-----BEGIN PRIVATE KEY-----")
+        decryptor.setPrivateKey(KEYUTIL.getPEM(rsaKey, "PKCS1PRV"))
+        passPhrase = decryptor.decrypt(anubisIdentity).replace(/(\r\n|\n|\r)/gm,"")
 
 
         if passPhrase == false
           Logger.log.info "EncryptedResponseHandler.processInbound >> failed to decrypt passphrase"
 
         else
-          ###
-            TODO: these need to be randomly generated per or maybe topic???!!!
-          ###
-          iv = "F27D5C9927726BCEFE7510B1BDD3D137"
-          salt = "3FF2EC019C627B945225DEBAD71A01B6985FE84C95A70EB132882F88C0A59A55"
-          ###
-            TODO: these need to be randomly generated per or maybe topic???!!!
-          ###
-          keySize = 256
-          iterations = iterationCount = 1000
+
+          iv = envelopeHelper.getHeader("symmetric_key_iv")
+          salt = envelopeHelper.getHeader("symmetric_key_salt")
+          keySize = envelopeHelper.getHeader("symmetric_key_size")
+          iterations = iterationCount = envelopeHelper.getHeader("symmetric_key_count")
 
           aesUtil = new AesUtil(keySize, iterationCount)
           cipherText = envelopeHelper.getPayload()

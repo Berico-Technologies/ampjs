@@ -20,12 +20,17 @@ define [
       null
 
     processOutbound: (context)->
+      deferred = $.Deferred()
       Logger.log.info "EncryptedResponseHandler.processOutbound >> setting properties for encrypted response"
 
       envelopeHelper = new EnvelopeHelper(context.getEnvelope())
 
       if envelopeHelper.isPubSub()
-        publicKey = @_getPublicKey envelopeHelper.getMessageTopic()
+        @_getPublicKey(envelopeHelper.getMessageTopic()).then (publicKey)->
+          envelopeHelper.setHeader "sender_public_key", JSON.stringify(publicKey)
+          deferred.resolve()
+
+      deferred.promise()
 
     _getPublicKey: (topic)->
       deferred = $.Deferred()

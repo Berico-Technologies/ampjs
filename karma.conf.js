@@ -13,15 +13,15 @@ module.exports = function(config){
     ],
 
     exclude : ['assets/javascripts/main.js'],
-    reporters : ['dots', 'junit', 'coverage'],
+    reporters : ['dots', 'junit'],
     junitReporter : {outputFile: 'test-results.xml'},
     colors : true,
-    autoWatch : false,
-    singleRun : true,
+    autoWatch : true,
+    singleRun : false,
     runnerPort : 9100,
     port : 9876,
     reportSlowerThan: 500,
-    browsers : ['PhantomJS'],
+    // browsers : ['PhantomJS'],
     preprocessors : {
       // 'assets/javascripts/**/*.coffee' : 'coverage',
       'assets/**/*.coffee': 'coffee',
@@ -39,7 +39,6 @@ module.exports = function(config){
       file: 'coverage.xml'
     },
 
-    logLevel : config.LOG_ERROR
-
+    logLevel : config.LOG_INFO
   });
 };

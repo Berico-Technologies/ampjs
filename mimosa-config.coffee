@@ -22,41 +22,8 @@ exports.config =
         "stomp-websocket":["dist/stomp.js"]
         "requirejs-domready":["domReady.js"]
         "requirejs-i18n":["i18n.js"]
-        "cryptojslib":[
-          "components/aes.js"
-          "components/cipher-core.js"
-          "components/core.js"
-          "components/enc-base64.js"
-          "components/enc-utf16.js"
-          "components/evpkdf.js"
-          "components/format-hex.js"
-          "components/hmac.js"
-          "components/lib-typedarrays.js"
-          "components/md5.js"
-          "components/mode-cfb.js"
-          "components/mode-ctr-gladman.js"
-          "components/mode-ctr.js"
-          "components/mode-ecb.js"
-          "components/mode-ofb.js"
-          "components/pad-ansix923.js"
-          "components/pad-iso10126.js"
-          "components/pad-iso97971.js"
-          "components/pad-nopadding.js"
-          "components/pad-zeropadding.js"
-          "components/pbkdf2.js"
-          "components/rabbit-legacy.js"
-          "components/rabbit.js"
-          "components/rc4.js"
-          "components/ripemd160.js"
-          "components/sha1.js"
-          "components/sha224.js"
-          "components/sha256.js"
-          "components/sha3.js"
-          "components/sha384.js"
-          "components/sha512.js"
-          "components/tripledes.js"
-          "components/x64-core.js"
-        ]
+        "jsrsasign":["jsrsasign-latest-all-min.js"]
+
   libraryPackage:
     packaging:
       shimmedWithDependencies:true

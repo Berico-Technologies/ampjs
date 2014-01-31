@@ -1,7 +1,5 @@
 define [
-  "CryptoJS_AES"
-  'CryptoJS_PBKDF2'
-  'CryptoJS_ENC_BASE64'
+  "JSRSASIGN"
 ],
 ()->
   class AesUtil
