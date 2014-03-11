@@ -8,6 +8,7 @@ exports.config =
     'mimosa-jshint'
     'require-library-package'
     'mimosa-karma-enterprise'
+    'coffeescript'
   ]
   karma:
     configFile: 'karma.conf.js'

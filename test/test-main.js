@@ -1,5 +1,5 @@
 var tests = Object.keys(window.__karma__.files).filter(function(file){
-  return /(encryptedHandlerIntegrationSpec)\.js$/.test(file);
+  return /(encryptedHandler).*\.js$/.test(file);
   // return /(encryptedHandlerSpec)\.js$/.test(file);
   // return /encryptionBenchmarkSpec\.js$/.test(file);
   // return /(envelope|eventBus|globalTopology|simpleTopology|webStompChannel|webStompTransport).*\.coffee-compiled\.js$/.test(file);

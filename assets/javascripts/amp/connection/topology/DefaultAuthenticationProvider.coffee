@@ -11,10 +11,9 @@ define [
       {@hostname, @port, @serviceUrl, @connectionStrategy} = config
       unless _.isString @hostname then @hostname = 'localhost'
       unless _.isNumber @port then @port = 15679
-      unless _.isString @serviceUrl then @serviceUrl = '/anubis/identity/authenticate'
+      unless _.isString @serviceUrl then @serviceUrl = '/anubis/x509/authenticate'
       unless _.isFunction @connectionStrategy then @connectionStrategy = ->
           "https://#{@hostname}:#{@port}#{@serviceUrl}"
-
 
     getCredentials: ->
       deferred = $.Deferred()
@@ -35,8 +34,8 @@ define [
       req.done (data, textStatus, jqXHR)=>
           Logger.log.info "DefaultAuthenticationProvider.authenticate >> successfully completed request"
           if _.isObject data
-            @username = data.identity if _.isString data.identity
-            @password = data.token if _.isString data.token
+            @username = data.authenticationToken.identity if _.isString data.authenticationToken.identity
+            @password = data.authenticationToken.key if _.isString data.authenticationToken.key
             deferred.resolve(data)
           else deferred.reject()
       req.fail (jqXHR, textStatus, errorThrown)->
