@@ -22,6 +22,11 @@ define [
     getSenderAuthToken: -> @envelope.getHeader(EnvelopeHeaderConstants.SENDER_AUTH_TOKEN)
     getOriginatorIdentity: -> @envelope.getHeader(EnvelopeHeaderConstants.MESSAGE_ORIGINATOR_IDENTITY)
     getOriginatorCredentials: -> @envelope.getHeader(EnvelopeHeaderConstants.MESSAGE_ORIGINATOR_CREDENTIALS)
+
+    getSenderIdentity: -> @envelope.getHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_IDENTITY)
+    getSenderCredentials: -> @envelope.getHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_CREDENTIALS)
+    getSenderSignature: -> @envelope.getHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_SIGNATURE)
+
     getX509SenderPublicKeyHeader: -> @envelope.getHeader(EnvelopeHeaderConstants.X509_SENDER_PUBLIC_KEY_HEADER)
     getRsaEncryptedKeyHeader: -> @envelope.getHeader(EnvelopeHeaderConstants.RSA_ENCRYPTED_KEY_HEADER)
     getSymetricKeySalt: -> @envelope.getHeader(EnvelopeHeaderConstants.SYMMETRIC_KEY_SALT)
@@ -49,6 +54,11 @@ define [
     setSenderAuthToken:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.SENDER_AUTH_TOKEN, input)
     setOriginatorIdentity:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.MESSAGE_ORIGINATOR_IDENTITY, input)
     setOriginatorCredentials:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.MESSAGE_ORIGINATOR_CREDENTIALS, input)
+
+    setSenderIdentity:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_IDENTITY, input)
+    setSenderCredentials:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_CREDENTIALS, input)
+    setSenderSignature:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_SIGNATURE, input)
+
     setX509SenderPublicKeyHeader:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.X509_SENDER_PUBLIC_KEY_HEADER, input)
     setRsaEncryptedKeyHeader:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.RSA_ENCRYPTED_KEY_HEADER, input)
     setSymetricKeySalt:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.SYMMETRIC_KEY_SALT, input)

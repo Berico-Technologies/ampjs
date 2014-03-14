@@ -123,6 +123,7 @@ define [
       if useEncryption
         inboundProcessors.push new EncryptedResponseHandler
           keystore: defaultMessagingKeystore
+          authenticationProvider: _authenticationProvider
 
       inboundProcessors.push new JsonEventSerializer()
 

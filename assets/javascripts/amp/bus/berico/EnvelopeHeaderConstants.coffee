@@ -16,6 +16,9 @@ define [], ->
     @REPLY_TO_TOPIC: "cmf.bus.encryption.reply_to_topic"
     @MESSAGE_ORIGINATOR_IDENTITY = "cmf.bus.message.originator.identity"
     @MESSAGE_ORIGINATOR_CREDENTIALS = "cmf.bus.message.originator.credentials"
+    @MESSAGE_SENDER_IDENTITY = "cmf.bus.message.sender.identity"
+    @MESSAGE_SENDER_CREDENTIALS = "cmf.bus.message.sender.credentials"
+    @MESSAGE_SENDER_SIGNATURE = "cmf.bus.message.sender.signature"
 
     @X509_SENDER_PUBLIC_KEY_HEADER = "cmf.bus.encryption.sender_public_key"
     @RSA_ENCRYPTED_KEY_HEADER = "cmf.bus.encryption.rsa_encrypted_secret_key"
