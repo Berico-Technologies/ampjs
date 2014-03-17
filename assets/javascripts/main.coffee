@@ -19,30 +19,22 @@ requirejs.config({
   },
 
   shim:{
-    'stomp':{
+    stomp:
       exports: 'Stomp'
-    },
-    'uuid':{
+    uuid:
       exports: 'uuid'
-    },
-    'sockjs':{
+    sockjs:
       exports: 'SockJS'
-    },
-    'jquery':{
+    jquery:
       exports: 'jquery'
-    },
-    'LRUCache':{
+    LRUCache:
       exports: 'LRUCache'
-    },
-    'JSRSASIGN':{
+    JSRSASIGN:
       exports: 'KEYUTIL'
-    },
-   'JSEncrypt': {
+    JSEncrypt:
       exports: "JSEncrypt"
-    },
-    'Hashtable':{
-      exports: 'Hashtable'
-    }
+    Hashtable:
+      exports: "Hashtable"
   }
 })
 
