@@ -13,7 +13,7 @@ requirejs.config({
     'LRUCache': 'vendor/managed/node-lru-cache/lru-cache',
 
     JSEncrypt: 'vendor/managed/jsencrypt/jsencrypt.min',
-    Hashtable : 'vendor/managed/jshashtable/hashtable',
+    Hashtable : 'vendor/jshashtable/hashtable',
     JSRSASIGN: 'vendor/managed/jsrsasign/jsrsasign-latest-all-min'
 
   },

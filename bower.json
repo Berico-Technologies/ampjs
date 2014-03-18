@@ -29,7 +29,6 @@
     "underscore-amd": "1.4.4",
     "node-lru-cache": "git://github.com/Berico-Technologies/node-lru-cache",
     "jsencrypt": "*",
-    "jsrsasign": "*",
-    "jshashtable": "*"
+    "jsrsasign": "*"
   }
 }

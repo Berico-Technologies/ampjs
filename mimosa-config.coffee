@@ -38,9 +38,9 @@ exports.config =
       noShimNoDependencies:true
       noShimWithDependencies:true
     overrides:
-      shimmedWithDependencies: {optimize: "none"}
-      noShimNoDependencies: {optimize: "none"}
-      noShimWithDependencies: {optimize: "none"}
+      shimmedWithDependencies: {}
+      noShimNoDependencies: {}
+      noShimWithDependencies: {}
     outFolder: "build"
     cleanOutFolder: true
     globalName: "ShortBus"
