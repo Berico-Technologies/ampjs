@@ -16,6 +16,16 @@ define [
       Logger.log.info "RpcBus.getResponseTo >> executing get response"
 
       deferred = $.Deferred()
+
+      if config.timeout?
+        # set a timer to cancel RPC deferred
+        timer = setTimeout(
+          () ->
+            deferred.reject
+              error: 'timeout'
+          , config.timeout
+      )
+
       requestId = uuid.v4()
       env = @buildRequestEnvelope(requestId, timeout, outboundTopic)
 
@@ -40,6 +50,7 @@ define [
             #unregister from the bus
             @envelopeBus.unregister(rpcRegistration)
             deferred.resolve(data)
+            clearTimeout timer
 
       return deferred.promise()
 
