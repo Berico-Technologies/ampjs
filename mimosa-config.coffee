@@ -11,8 +11,6 @@ exports.config =
     "coffeescript"
     "jshint"
     "karma-enterprise"
-    "lint"
-    "minify"
     "require-library-package"
     "require-lint"
     "stylus"
@@ -34,22 +32,15 @@ exports.config =
         "requirejs-i18n":["i18n.js"]
         "jsrsasign":["jsrsasign-latest-all-min.js"]
 
-  require:
-    optimize:
-      overrides: (cfg) ->
-        cfg.optimize = "none"
-        console.log cfg
-        cfg
-
   libraryPackage:
     packaging:
       shimmedWithDependencies:true
       noShimNoDependencies:true
       noShimWithDependencies:true
     overrides:
-      shimmedWithDependencies: {}
-      noShimNoDependencies: {}
-      noShimWithDependencies: {}
+      shimmedWithDependencies: {optimize: "none"}
+      noShimNoDependencies: {optimize: "none"}
+      noShimWithDependencies: {optimize: "none"}
     outFolder: "build"
     cleanOutFolder: true
     globalName: "ShortBus"
