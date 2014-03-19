@@ -2,20 +2,14 @@ exports.config =
   minMimosaVersion:"2.1.0"
 
   modules: [
-    "minify-js"
-    "minify-css"
-    "csslint"
-    "require"
-    "bower"
-    "copy"
-    "coffeescript"
-    "jshint"
-    "karma-enterprise"
-    "lint"
-    "minify"
-    "require-library-package"
-    "require-lint"
-    "stylus"
+    'require'
+    'minify'
+    'bower'
+    'require-lint'
+    'mimosa-jshint'
+    'require-library-package'
+    'mimosa-karma-enterprise'
+    'coffeescript'
   ]
 
   karma:

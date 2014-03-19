@@ -20,6 +20,20 @@ define [
     getRpcTimeout: -> @envelope.getHeader(EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC_TIMEOUT)
     getSenderIdentity: -> @envelope.getHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_IDENTITY)
     getSenderAuthToken: -> @envelope.getHeader(EnvelopeHeaderConstants.SENDER_AUTH_TOKEN)
+    getOriginatorIdentity: -> @envelope.getHeader(EnvelopeHeaderConstants.MESSAGE_ORIGINATOR_IDENTITY)
+    getOriginatorCredentials: -> @envelope.getHeader(EnvelopeHeaderConstants.MESSAGE_ORIGINATOR_CREDENTIALS)
+
+    getSenderIdentity: -> @envelope.getHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_IDENTITY)
+    getSenderCredentials: -> @envelope.getHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_CREDENTIALS)
+    getSenderSignature: -> @envelope.getHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_SIGNATURE)
+
+    getX509SenderPublicKeyHeader: -> @envelope.getHeader(EnvelopeHeaderConstants.X509_SENDER_PUBLIC_KEY_HEADER)
+    getRsaEncryptedKeyHeader: -> @envelope.getHeader(EnvelopeHeaderConstants.RSA_ENCRYPTED_KEY_HEADER)
+    getSymetricKeySalt: -> @envelope.getHeader(EnvelopeHeaderConstants.SYMMETRIC_KEY_SALT)
+    getSymmetricKeyInitializationVector: -> @envelope.getHeader(EnvelopeHeaderConstants.SYMMETRIC_KEY_INITIALIZATION_VECTOR)
+    getSymmetricKeyIterationCount:-> @envelope.getHeader(EnvelopeHeaderConstants.SYMMETRIC_KEY_ITERATION_COUNT)
+    getSymmetricKeySize:-> @envelope.getHeader(EnvelopeHeaderConstants.SYMMETRIC_KEY_SIZE)
+    getReplyToTopic:-> @envelope.getHeader(EnvelopeHeaderConstants.REPLY_TO_TOPIC)
 
     isPubSub: -> EnvelopeHeaderConstants.MESSAGE_PATTERN_PUBSUB == @getMessagePattern()
     isRequest: -> !(_.isString @getCorrelationId && @getCorrelationId.length > 0) && @isRpc
@@ -38,5 +52,19 @@ define [
     setRpcTimeout:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.MESSAGE_PATTERN_RPC_TIMEOUT, input)
     setSenderIdentity:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_IDENTITY, input)
     setSenderAuthToken:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.SENDER_AUTH_TOKEN, input)
+    setOriginatorIdentity:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.MESSAGE_ORIGINATOR_IDENTITY, input)
+    setOriginatorCredentials:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.MESSAGE_ORIGINATOR_CREDENTIALS, input)
+
+    setSenderIdentity:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_IDENTITY, input)
+    setSenderCredentials:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_CREDENTIALS, input)
+    setSenderSignature:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.MESSAGE_SENDER_SIGNATURE, input)
+
+    setX509SenderPublicKeyHeader:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.X509_SENDER_PUBLIC_KEY_HEADER, input)
+    setRsaEncryptedKeyHeader:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.RSA_ENCRYPTED_KEY_HEADER, input)
+    setSymetricKeySalt:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.SYMMETRIC_KEY_SALT, input)
+    setSymmetricKeyInitializationVector:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.SYMMETRIC_KEY_INITIALIZATION_VECTOR, input)
+    setSymmetricKeyIterationCount:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.SYMMETRIC_KEY_ITERATION_COUNT, input)
+    setSymmetricKeySize:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.SYMMETRIC_KEY_SIZE, input)
+    setReplyToTopic:(input) -> @envelope.setHeader(EnvelopeHeaderConstants.REPLY_TO_TOPIC, input)
 
   return EnvelopeHelper
