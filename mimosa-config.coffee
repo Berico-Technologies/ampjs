@@ -1,5 +1,6 @@
 exports.config =
-  minMimosaVersion:"1.0.1"
+  minMimosaVersion:"2.1.0"
+
   modules: [
     'require'
     'minify'
@@ -10,9 +11,11 @@ exports.config =
     'mimosa-karma-enterprise'
     'coffeescript'
   ]
+
   karma:
     configFile: 'karma.conf.js'
     externalConfig: true
+
   bower:
     bowerDir:
       clean:false
@@ -24,6 +27,13 @@ exports.config =
         "requirejs-domready":["domReady.js"]
         "requirejs-i18n":["i18n.js"]
         "jsrsasign":["jsrsasign-latest-all-min.js"]
+
+  require:
+    optimize:
+      overrides: (cfg) ->
+        cfg.optimize = "none"
+        console.log cfg
+        cfg
 
   libraryPackage:
     packaging:
@@ -37,29 +47,7 @@ exports.config =
     outFolder: "build"
     cleanOutFolder: true
     globalName: "ShortBus"
-    name:"ShortBus.min.js"
-    main:"amp/factory/ShortBus"
+    name: "ShortBus.min.js"
+    main: "amp/factory/ShortBus"
     mainConfigFile: "javascripts/main.js"
-    removeDependencies: [
-      "i18n",
-      "domReady",
-      "modernizr",
-      "stomp",
-      "underscore",
-      "sockjs",
-      "flog",
-      "uuid",
-      "jquery",
-      "LRUCache",
-      "JSEncrypt",
-      "CryptoJS_CipherCore",
-      "CryptoJS_AES",
-      "CryptoJS_PBKDF2",
-      "CryptoJS_HMAC",
-      "CryptoJS_SHA384",
-      "CryptoJS_SHA512",
-      "CryptoJS_ENC_BASE64",
-      "CryptoJS_Core",
-      "CryptoJS_x64Core",
-      "Hashtable"
-    ]
+    removeDependencies: []

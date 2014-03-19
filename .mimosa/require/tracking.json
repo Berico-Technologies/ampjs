@@ -1,0 +1,299 @@
+{
+  "shims": {
+    "/javascripts/main.js": {
+      "stomp": {
+        "exports": "Stomp"
+      },
+      "uuid": {
+        "exports": "uuid"
+      },
+      "sockjs": {
+        "exports": "SockJS"
+      },
+      "jquery": {
+        "exports": "jquery"
+      },
+      "LRUCache": {
+        "exports": "LRUCache"
+      },
+      "JSRSASIGN": {
+        "exports": "KEYUTIL"
+      },
+      "JSEncrypt": {
+        "exports": "JSEncrypt"
+      },
+      "Hashtable": {
+        "exports": "Hashtable"
+      }
+    }
+  },
+  "deps": {
+    "/javascripts/amp/bus/Envelope.js": [
+      "underscore"
+    ],
+    "/javascripts/amp/bus/berico/EnvelopeBus.js": [
+      "underscore",
+      "../berico/InboundEnvelopeProcessorCallback",
+      "../../util/Logger"
+    ],
+    "/javascripts/amp/bus/berico/EnvelopeHeaderConstants.js": [],
+    "/javascripts/amp/bus/berico/EnvelopeHelper.js": [
+      "./EnvelopeHeaderConstants",
+      "underscore"
+    ],
+    "/javascripts/amp/bus/berico/InboundEnvelopeProcessorCallback.js": [
+      "../../util/Logger"
+    ],
+    "/javascripts/amp/bus/berico/InboundProcessorCallback.js": [],
+    "/javascripts/amp/bus/berico/TransportProviderFactory.js": [
+      "../../connection/TransportProvider",
+      "../../connection/ChannelProvider",
+      "../../connection/topology/SimpleTopologyService",
+      "underscore",
+      "../../util/Logger"
+    ],
+    "/javascripts/amp/connection/ChannelProvider.js": [
+      "stomp",
+      "../util/Logger",
+      "sockjs",
+      "underscore",
+      "jquery",
+      "./topology/DefaultAuthenticationProvider"
+    ],
+    "/javascripts/amp/connection/EnvelopeDispatcher.js": [
+      "underscore",
+      "../util/Logger"
+    ],
+    "/javascripts/amp/connection/Listener.js": [
+      "underscore",
+      "../bus/Envelope",
+      "../bus/berico/EnvelopeHelper",
+      "./EnvelopeDispatcher",
+      "jquery",
+      "../util/Logger"
+    ],
+    "/javascripts/amp/connection/TransportProvider.js": [
+      "./Listener",
+      "underscore",
+      "jquery",
+      "../util/Logger"
+    ],
+    "/javascripts/amp/connection/topology/DefaultApplicationExchangeProvider.js": [
+      "./SimpleTopologyService",
+      "../../bus/berico/EnvelopeHeaderConstants",
+      "../../util/Logger"
+    ],
+    "/javascripts/amp/connection/topology/DefaultAuthenticationProvider.js": [
+      "jquery",
+      "underscore",
+      "../../util/Logger"
+    ],
+    "/javascripts/amp/connection/topology/DefaultIdentityProvider.js": [
+      "jquery",
+      "underscore",
+      "../../util/Logger",
+      "./DefaultAuthenticationProvider"
+    ],
+    "/javascripts/amp/connection/topology/DefaultMessagingKeystore.js": [
+      "jquery",
+      "underscore",
+      "../../util/Logger",
+      "Hashtable",
+      "amp/connection/topology/DefaultIdentityProvider"
+    ],
+    "/javascripts/amp/connection/topology/Exchange.js": [],
+    "/javascripts/amp/connection/topology/GlobalTopologyService.js": [
+      "../../util/Logger",
+      "LRUCache",
+      "underscore",
+      "../../bus/berico/EnvelopeHeaderConstants",
+      "jquery"
+    ],
+    "/javascripts/amp/connection/topology/RouteInfo.js": [],
+    "/javascripts/amp/connection/topology/RoutingInfo.js": [],
+    "/javascripts/amp/connection/topology/RoutingInfoRetriever.js": [
+      "../../util/Logger",
+      "jquery"
+    ],
+    "/javascripts/amp/connection/topology/SimpleAuthenticationProvider.js": [
+      "jquery",
+      "underscore",
+      "../../util/Logger"
+    ],
+    "/javascripts/amp/connection/topology/SimpleTopologyService.js": [
+      "uuid",
+      "../../util/Logger",
+      "./RoutingInfo",
+      "./RouteInfo",
+      "./Exchange",
+      "underscore",
+      "../../bus/berico/EnvelopeHeaderConstants",
+      "jquery"
+    ],
+    "/javascripts/amp/eventing/EventHandler.js": [
+      "../util/Logger"
+    ],
+    "/javascripts/amp/eventing/berico/EventBus.js": [
+      "./ProcessingContext",
+      "../../bus/Envelope",
+      "./EventRegistration",
+      "../../util/Logger",
+      "jquery",
+      "../../bus/berico/EnvelopeHelper",
+      "../../bus/berico/EnvelopeHeaderConstants",
+      "underscore"
+    ],
+    "/javascripts/amp/eventing/berico/EventRegistration.js": [
+      "../../bus/berico/EnvelopeHeaderConstants",
+      "./ProcessingContext",
+      "../../util/Logger"
+    ],
+    "/javascripts/amp/eventing/berico/OutboundHeadersProcessor.js": [
+      "../../bus/berico/EnvelopeHelper",
+      "uuid",
+      "underscore",
+      "../../util/Logger",
+      "../../connection/topology/DefaultAuthenticationProvider",
+      "jquery"
+    ],
+    "/javascripts/amp/eventing/berico/ProcessingContext.js": [],
+    "/javascripts/amp/eventing/berico/RpcBus.js": [
+      "./EventBus",
+      "../../util/Logger",
+      "uuid",
+      "../../bus/Envelope",
+      "../../bus/berico/EnvelopeHelper",
+      "../../bus/berico/EnvelopeHeaderConstants",
+      "./RpcRegistration",
+      "jquery"
+    ],
+    "/javascripts/amp/eventing/berico/RpcRegistration.js": [
+      "../../bus/berico/EnvelopeHelper",
+      "jquery",
+      "./ProcessingContext",
+      "./EventRegistration",
+      "../../util/Logger",
+      "../../bus/berico/EnvelopeHeaderConstants"
+    ],
+    "/javascripts/amp/eventing/berico/handlers/EncryptedRequestHandler.js": [
+      "jquery",
+      "../../../bus/berico/EnvelopeHelper",
+      "../../../util/Logger",
+      "JSEncrypt",
+      "amp/util/AesUtil",
+      "amp/connection/topology/DefaultMessagingKeystore"
+    ],
+    "/javascripts/amp/eventing/berico/handlers/EncryptedResponseHandler.js": [
+      "../../../bus/berico/EnvelopeHelper",
+      "../../../util/Logger",
+      "JSEncrypt",
+      "amp/util/AesUtil",
+      "amp/connection/topology/DefaultMessagingKeystore",
+      "JSRSASIGN"
+    ],
+    "/javascripts/amp/eventing/berico/serializers/JsonEventSerializer.js": [
+      "../../../bus/berico/EnvelopeHelper",
+      "../../../util/Logger"
+    ],
+    "/javascripts/amp/factory/ShortBus.js": [
+      "../bus/berico/TransportProviderFactory",
+      "../connection/topology/GlobalTopologyService",
+      "../connection/topology/SimpleTopologyService",
+      "../connection/ChannelProvider",
+      "../connection/topology/DefaultApplicationExchangeProvider",
+      "../bus/berico/EnvelopeBus",
+      "../eventing/berico/serializers/JsonEventSerializer",
+      "../eventing/berico/OutboundHeadersProcessor",
+      "../eventing/berico/EventBus",
+      "../connection/topology/RoutingInfoRetriever",
+      "underscore",
+      "../util/Logger",
+      "../bus/berico/EnvelopeHelper",
+      "../connection/topology/DefaultAuthenticationProvider",
+      "../connection/topology/SimpleAuthenticationProvider",
+      "../connection/topology/DefaultIdentityProvider",
+      "../eventing/berico/RpcBus",
+      "../eventing/berico/handlers/EncryptedResponseHandler",
+      "../eventing/berico/handlers/EncryptedRequestHandler",
+      "../connection/topology/DefaultMessagingKeystore"
+    ],
+    "/javascripts/amp/util/AesUtil.js": [
+      "JSRSASIGN"
+    ],
+    "/javascripts/amp/util/Logger.js": [
+      "flog"
+    ],
+    "/javascripts/main.js": [
+      "amp/factory/ShortBus"
+    ]
+  },
+  "aliases": {
+    "/javascripts/main.js": {
+      "i18n": "vendor/managed/requirejs-i18n/i18n",
+      "domReady": "vendor/managed/requirejs-domready/domReady",
+      "underscore": "vendor/managed/underscore-amd/underscore",
+      "stomp": "vendor/managed/stomp-websocket/stomp",
+      "flog": "vendor/managed/flog/flog",
+      "uuid": "vendor/managed/node-uuid/uuid",
+      "test": "../../test",
+      "sockjs": "vendor/managed/sockjs/sockjs",
+      "jquery": "vendor/managed/jquery/jquery",
+      "LRUCache": "vendor/managed/node-lru-cache/lru-cache",
+      "JSEncrypt": "vendor/managed/jsencrypt/jsencrypt.min",
+      "Hashtable": "vendor/managed/jshashtable/hashtable",
+      "JSRSASIGN": "vendor/managed/jsrsasign/jsrsasign-latest-all-min"
+    }
+  },
+  "mappings": {
+    "/javascripts/main.js": null
+  },
+  "packages": {
+    "/javascripts/main.js": null
+  },
+  "originalConfig": {
+    "shim": {
+      "stomp": {
+        "exports": "Stomp"
+      },
+      "uuid": {
+        "exports": "uuid"
+      },
+      "sockjs": {
+        "exports": "SockJS"
+      },
+      "jquery": {
+        "exports": "jquery"
+      },
+      "LRUCache": {
+        "exports": "LRUCache"
+      },
+      "JSRSASIGN": {
+        "exports": "KEYUTIL"
+      },
+      "JSEncrypt": {
+        "exports": "JSEncrypt"
+      },
+      "Hashtable": {
+        "exports": "Hashtable"
+      }
+    },
+    "paths": {
+      "i18n": "vendor/managed/requirejs-i18n/i18n",
+      "domReady": "vendor/managed/requirejs-domready/domReady",
+      "underscore": "vendor/managed/underscore-amd/underscore",
+      "stomp": "vendor/managed/stomp-websocket/stomp",
+      "flog": "vendor/managed/flog/flog",
+      "uuid": "vendor/managed/node-uuid/uuid",
+      "test": "../../test",
+      "sockjs": "vendor/managed/sockjs/sockjs",
+      "jquery": "vendor/managed/jquery/jquery",
+      "LRUCache": "vendor/managed/node-lru-cache/lru-cache",
+      "JSEncrypt": "vendor/managed/jsencrypt/jsencrypt.min",
+      "Hashtable": "vendor/managed/jshashtable/hashtable",
+      "JSRSASIGN": "vendor/managed/jsrsasign/jsrsasign-latest-all-min"
+    }
+  },
+  "requireFiles": [
+    "/javascripts/main.js"
+  ]
+}

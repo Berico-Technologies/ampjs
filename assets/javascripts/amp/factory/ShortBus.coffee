@@ -137,6 +137,7 @@ define [
           new JsonEventSerializer()
       ]
       if useEncryption
+        throw "Encryption not supported at this time."
         outboundProcessors.push new EncryptedRequestHandler
             keystore: defaultMessagingKeystore
 

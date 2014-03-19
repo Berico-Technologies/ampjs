@@ -130,9 +130,6 @@ define [
             Logger.log.info "EncryptedResponseHandler.processInbound >> failed to decrypt message"
             return false
 
-      else
-        Logger.log.info "EncryptedResponseHandler.processInbound >>  message is not pubsub, ignoring"
-
 
     processOutbound: (context)->
       null
