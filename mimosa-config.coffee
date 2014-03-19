@@ -13,7 +13,6 @@ exports.config =
     "karma-enterprise"
     "require-library-package"
     "require-lint"
-    "stylus"
   ]
 
   karma:

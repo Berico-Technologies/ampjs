@@ -23,7 +23,7 @@ module.exports = function(config){
     reportSlowerThan: 500,
     // browsers : ['PhantomJS'],
     preprocessors : {
-      // 'assets/javascripts/**/*.coffee' : 'coverage',
+      'assets/javascripts/**/*.coffee' : 'coverage',
       'assets/**/*.coffee': 'coffee',
       'test/**/*.coffee': 'coffee'
     },

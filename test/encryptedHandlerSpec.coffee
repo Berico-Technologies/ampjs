@@ -22,11 +22,12 @@ define [
     beforeEach ->
       $.ajax = (options)->
         deferred = $.Deferred()
-        if /anubis.archnet.mil:15679\/anubis\/identity\/authenticate*/.test options.url
+        if /anubis.archnet.mil:15679\/anubis\/x509\/authenticate*/.test options.url
           deferred.resolve
-            token: "ILUXUSHYQW21OqGK+JMvzw=="
-            identity: "CN=Drew Tayman, CN=Users, DC=archnet, DC=mil"
-        else if /anubis.archnet.mil:15679\/anubis\/identity\/identify*/.test options.url
+            authenticationToken:
+              password: "ILUXUSHYQW21OqGK+JMvzw=="
+              username: "CN=Drew Tayman, CN=Users, DC=archnet, DC=mil"
+        else if /anubis.archnet.mil:15679\/anubis\/x509\/identity*/.test options.url
           deferred.resolve
             privateKey: """
                         -----BEGIN RSA PRIVATE KEY-----

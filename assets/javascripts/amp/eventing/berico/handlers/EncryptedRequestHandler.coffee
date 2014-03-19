@@ -5,7 +5,6 @@ define [
   'JSEncrypt'
   'amp/util/AesUtil'
   'amp/connection/topology/DefaultMessagingKeystore'
-  'amp/connection/topology/DefaultIdentityProvider'
 ],
 ($, EnvelopeHelper, Logger, JSEncrypt, AesUtil, DefaultMessagingKeystore, DefaultIdentityProvider)->
   class EncryptedRequestHandler
@@ -14,23 +13,36 @@ define [
       {@keystore, @defaultIdentityProvider}=config
 
       unless _.isObject @keystore then @authenticationProvider = new DefaultMessagingKeystore()
-      unless _.isObject @defaultIdentityProvider then @defaultIdentityProvider = new DefaultIdentityProvider()
 
     processInbound: (context)->
       null
 
     processOutbound: (context)->
-      deferred = $.Deferred()
-      Logger.log.info "EncryptedResponseHandler.processOutbound >> setting properties for encrypted response"
+
 
       envelopeHelper = new EnvelopeHelper(context.getEnvelope())
-
       if envelopeHelper.isPubSub()
-        @_getPublicKey(envelopeHelper.getMessageTopic()).then (publicKey)->
-          envelopeHelper.setHeader "sender_public_key", JSON.stringify(publicKey)
+        Logger.log.info "EncryptedResponseHandler.processOutbound >> setting properties to request encrypted response"
+        deferred = $.Deferred()
+        @keystore.getProofKey(envelopeHelper.getMessageTopic()).then (proofKey)=>
+          @keystore.getSignedIdentityToken(envelopeHelper.getMessageTopic()).then (signedIdentityToken)=>
+
+            #put the identity and credentials into the headers
+            envelopeHelper.setOriginatorIdentity JSON.parse(signedIdentityToken)['identityToken']['identity']
+
+            #i'm crying a little bit...
+            envelopeHelper.setOriginatorCredentials JSON.stringify
+              signedIdentityToken: JSON.parse(signedIdentityToken)
+
+            hmac = CryptoJS.algo.HMAC.create(CryptoJS.algo.SHA256, proofKey);
+            hmac.update(JSON.stringify(envelopeHelper.getEnvelope()))
+            hmacHash = CryptoJS.enc.Hex.stringify(hmac.finalize())
+
+            envelopeHelper.setDigitalSignature JSON.stringify(hmacHash)
+
           deferred.resolve()
 
-      deferred.promise()
+        deferred.promise()
 
     _getPublicKey: (topic)->
       deferred = $.Deferred()
@@ -40,6 +52,6 @@ define [
       else
         Logger.log.info "EncryptedResponseHandler._getPublicKey >> keystore miss, querying identity provider"
         @defaultIdentityProvider.getIdentity(topic).then (reply)=>
-          @keystore.setKeypair(topic, reply)
+          @keystore.setIdentityContext(topic, reply)
           deferred.resolve(@keystore.getPublicKey(topic))
       return deferred.promise()

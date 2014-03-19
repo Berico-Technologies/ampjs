@@ -13,5 +13,18 @@ define [], ->
     @MESSAGE_TOPIC = "cmf.bus.message.topic"
     @MESSAGE_TYPE = "cmf.bus.message.type"
     @SENDER_AUTH_TOKEN: "SENDER_AUTH_TOKEN"
+    @REPLY_TO_TOPIC: "cmf.bus.encryption.reply_to_topic"
+    @MESSAGE_ORIGINATOR_IDENTITY = "cmf.bus.message.originator.identity"
+    @MESSAGE_ORIGINATOR_CREDENTIALS = "cmf.bus.message.originator.credentials"
+    @MESSAGE_SENDER_IDENTITY = "cmf.bus.message.sender.identity"
+    @MESSAGE_SENDER_CREDENTIALS = "cmf.bus.message.sender.credentials"
+    @MESSAGE_SENDER_SIGNATURE = "cmf.bus.message.sender.signature"
+
+    @X509_SENDER_PUBLIC_KEY_HEADER = "cmf.bus.encryption.sender_public_key"
+    @RSA_ENCRYPTED_KEY_HEADER = "cmf.bus.encryption.rsa_encrypted_secret_key"
+    @SYMMETRIC_KEY_SALT = "cmf.bus.encryption.symmetric_key_salt"
+    @SYMMETRIC_KEY_INITIALIZATION_VECTOR = "cmf.bus.encryption.symmetric_key_iv"
+    @SYMMETRIC_KEY_ITERATION_COUNT = "cmf.bus.encryption.symmetric_key_count"
+    @SYMMETRIC_KEY_SIZE = "cmf.bus.encryption.symmetric_key_size"
 
   return EnvelopeHeaderConstants
