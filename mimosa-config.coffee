@@ -31,6 +31,7 @@ exports.config =
         "requirejs-domready":["domReady.js"]
         "requirejs-i18n":["i18n.js"]
         "jsrsasign":["jsrsasign-latest-all-min.js"]
+        "jquery-jsonp":["src/jquery.jsonp.js"]
 
   libraryPackage:
     packaging:
