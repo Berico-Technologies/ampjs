@@ -40,8 +40,12 @@ define [
         env.setSenderIdentity credentials.username
         env.setSenderAuthToken credentials.token
 
-      $.when.apply($,outboundDeferreds).done ->
-        deferred.resolve()
+      $.when.apply($,outboundDeferreds).then(
+        () ->
+          deferred.resolve()
+        () ->
+          deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+      )
 
       return deferred.promise()
 
@@ -53,11 +57,15 @@ define [
           username: username
           token: token
       else
-        @authenticationProvider.getCredentials().then (data)->
-          Logger.log.info "OutboundHeadersProcessor.getUsername >> using username from authenticationProvider: #{data.username}"
-          deferred.resolve
-            username: data.username
-            token: data.password
+        @authenticationProvider.getCredentials().then(
+          (data)->
+            Logger.log.info "OutboundHeadersProcessor.getUsername >> using username from authenticationProvider: #{data.username}"
+            deferred.resolve
+              username: data.username
+              token: data.password
+          () ->
+            deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+        )
       return deferred.promise()
     getMessageType: (event)->
       type = Object.getPrototypeOf(event).constructor.name

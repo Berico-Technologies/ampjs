@@ -20,6 +20,7 @@ define [
       @routingInfoCache = new LRUCache(
         maxAge: if _.isNumber cacheExpiryTime then cacheExpiryTime else GlobalTopologyService.CACHE_EXPIRY_TIME_IN_MS
       )
+
     getRoutingInfo: (routingHints, create=true)->
       deferred = $.Deferred()
       topic = routingHints[EnvelopeHeaderConstants.MESSAGE_TOPIC]

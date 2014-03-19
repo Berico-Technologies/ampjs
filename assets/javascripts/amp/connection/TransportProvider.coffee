@@ -56,34 +56,53 @@ define [
       new Listener(registration, exchange)
 
     _send: (connection, exchange, headers, envelope)->
+      deferred = $.Deferred()
       connection.send("/exchange/#{exchange.name}/#{exchange.routingKey}",headers,envelope.getPayload())
+      # TODO: how do we do error hanlding on a WebStomp.send() ??
+      deferred.resolve()
+      return deferred.promise()
 
     send: (envelope)->
       deferred = $.Deferred()
       pendingExchanges = []
-      @topologyService.getRoutingInfo(envelope.getHeaders(), false).then (routing)=>
-        exchanges = _.pluck routing.routes, 'producerExchange'
+      @topologyService.getRoutingInfo(envelope.getHeaders(), false).then(
+        (routing)=>
+          exchanges = _.pluck routing.routes, 'producerExchange'
 
-        for exchange in exchanges
-          exchangeDeferred = $.Deferred()
-          pendingExchanges.push(exchangeDeferred)
+          for exchange in exchanges
+            exchangeDeferred = $.Deferred()
+            pendingExchanges.push(exchangeDeferred)
 
-          @channelProvider.getConnection(exchange).then (connection, existing)=>
-            newHeaders = {}
-            headers = envelope.getHeaders()
-            for entry of headers
-              newHeaders[entry] = headers[entry]
+            @channelProvider.getConnection(exchange).then(
+              (connection, existing)=>
+                newHeaders = {}
+                headers = envelope.getHeaders()
+                for entry of headers
+                  newHeaders[entry] = headers[entry]
 
+                Logger.log.info "TransportProvider.send >> sending message to /exchange/#{exchange.name}/#{exchange.routingKey}"
 
-            Logger.log.info "TransportProvider.send >> sending message to /exchange/#{exchange.name}/#{exchange.routingKey}"
+                @_send(connection, exchange, newHeaders, envelope).then(
+                  () ->
+                    exchangeDeferred.resolve()
+                  () ->
+                    exchangeDeferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+                )
 
-            @_send(connection, exchange, newHeaders, envelope)
+              () ->
+                exchangeDeferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+            )
 
-            exchangeDeferred.resolve()
+          $.when.apply($,pendingExchanges).then(
+            () ->
+              deferred.resolve()
+            () ->
+              deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+          )
 
-
-        $.when.apply($,pendingExchanges).done ->
-          deferred.resolve()
+        () ->
+          deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+      )
 
       return deferred.promise()
 

@@ -30,28 +30,49 @@ define [
       env = @buildRequestEnvelope(requestId, timeout, outboundTopic)
 
       #build the envelope
-      @processOutbound(request, env).then =>
+      @processOutbound(request, env).then(
+        () =>
+          #create RPC registration
+          rpcRegistration = new RpcRegistration({
+            requestId: requestId
+            expectedTopic: inboundTopic
+            inboundChain: @inboundProcessors
+          })
 
-        #create RPC registration
-        rpcRegistration = new RpcRegistration({
-          requestId: requestId
-          expectedTopic: inboundTopic
-          inboundChain: @inboundProcessors
-        })
+          #register with envelope bus
+          @envelopeBus.register(rpcRegistration).then(
+            () =>
+              #send the request
+              @envelopeBus.send(env).then(
+                () =>
+                  #get the response
+                  rpcRegistration.getResponse().then(
+                    (data)=>
+                      #unregister from the bus
+                      @envelopeBus.unregister(rpcRegistration)
+                      deferred.resolve(data)
+                      if timer?
+                        clearTimeout timer
 
-        #register with envelope bus
-        @envelopeBus.register(rpcRegistration).then =>
+                    () ->
+                      # error in rpcRegistration.getResponse()
+                      deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+                  )
 
-          #send the request
-          @envelopeBus.send(env)
+                () ->
+                  # error in @envelopeBus.send(env)
+                  deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+              )
 
-          #get the response
-          rpcRegistration.getResponse().then (data)=>
-            #unregister from the bus
-            @envelopeBus.unregister(rpcRegistration)
-            deferred.resolve(data)
-            if timer?
-              clearTimeout timer
+            () ->
+              # error in @envelopeBus.register
+              deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+          )
+
+        () ->
+          # error in @processOutbound
+          deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+      )
 
       return deferred.promise()
 

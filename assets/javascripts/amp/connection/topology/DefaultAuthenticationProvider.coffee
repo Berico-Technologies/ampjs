@@ -1,7 +1,8 @@
 define [
   'jquery'
   'underscore'
-  '../../util/Logger'
+  '../../util/Logger',
+  'jsonp'
 ],
 ($,_, Logger)->
   class DefaultAuthenticationProvider
@@ -20,28 +21,37 @@ define [
       deferred = $.Deferred()
 
       if _.isNull(@username) || _.isNull(@password)
-        @_authenticate().then =>
-          deferred.resolve({username: @username, password: @password})
+        @_authenticate().then(
+          () =>
+            deferred.resolve({username: @username, password: @password})
+          () ->
+            deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+        )
       else
         deferred.resolve({username: @username, password: @password})
 
       return deferred.promise()
+
     _authenticate: ->
       deferred = $.Deferred()
 
-      req = $.ajax
+      $.jsonp(
         url: @connectionStrategy()
-        dataType: 'jsonp'
-      req.done (data, textStatus, jqXHR)=>
+        callbackParameter: 'callback'
+      ).then(
+        (data, textStatus, jqXHR)=>
           Logger.log.info "DefaultAuthenticationProvider.authenticate >> successfully completed request"
           if _.isObject data
             @username = data.identity if _.isString data.identity
             @password = data.token if _.isString data.token
             deferred.resolve(data)
-          else deferred.reject()
-      req.fail (jqXHR, textStatus, errorThrown)->
+          else
+            deferred.reject()
+        ()->
           Logger.log.error "DefaultAuthenticationProvider.authenticate >> failed complete request"
-          deferred.reject()
+          deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+      )
 
       return deferred.promise()
+
   return DefaultAuthenticationProvider
