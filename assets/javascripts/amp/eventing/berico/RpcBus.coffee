@@ -23,7 +23,7 @@ define [
           () ->
             deferred.reject
               error: 'timeout'
-          , config.timeout
+          config.timeout
       )
 
       requestId = uuid.v4()
@@ -50,7 +50,8 @@ define [
             #unregister from the bus
             @envelopeBus.unregister(rpcRegistration)
             deferred.resolve(data)
-            clearTimeout timer
+            if timer?
+              clearTimeout timer
 
       return deferred.promise()
 
