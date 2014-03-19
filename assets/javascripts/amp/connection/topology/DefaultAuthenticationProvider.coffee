@@ -41,9 +41,16 @@ define [
         (data, textStatus, jqXHR)=>
           Logger.log.info "DefaultAuthenticationProvider.authenticate >> successfully completed request"
           if _.isObject data
-            @username = data.authenticationToken.identity if _.isString data.authenticationToken.identity
-            @password = data.authenticationToken.key if _.isString data.authenticationToken.key
-            deferred.resolve(data)
+            if data.authenticationToken?
+              # new x509 endpoint
+              @username = data.authenticationToken.identity if _.isString data.authenticationToken.identity
+              @password = data.authenticationToken.key if _.isString data.authenticationToken.key
+              deferred.resolve(data)
+            else
+              # backwards-compatible for old identity endpoint
+              @username = data.identity if _.isString data.identity
+              @password = data.token if _.isString data.token
+              deferred.resolve(data)
           else
             deferred.reject()
         ()->
