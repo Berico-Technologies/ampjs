@@ -30,7 +30,7 @@ define [
                 listenerDeferred.resolve()
                 @listeners[registration] = listener
               () ->
-                listenerDeferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+                listenerDeferred.reject {error: 'TransportProvider.register >> error creating listenener', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
             )
 
           $.when.apply($,pendingListeners).then(
@@ -38,10 +38,10 @@ define [
               Logger.log.info  "TransportProvider.register >> all listeners have been created"
               deferred.resolve()
             ()->
-              deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+              deferred.reject {error: 'TransportProvider.register >> error in pendingListeners', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
           )
         ()->
-          deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+          deferred.reject {error: 'TransportProvider.register >> error in topologyService.getRoutingInfo', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
       )
       return deferred.promise()
 
@@ -66,11 +66,11 @@ define [
               Logger.log.info  "TransportProvider._createListener >> listener started"
               deferred.resolve(listener)
             ()->
-              deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+              deferred.reject {error: 'TransportProvider._createListener >> error starting listener', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
           )
 
         ()->
-          deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+          deferred.reject {error: 'TransportProvider._createListener >> error getting channel connection', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
       )
       return deferred.promise()
 
@@ -108,22 +108,22 @@ define [
                   () ->
                     exchangeDeferred.resolve()
                   () ->
-                    exchangeDeferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+                    exchangeDeferred.reject {error: 'TransportProvider.send >> error sending message', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
                 )
 
               () ->
-                exchangeDeferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+                exchangeDeferred.reject {error: 'TransportProvider.send >> error in channelProvider.getConnection', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
             )
 
           $.when.apply($,pendingExchanges).then(
             () ->
               deferred.resolve()
             () ->
-              deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+              deferred.reject {error: 'TransportProvider.send >> error in pendingExchanges', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
           )
 
         () ->
-          deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+          deferred.reject {error: 'TransportProvider.send >> error in topologyService.getRoutingInfo', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
       )
 
       return deferred.promise()

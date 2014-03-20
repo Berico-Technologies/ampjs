@@ -42,7 +42,7 @@ define [
           deferred.resolve(data)
         ()->
           Logger.log.error "DefaultApplicationExchangeProvider.createRoute >> failed to create route"
-          deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+          deferred.reject {error: 'DefaultApplicationExchangeProvider.createRoute >> error creating route', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
       )
       return deferred.promise()
 

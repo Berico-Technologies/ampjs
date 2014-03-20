@@ -24,7 +24,7 @@ define [
           () =>
             deferred.resolve({username: @username, password: @password})
           () ->
-            deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+            deferred.reject {error: 'DefaultAuthenticationProvider.getCredentials >> error authenticating', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
         )
       else
         deferred.resolve({username: @username, password: @password})
@@ -52,10 +52,10 @@ define [
               @password = data.token if _.isString data.token
               deferred.resolve(data)
           else
-            deferred.reject()
+            deferred.reject {error: 'DefaultAuthenticationProvider._authenticate >> unexpected response: expecting an object'}
         ()->
           Logger.log.error "DefaultAuthenticationProvider.authenticate >> failed complete request"
-          deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+          deferred.reject {error: 'DefaultAuthenticationProvider._authenticate >> failed', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
       )
 
       return deferred.promise()

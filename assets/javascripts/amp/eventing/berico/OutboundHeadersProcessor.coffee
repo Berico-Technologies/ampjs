@@ -36,7 +36,7 @@ define [
       messageTopic = if _.isString messageTopic then messageTopic else @getMessageTopic context.getEvent()
       env.setMessageTopic messageTopic
 
-      outboundDeferreds.push @getAnubisCredentials(env.getSenderIdentity(), env.getSenderAuthToken()).then (credentials)->
+      outboundDeferreds.push @getAnubisCredentials(env.getSenderIdentity(), env.getSenderAuthToken()).done (credentials)->
         env.setSenderIdentity credentials.username
         env.setSenderAuthToken credentials.token
 
@@ -44,7 +44,7 @@ define [
         () ->
           deferred.resolve()
         () ->
-          deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+          deferred.reject {error: 'OutboundHeadersProcessor.processOutbound >> error in outbound processors', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
       )
 
       return deferred.promise()
@@ -64,7 +64,7 @@ define [
               username: data.username
               token: data.password
           () ->
-            deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+            deferred.reject {error: 'OutboundHeadersProcessor.getUsername >> error in authenticationProvider.getCredentials', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
         )
       return deferred.promise()
     getMessageType: (event)->

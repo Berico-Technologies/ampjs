@@ -33,14 +33,14 @@ define [
           () ->
             return outboundProcessor.processOutbound(envelope, context)
           () ->
-            deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+            deferred.reject {error: 'EnvelopeBus.processOutbound >> error in outbound processors', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
         )
       looper.then(
         () ->
           Logger.log.info "EnvelopeBus.processOutbound >> all outbound processors executed"
           deferred.resolve()
         () ->
-          deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+          deferred.reject {error: 'EnvelopeBus.processOutbound >> error in outbound processors', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
       )
       return deferred.promise()
 
@@ -56,11 +56,11 @@ define [
             () ->
               deferred.resolve()
             () ->
-              deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+              deferred.reject {error: 'EnvelopeBus.send >> error in TransportProvider.send', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
           )
 
         () ->
-          deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+          deferred.reject {error: 'EnvelopeBus.send >> error in processing envelope', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
       )
 
     setInboundProcessors: (@inboundProcessors)->

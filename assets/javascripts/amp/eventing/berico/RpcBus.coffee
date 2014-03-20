@@ -21,8 +21,7 @@ define [
         # set a timer to cancel RPC deferred
         timer = setTimeout(
           () ->
-            deferred.reject
-              error: 'timeout'
+            deferred.reject {error: 'timeout'}
           config.timeout
       )
 
@@ -55,23 +54,19 @@ define [
                         clearTimeout timer
 
                     () ->
-                      # error in rpcRegistration.getResponse()
-                      deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+                      deferred.reject {error: 'RpcBus.getResponseTo >> error in rpcRegistration.getResponse', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
                   )
 
                 () ->
-                  # error in @envelopeBus.send(env)
-                  deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+                  deferred.reject {error: 'RpcBus.getResponseTo >> error in envelopeBus.send', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
               )
 
             () ->
-              # error in @envelopeBus.register
-              deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+              deferred.reject {error: 'RpcBus.getResponseTo >> error in envelopeBus.register', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
           )
 
         () ->
-          # error in @processOutbound
-          deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+          deferred.reject {error: 'RpcBus.getResponseTo >> error process outbound envelope', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
       )
 
       return deferred.promise()

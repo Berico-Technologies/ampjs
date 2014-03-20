@@ -25,7 +25,7 @@ define [
             deferred.resolve(data)
           ()->
             Logger.log.error "RoutingInfoRetriever.retrieveRoutingInfo >> failed to retrieve topic info"
-            deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+            deferred.reject {error: 'RoutingInfoRetriever.retrieveRoutingInfo >> failed', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
         )
         return deferred.promise()
 

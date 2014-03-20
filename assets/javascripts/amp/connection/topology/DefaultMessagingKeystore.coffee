@@ -31,7 +31,7 @@ define [
       getIdentityContextProperty = (topic, property)->
         deferred = $.Deferred()
         getIdentityContext.call(@,topic).then (context)->
-          unless _.isNull context then deferred.resolve(context[property]) else deferred.reject(null)
+          unless _.isNull context then deferred.resolve(context[property]) else deferred.reject {error: 'DefaultMessagingKeystore.getIdentityContextProperty >> identity context is null'}
         return deferred.promise()
 
       @getSignedIdentityToken= (topic)->

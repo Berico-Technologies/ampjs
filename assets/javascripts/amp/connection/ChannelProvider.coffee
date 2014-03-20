@@ -69,15 +69,14 @@ define [
             ->
               Logger.log.info "ChannelProvider._createConnection >> successfully connected"
               deferred.resolve client, false
-            ,(err)->
-              errorMessage = "ChannelProvider._createConnection >> #{err}"
-              Logger.log.error "ChannelProvider._createConnection >> unable to connect: #{err}"
+            ,(err)=>
+              errorMessage = "ChannelProvider._createConnection >> unable to connect to #{@connectionStrategy(exchange)}: #{err}"
               deferred.reject errorMessage
               Logger.log.error errorMessage
             )
 
         () ->
-          deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+          deferred.reject {error: 'ChannelProvider._createConnection >> error in authenticationProvider.getCredentials', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
       )
       return deferred.promise()
 

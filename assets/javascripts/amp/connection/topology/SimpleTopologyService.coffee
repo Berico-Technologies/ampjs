@@ -40,7 +40,7 @@ define [
           (data)->
             deferred.resolve(new RoutingInfo([theOneRoute]))
           ()->
-            deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+            deferred.reject {error: 'SimpleTopologyService.getRoutingInfo >> unable to create route', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
         )
       else
         setTimeout (->deferred.resolve(new RoutingInfo([theOneRoute]))), 1

@@ -33,10 +33,11 @@ define [
           Logger.log.info "DefaultIdentityProvider.getIdentity >> successfully completed request"
           if _.isObject data
             deferred.resolve(data)
-          else deferred.reject()
+          else
+            deferred.reject {error: 'DefaultIdentityProvider.getIdentity >> unexpected response: expecting an object'}
         ()->
           Logger.log.error "DefaultIdentityProvider.getIdentity >> failed complete request"
-          deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+          deferred.reject {error: 'DefaultIdentityProvider.getIdentity >> failed', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
       )
 
       return deferred.promise()

@@ -39,7 +39,7 @@ define [
       if(@processInbound processorContext)
         @requestDeferred.resolve(processorContext.getEvent())
       else
-        @requestDeferred.reject()
+        @requestDeferred.reject {error: 'RpcRegistration.handle >> error in processing inbound envelope'}
 
 
   return RpcRegistration
