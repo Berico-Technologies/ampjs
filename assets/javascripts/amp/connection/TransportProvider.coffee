@@ -18,18 +18,31 @@ define [
       Logger.log.info  "TransportProvider.register >> registering new connection"
       deferred = $.Deferred()
       pendingListeners = []
-      @topologyService.getRoutingInfo(registration.registrationInfo).then (routing)=>
-        exchanges = _.pluck routing.routes, 'consumerExchange'
+      @topologyService.getRoutingInfo(registration.registrationInfo).then(
+        (routing)=>
+          exchanges = _.pluck routing.routes, 'consumerExchange'
 
-        for exchange in exchanges
-          listenerDeferred = $.Deferred()
-          pendingListeners.push listenerDeferred
-          @_createListener(registration, exchange).then (listener)=>
-            listenerDeferred.resolve()
-            @listeners[registration] = listener
-        $.when.apply($,pendingListeners).done ->
-          Logger.log.info  "TransportProvider.register >> all listeners have been created"
-          deferred.resolve()
+          for exchange in exchanges
+            listenerDeferred = $.Deferred()
+            pendingListeners.push listenerDeferred
+            @_createListener(registration, exchange).then(
+              (listener)=>
+                listenerDeferred.resolve()
+                @listeners[registration] = listener
+              () ->
+                listenerDeferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+            )
+
+          $.when.apply($,pendingListeners).done(
+            () ->
+              Logger.log.info  "TransportProvider.register >> all listeners have been created"
+              deferred.resolve()
+            ()->
+              deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+          )
+        ()->
+          deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+      )
       return deferred.promise()
 
     _createListener:(registration, exchange) ->

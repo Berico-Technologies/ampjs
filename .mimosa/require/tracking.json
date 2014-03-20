@@ -81,7 +81,8 @@
     "/javascripts/amp/connection/topology/DefaultApplicationExchangeProvider.js": [
       "./SimpleTopologyService",
       "../../bus/berico/EnvelopeHeaderConstants",
-      "../../util/Logger"
+      "../../util/Logger",
+      "jsonp"
     ],
     "/javascripts/amp/connection/topology/DefaultAuthenticationProvider.js": [
       "jquery",
@@ -114,7 +115,8 @@
     "/javascripts/amp/connection/topology/RoutingInfo.js": [],
     "/javascripts/amp/connection/topology/RoutingInfoRetriever.js": [
       "../../util/Logger",
-      "jquery"
+      "jquery",
+      "jsonp"
     ],
     "/javascripts/amp/connection/topology/SimpleAuthenticationProvider.js": [
       "jquery",

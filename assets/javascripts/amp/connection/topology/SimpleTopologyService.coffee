@@ -36,8 +36,12 @@ define [
 
       theOneRoute = new RouteInfo(theOneExchange, theOneExchange)
       if create
-        @createRoute(theOneExchange).then (data)->
-          deferred.resolve(new RoutingInfo([theOneRoute]))
+        @createRoute(theOneExchange).then(
+          (data)->
+            deferred.resolve(new RoutingInfo([theOneRoute]))
+          ()->
+            deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+        )
       else
         setTimeout (->deferred.resolve(new RoutingInfo([theOneRoute]))), 1
 
