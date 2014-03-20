@@ -4,8 +4,8 @@ define [
   '../../util/Logger'
   'jsonp'
 ],
-(SimpleTopoologyService, EnvelopeHeaderConstants, Logger)->
-  class DefaultApplicationExchangeProvider extends SimpleTopoologyService
+(SimpleTopologyService, EnvelopeHeaderConstants, Logger)->
+  class DefaultApplicationExchangeProvider extends SimpleTopologyService
     constructor: (config={})->
       {@managementHostname, @managementPort, @managementServiceUrl, @connectionStrategy, clientProfile, exchangeName, exchangeHostname, exchangeVhost, exchangePort} = config
 
@@ -34,7 +34,8 @@ define [
       req = $.jsonp(
         url: @connectionStrategy()
         callbackParameter: 'callback'
-        data: data: JSON.stringify exchange
+        data:
+          data: JSON.stringify exchange
       ).then(
         (data, textStatus, jqXHR)->
           Logger.log.info "DefaultApplicationExchangeProvider.createRoute >> created route"

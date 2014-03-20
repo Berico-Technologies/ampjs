@@ -37,8 +37,12 @@ define [
               deferred.resolve(data)
             else
                 Logger.log.info "GlobalTopologyService.getRoutingInfo>> no route in GTS: using fallback route"
-                @fallbackProvider.getFallbackRoute(topic, create).then (data)->
-                  deferred.resolve(data)
+                @fallbackProvider.getFallbackRoute(topic, create).then(
+                  (data)->
+                    deferred.resolve(data)
+                  () ->
+                    deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+                )
           ()->
             deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
         )

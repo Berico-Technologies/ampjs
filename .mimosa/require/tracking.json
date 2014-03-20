@@ -94,7 +94,8 @@
       "jquery",
       "underscore",
       "../../util/Logger",
-      "./DefaultAuthenticationProvider"
+      "./DefaultAuthenticationProvider",
+      "jsonp"
     ],
     "/javascripts/amp/connection/topology/DefaultMessagingKeystore.js": [
       "jquery",
