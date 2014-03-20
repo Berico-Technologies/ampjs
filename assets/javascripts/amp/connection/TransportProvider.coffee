@@ -33,7 +33,7 @@ define [
                 listenerDeferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
             )
 
-          $.when.apply($,pendingListeners).done(
+          $.when.apply($,pendingListeners).then(
             () ->
               Logger.log.info  "TransportProvider.register >> all listeners have been created"
               deferred.resolve()
@@ -47,22 +47,31 @@ define [
 
     _createListener:(registration, exchange) ->
       deferred = $.Deferred()
-      @channelProvider.getConnection(exchange).then (connection)=>
-        listener = @_getListener(registration, exchange)
+      @channelProvider.getConnection(exchange).then(
+        (connection)=>
+          listener = @_getListener(registration, exchange)
 
-        listener.onEnvelopeReceived({
-          handleRecieve: (dispatcher)=>
-            Logger.log.info  "TransportProvider._createListener >> handleRecieve called"
-            @raise_onEnvelopeRecievedEvent(dispatcher)
-          })
+          listener.onEnvelopeReceived({
+            handleRecieve: (dispatcher)=>
+              Logger.log.info  "TransportProvider._createListener >> handleRecieve called"
+              @raise_onEnvelopeRecievedEvent(dispatcher)
+            })
 
-        listener.onClose({
-          onClose: (registration)=> delete @listeners[registration]
-          })
+          listener.onClose({
+            onClose: (registration)=> delete @listeners[registration]
+            })
 
-        listener.start(connection).then ->
-          Logger.log.info  "TransportProvider._createListener >> listener started"
-          deferred.resolve(listener)
+          listener.start(connection).then(
+            () ->
+              Logger.log.info  "TransportProvider._createListener >> listener started"
+              deferred.resolve(listener)
+            ()->
+              deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+          )
+
+        ()->
+          deferred.reject if arguments.length > 1 then Array.prototype.slice.call(arguments, 0) else arguments[0]
+      )
       return deferred.promise()
 
     _getListener: (registration, exchange)->
