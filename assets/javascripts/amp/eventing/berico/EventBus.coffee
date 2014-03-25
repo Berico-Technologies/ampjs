@@ -49,8 +49,20 @@ define [
         helper.setMessageType expectedTopic
         helper.setMessageTopic expectedTopic
 
-      @processOutbound(event, envelope).then =>
-        @envelopeBus.send(envelope)
+      deferred = $.Deferred()
+      @processOutbound(event, envelope).then(
+        () =>
+          @envelopeBus.send(envelope).then(
+            () =>
+              deferred.resolve()
+	          () =>
+	            deferred.reject {error: 'EventBus.publish >> error publishing message', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
+          )
+        () =>
+          deferred.reject {error: 'EventBus.publish >> error in outbound processors', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
+      )
+
+      return deferred.promise()
 
     subscribe: (eventHandler)->
       registration = new EventRegistration(eventHandler, @inboundProcessors)
