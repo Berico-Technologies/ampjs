@@ -16,30 +16,58 @@ define [
       Logger.log.info "RpcBus.getResponseTo >> executing get response"
 
       deferred = $.Deferred()
+
+      if config.timeout?
+        # set a timer to cancel RPC deferred
+        timer = setTimeout(
+          () ->
+            deferred.reject {error: 'timeout'}
+          config.timeout
+      )
+
       requestId = uuid.v4()
       env = @buildRequestEnvelope(requestId, timeout, outboundTopic)
 
       #build the envelope
-      @processOutbound(request, env).then =>
+      @processOutbound(request, env).then(
+        () =>
+          #create RPC registration
+          rpcRegistration = new RpcRegistration({
+            requestId: requestId
+            expectedTopic: inboundTopic
+            inboundChain: @inboundProcessors
+          })
 
-        #create RPC registration
-        rpcRegistration = new RpcRegistration({
-          requestId: requestId
-          expectedTopic: inboundTopic
-          inboundChain: @inboundProcessors
-        })
+          #register with envelope bus
+          @envelopeBus.register(rpcRegistration).then(
+            () =>
+              #send the request
+              @envelopeBus.send(env).then(
+                () =>
+                  #get the response
+                  rpcRegistration.getResponse().then(
+                    (data)=>
+                      #unregister from the bus
+                      @envelopeBus.unregister(rpcRegistration)
+                      deferred.resolve(data)
+                      if timer?
+                        clearTimeout timer
 
-        #register with envelope bus
-        @envelopeBus.register(rpcRegistration).then =>
+                    () ->
+                      deferred.reject {error: 'RpcBus.getResponseTo >> error in rpcRegistration.getResponse', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
+                  )
 
-          #send the request
-          @envelopeBus.send(env)
+                () ->
+                  deferred.reject {error: 'RpcBus.getResponseTo >> error in envelopeBus.send', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
+              )
 
-          #get the response
-          rpcRegistration.getResponse().then (data)=>
-            #unregister from the bus
-            @envelopeBus.unregister(rpcRegistration)
-            deferred.resolve(data)
+            () ->
+              deferred.reject {error: 'RpcBus.getResponseTo >> error in envelopeBus.register', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
+          )
+
+        () ->
+          deferred.reject {error: 'RpcBus.getResponseTo >> error process outbound envelope', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
+      )
 
       return deferred.promise()
 

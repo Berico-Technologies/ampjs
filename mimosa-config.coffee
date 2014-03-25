@@ -2,14 +2,17 @@ exports.config =
   minMimosaVersion:"2.1.0"
 
   modules: [
-    'require'
-    'minify'
-    'bower'
-    'require-lint'
-    'mimosa-jshint'
-    'require-library-package'
-    'mimosa-karma-enterprise'
-    'coffeescript'
+    "minify-js"
+    "minify-css"
+    "csslint"
+    "require"
+    "bower"
+    "copy"
+    "coffeescript"
+    "jshint"
+    "karma-enterprise"
+    "require-library-package"
+    "require-lint"
   ]
 
   karma:
@@ -27,13 +30,7 @@ exports.config =
         "requirejs-domready":["domReady.js"]
         "requirejs-i18n":["i18n.js"]
         "jsrsasign":["jsrsasign-latest-all-min.js"]
-
-  require:
-    optimize:
-      overrides: (cfg) ->
-        cfg.optimize = "none"
-        console.log cfg
-        cfg
+        "jquery-jsonp":["src/jquery.jsonp.js"]
 
   libraryPackage:
     packaging:

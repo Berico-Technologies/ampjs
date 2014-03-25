@@ -36,12 +36,16 @@ define [
       messageTopic = if _.isString messageTopic then messageTopic else @getMessageTopic context.getEvent()
       env.setMessageTopic messageTopic
 
-      outboundDeferreds.push @getAnubisCredentials(env.getSenderIdentity(), env.getSenderAuthToken()).then (credentials)->
+      outboundDeferreds.push @getAnubisCredentials(env.getSenderIdentity(), env.getSenderAuthToken()).done (credentials)->
         env.setSenderIdentity credentials.username
         env.setSenderAuthToken credentials.token
 
-      $.when.apply($,outboundDeferreds).done ->
-        deferred.resolve()
+      $.when.apply($,outboundDeferreds).then(
+        () ->
+          deferred.resolve()
+        () ->
+          deferred.reject {error: 'OutboundHeadersProcessor.processOutbound >> error in outbound processors', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
+      )
 
       return deferred.promise()
 
@@ -53,11 +57,15 @@ define [
           username: username
           token: token
       else
-        @authenticationProvider.getCredentials().then (data)->
-          Logger.log.info "OutboundHeadersProcessor.getUsername >> using username from authenticationProvider: #{data.username}"
-          deferred.resolve
-            username: data.username
-            token: data.password
+        @authenticationProvider.getCredentials().then(
+          (data)->
+            Logger.log.info "OutboundHeadersProcessor.getUsername >> using username from authenticationProvider: #{data.username}"
+            deferred.resolve
+              username: data.username
+              token: data.password
+          () ->
+            deferred.reject {error: 'OutboundHeadersProcessor.getUsername >> error in authenticationProvider.getCredentials', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
+        )
       return deferred.promise()
     getMessageType: (event)->
       type = Object.getPrototypeOf(event).constructor.name

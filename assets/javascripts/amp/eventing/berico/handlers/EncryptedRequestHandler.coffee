@@ -19,30 +19,38 @@ define [
 
     processOutbound: (context)->
 
-
       envelopeHelper = new EnvelopeHelper(context.getEnvelope())
-      if envelopeHelper.isPubSub()
-        Logger.log.info "EncryptedResponseHandler.processOutbound >> setting properties to request encrypted response"
-        deferred = $.Deferred()
-        @keystore.getProofKey(envelopeHelper.getMessageTopic()).then (proofKey)=>
-          @keystore.getSignedIdentityToken(envelopeHelper.getMessageTopic()).then (signedIdentityToken)=>
 
-            #put the identity and credentials into the headers
-            envelopeHelper.setOriginatorIdentity JSON.parse(signedIdentityToken)['identityToken']['identity']
+      Logger.log.info "EncryptedResponseHandler.processOutbound >> setting properties to request encrypted response"
+      deferred = $.Deferred()
+      @keystore.getProofKey(envelopeHelper.getMessageTopic()).then(
+        (proofKey)=>
+          @keystore.getSignedIdentityToken(envelopeHelper.getMessageTopic()).then(
+            (signedIdentityToken)=>
+              #put the identity and credentials into the headers
+              envelopeHelper.setSenderIdentity JSON.parse(signedIdentityToken)['identityToken']['identity']
 
-            #i'm crying a little bit...
-            envelopeHelper.setOriginatorCredentials JSON.stringify
-              signedIdentityToken: JSON.parse(signedIdentityToken)
+              #i'm crying a little bit...
+              envelopeHelper.setSenderCredentials JSON.stringify
+                signedIdentityToken: JSON.parse(signedIdentityToken)
 
-            hmac = CryptoJS.algo.HMAC.create(CryptoJS.algo.SHA256, proofKey);
-            hmac.update(JSON.stringify(envelopeHelper.getEnvelope()))
-            hmacHash = CryptoJS.enc.Hex.stringify(hmac.finalize())
+              hmac = CryptoJS.algo.HMAC.create(CryptoJS.algo.SHA256, proofKey);
+              hmac.update(JSON.stringify(envelopeHelper.getEnvelope()))
+              hmacHash = CryptoJS.enc.Hex.stringify(hmac.finalize())
 
-            envelopeHelper.setDigitalSignature JSON.stringify(hmacHash)
+              envelopeHelper.setDigitalSignature JSON.stringify(hmacHash)
 
-          deferred.resolve()
+              deferred.resolve()
 
-        deferred.promise()
+            () =>
+              deferred.reject {error: 'EncryptedRequestHandler.processOutbound >> error getting signed identity token', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
+          )
+
+        () =>
+          deferred.reject {error: 'EncryptedRequestHandler.processOutbound >> error getting proof key', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
+      )
+
+      deferred.promise()
 
     _getPublicKey: (topic)->
       deferred = $.Deferred()

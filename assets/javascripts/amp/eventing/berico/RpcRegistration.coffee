@@ -23,7 +23,6 @@ define [
 
       @registrationInfo[EnvelopeHeaderConstants.MESSAGE_TOPIC] = @buildRpcTopic(expectedTopic, requestId)
 
-
       @requestDeferred = $.Deferred()
 
     buildRpcTopic: (expectedTopic, requestId)->
@@ -39,6 +38,8 @@ define [
       processorContext = new ProcessingContext(envelope, envelope)
       if(@processInbound processorContext)
         @requestDeferred.resolve(processorContext.getEvent())
+      else
+        @requestDeferred.reject {error: 'RpcRegistration.handle >> error in processing inbound envelope'}
 
 
   return RpcRegistration

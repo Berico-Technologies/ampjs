@@ -5,3 +5,5 @@ public
 test-results.xml
 .mimosa/bower/
 .idea
+.mimosa/require/tracking.json
+bower_components/

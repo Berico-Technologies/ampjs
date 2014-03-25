@@ -3,6 +3,7 @@ define [
   'underscore'
   '../../util/Logger'
   './DefaultAuthenticationProvider'
+  'jsonp'
 ],
 ($,_, Logger, DefaultAuthenticationProvider)->
   class DefaultIdentityProvider
@@ -21,20 +22,23 @@ define [
 
       deferred = $.Deferred()
 
-      req = $.ajax
+      req = $.jsonp(
         url: @connectionStrategy()
-        dataType: 'jsonp'
+        callbackParameter: 'callback'
         data:
           topic: topic
           operation: "PRODUCE"
-      req.done (data, textStatus, jqXHR)=>
+      ).then(
+        (data, textStatus, jqXHR)=>
           Logger.log.info "DefaultIdentityProvider.getIdentity >> successfully completed request"
           if _.isObject data
             deferred.resolve(data)
-          else deferred.reject()
-      req.fail (jqXHR, textStatus, errorThrown)->
+          else
+            deferred.reject {error: 'DefaultIdentityProvider.getIdentity >> unexpected response: expecting an object'}
+        ()->
           Logger.log.error "DefaultIdentityProvider.getIdentity >> failed complete request"
-          deferred.reject()
+          deferred.reject {error: 'DefaultIdentityProvider.getIdentity >> failed', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
+      )
 
       return deferred.promise()
   return DefaultIdentityProvider

@@ -81,18 +81,21 @@
     "/javascripts/amp/connection/topology/DefaultApplicationExchangeProvider.js": [
       "./SimpleTopologyService",
       "../../bus/berico/EnvelopeHeaderConstants",
-      "../../util/Logger"
+      "../../util/Logger",
+      "jsonp"
     ],
     "/javascripts/amp/connection/topology/DefaultAuthenticationProvider.js": [
       "jquery",
       "underscore",
-      "../../util/Logger"
+      "../../util/Logger",
+      "jsonp"
     ],
     "/javascripts/amp/connection/topology/DefaultIdentityProvider.js": [
       "jquery",
       "underscore",
       "../../util/Logger",
-      "./DefaultAuthenticationProvider"
+      "./DefaultAuthenticationProvider",
+      "jsonp"
     ],
     "/javascripts/amp/connection/topology/DefaultMessagingKeystore.js": [
       "jquery",
@@ -113,7 +116,8 @@
     "/javascripts/amp/connection/topology/RoutingInfo.js": [],
     "/javascripts/amp/connection/topology/RoutingInfoRetriever.js": [
       "../../util/Logger",
-      "jquery"
+      "jquery",
+      "jsonp"
     ],
     "/javascripts/amp/connection/topology/SimpleAuthenticationProvider.js": [
       "jquery",
@@ -240,8 +244,9 @@
       "jquery": "vendor/managed/jquery/jquery",
       "LRUCache": "vendor/managed/node-lru-cache/lru-cache",
       "JSEncrypt": "vendor/managed/jsencrypt/jsencrypt.min",
-      "Hashtable": "vendor/managed/jshashtable/hashtable",
-      "JSRSASIGN": "vendor/managed/jsrsasign/jsrsasign-latest-all-min"
+      "Hashtable": "vendor/jshashtable/hashtable",
+      "JSRSASIGN": "vendor/managed/jsrsasign/jsrsasign-latest-all-min",
+      "jsonp": "vendor/managed/jquery-jsonp/jquery.jsonp"
     }
   },
   "mappings": {
@@ -289,8 +294,9 @@
       "jquery": "vendor/managed/jquery/jquery",
       "LRUCache": "vendor/managed/node-lru-cache/lru-cache",
       "JSEncrypt": "vendor/managed/jsencrypt/jsencrypt.min",
-      "Hashtable": "vendor/managed/jshashtable/hashtable",
-      "JSRSASIGN": "vendor/managed/jsrsasign/jsrsasign-latest-all-min"
+      "Hashtable": "vendor/jshashtable/hashtable",
+      "JSRSASIGN": "vendor/managed/jsrsasign/jsrsasign-latest-all-min",
+      "jsonp": "vendor/managed/jquery-jsonp/jquery.jsonp"
     }
   },
   "requireFiles": [

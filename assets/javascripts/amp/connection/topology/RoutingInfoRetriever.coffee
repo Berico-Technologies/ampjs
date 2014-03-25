@@ -1,6 +1,7 @@
 define [
   '../../util/Logger'
   'jquery'
+  'jsonp'
 ],
 (Logger)->
     class RoutingInfoRetriever
@@ -11,18 +12,21 @@ define [
         unless _.isString @serviceUrlExpression then @serviceUrlExpression = "/service/topology/get-routing-info"
         unless _.isFunction @connectionStrategy then @connectionStrategy = (topic)->
           "https://#{@hostname}:#{@port}#{@serviceUrlExpression}/#{topic}?c=true"
+
       retrieveRoutingInfo: (topic)->
         Logger.log.info "RoutingInfoRetriever.retrieveRoutingInfo >> Getting routing info for topic: #{topic}"
         deferred = $.Deferred()
-        req = $.ajax
-          url: @connectionStrategy(topic)
-          dataType: 'jsonp'
-        req.done (data, textStatus, jqXHR)->
+        req = $.jsonp(
+          url: @connectionStrategy(topic).replace(/#[^\?]*/, '') # remove the stuff beteween the # and the ? which confuses jsonp
+          callbackParameter: 'callback'
+        ).then(
+          (data, textStatus, jqXHR)->
             Logger.log.info "RoutingInfoRetriever.retrieveRoutingInfo >> retrieved topic info"
             deferred.resolve(data)
-        req.fail (jqXHR, textStatus, errorThrown)->
+          ()->
             Logger.log.error "RoutingInfoRetriever.retrieveRoutingInfo >> failed to retrieve topic info"
-            deferred.reject()
+            deferred.reject {error: 'RoutingInfoRetriever.retrieveRoutingInfo >> failed', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
+        )
         return deferred.promise()
 
     return RoutingInfoRetriever

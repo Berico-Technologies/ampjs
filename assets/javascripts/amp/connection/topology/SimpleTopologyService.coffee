@@ -36,8 +36,12 @@ define [
 
       theOneRoute = new RouteInfo(theOneExchange, theOneExchange)
       if create
-        @createRoute(theOneExchange).then (data)->
-          deferred.resolve(new RoutingInfo([theOneRoute]))
+        @createRoute(theOneExchange).then(
+          (data)->
+            deferred.resolve(new RoutingInfo([theOneRoute]))
+          ()->
+            deferred.reject {error: 'SimpleTopologyService.getRoutingInfo >> unable to create route', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
+        )
       else
         setTimeout (->deferred.resolve(new RoutingInfo([theOneRoute]))), 1
 

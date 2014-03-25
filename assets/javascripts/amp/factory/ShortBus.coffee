@@ -120,10 +120,10 @@ define [
 
       inboundProcessors = []
 
-      if useEncryption
-        inboundProcessors.push new EncryptedResponseHandler
-          keystore: defaultMessagingKeystore
-          authenticationProvider: _authenticationProvider
+      #if useEncryption
+      #  inboundProcessors.push new EncryptedResponseHandler
+      #    keystore: defaultMessagingKeystore
+      #    authenticationProvider: _authenticationProvider
 
       inboundProcessors.push new JsonEventSerializer()
 
@@ -136,11 +136,11 @@ define [
           }),
           new JsonEventSerializer()
       ]
+
       if useEncryption
-        throw "Encryption not supported at this time."
+        #throw "Encryption not supported at this time."
         outboundProcessors.push new EncryptedRequestHandler
             keystore: defaultMessagingKeystore
-
 
       if(busType == ShortBus.BUSTYPE.RPC)
         new RpcBus(envelopeBus, inboundProcessors, outboundProcessors)
