@@ -29,12 +29,14 @@ define [
       deferred = $.Deferred()
       looper = $.Deferred().resolve()
       for outboundProcessor in @outboundProcessors
-        looper = looper.then(
-          () ->
-            return outboundProcessor.processOutbound(envelope, context)
-          () ->
-            deferred.reject {error: 'EnvelopeBus.processOutbound >> error in outbound processors', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
-        )
+        do (outboundProcessor) =>
+          looper = looper.then(
+            () ->
+              return outboundProcessor.processOutbound(envelope, context)
+            () ->
+              deferred.reject {error: 'EnvelopeBus.processOutbound >> error in outbound processors', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
+          )
+
       looper.then(
         () ->
           Logger.log.info "EnvelopeBus.processOutbound >> all outbound processors executed"

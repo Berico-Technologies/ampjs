@@ -21,20 +21,23 @@ define [
     processOutbound: (event, envelope)->
       Logger.log.info "EventBus.processOutbound >> executing processors"
       context = new ProcessingContext(envelope, event)
+
       deferred = $.Deferred()
       looper = $.Deferred().resolve()
       for outboundProcessor in @outboundProcessors
-        looper = looper.then(
-          () ->
-            return outboundProcessor.processOutbound(context)
-          () ->
-            deferred.reject {error: 'EventBus.processOutbound >> error in outbound processors', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
-        )
+        do (outboundProcessor) =>
+          looper = looper.then(
+            () =>
+              return outboundProcessor.processOutbound(context)
+            () =>
+              deferred.reject {error: 'EventBus.processOutbound >> error in outbound processors', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
+          )
+
       looper.then(
-        () ->
+        () =>
           Logger.log.info "EventBus.processOutbound >> all outbound processors executed"
           deferred.resolve()
-        () ->
+        () =>
           deferred.reject {error: 'EventBus.processOutbound >> error in outbound processors', cause: if arguments.length is 1 then arguments[0] else $.extend({}, arguments)}
       )
       return deferred.promise()
