@@ -11,13 +11,14 @@ define [
 (uuid, Logger, RoutingInfo, RouteInfo, Exchange, _,EnvelopeHeaderConstants, $)->
   class SimpleTopologyService
     constructor: (config={}) ->
-      {@clientProfile, @name, @hostname, @virtualHost, @port, @queue_number} = config
+      {@clientProfile, @name, @hostname, @virtualHost, @port, @queue_number, @exchangeType} = config
       unless _.isString @clientProfile then @clientProfile = uuid.v4()
       unless _.isString @name then @name = 'cmf.simple.exchange'
       unless _.isString @hostname then @hostname = '127.0.0.1'
       unless _.isString @virtualHost then @virtualHost = '/stomp'
       unless _.isNumber @port then @port = 15678
       unless _.isNumber @queue_number then @queue_number = 0
+      unless _.isString @exchangeType then @exchangeType = 'topic'
 
     getRoutingInfo: (headers, create) ->
       deferred = $.Deferred()
@@ -29,7 +30,7 @@ define [
         @port, #port
         topic, #routing key
         @buildIdentifiableQueueName(topic), #topic
-        "direct", #exchange type
+        @exchangeType, #exchange type
         false, #is durable
         true, #is auto-delete
         null) #arguments

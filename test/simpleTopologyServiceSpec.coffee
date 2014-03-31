@@ -36,7 +36,8 @@ define [
         name: 'myexchange'
         hostname: 'myhostname'
         virtualHost: 'myvhost'
-        port: 1234
+        port: 1234,
+        exchangeType: 'topic'
       })
       assert.notEqual simpleTopologyService.clientProfile, null
       assert.equal simpleTopologyService.hostname, 'myhostname'

@@ -42,7 +42,12 @@ define [
         fallbackTopoExchangePort, gtsCacheExpiryTime, gtsExchangeOverrides,
         channelProviderConnectionStrategy, channelProviderConnectionFactory, publishTopicOverride,
         authenticationProviderHostname, authenticationProviderPort, authenticationProviderServiceUrl,
-        authenticationProviderConnectionStrategy, busType, identityProviderServiceUrl, identityProviderConnectionStrategy, messagingFactory, topologyService, simpleTopologyServiceClientProfile, simpleTopologyServiceName, simpleTopologyServiceHostname, simpleTopologyServiceVirtualHost, simpleTopologyServicePort, authenticationProvider, authenticationProviderUsername, authenticationProviderPassword, useEncryption, defaultMessagingKeystore
+        authenticationProviderConnectionStrategy, busType, identityProviderServiceUrl,
+        identityProviderConnectionStrategy, messagingFactory, topologyService, simpleTopologyServiceClientProfile,
+        simpleTopologyServiceName, simpleTopologyServiceHostname, simpleTopologyServiceVirtualHost,
+        simpleTopologyServicePort, authenticationProvider, authenticationProviderUsername,
+        authenticationProviderPassword, useEncryption, defaultMessagingKeystore,
+        simpleTopologyExchangeType
       } = config
 
 
@@ -73,6 +78,7 @@ define [
           hostname: simpleTopologyServiceHostname
           virtualHost: simpleTopologyServiceVirtualHost
           port: simpleTopologyServicePort
+          exchangeType: simpleTopologyExchangeType
       else
         transportProviderTopologyService = new GlobalTopologyService
           routingInfoRetriever: routingInfoRetriever

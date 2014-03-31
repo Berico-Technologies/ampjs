@@ -28,11 +28,11 @@ define [
           @keystore.getSignedIdentityToken(envelopeHelper.getMessageTopic()).then(
             (signedIdentityToken)=>
               #put the identity and credentials into the headers
-              envelopeHelper.setSenderIdentity JSON.parse(signedIdentityToken)['identityToken']['identity']
+              envelopeHelper.setSenderIdentity signedIdentityToken['identityToken']['identity']
 
               #i'm crying a little bit...
               envelopeHelper.setSenderCredentials JSON.stringify
-                signedIdentityToken: JSON.parse(signedIdentityToken)
+                signedIdentityToken: signedIdentityToken
 
               hmac = CryptoJS.algo.HMAC.create(CryptoJS.algo.SHA256, proofKey);
               hmac.update(JSON.stringify(envelopeHelper.getEnvelope()))
